@@ -15,6 +15,7 @@ export default class DependencyInjection {
     this.context = context;
 
     this.dependencies = {};
+    this.configuration = configuration;
 
     for (let x = 0; x <= 1; x += 1) {
       // Iterate over lapper dependencies and add to container
@@ -58,5 +59,13 @@ export default class DependencyInjection {
    */
   getContext() {
     return this.context;
+  }
+
+  /**
+   * Get Configuration
+   * @return {*}
+   */
+  getConfiguration() {
+    return this.configuration;
   }
 }
