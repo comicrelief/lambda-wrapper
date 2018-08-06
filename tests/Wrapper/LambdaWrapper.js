@@ -1,4 +1,3 @@
-/*
 import ServerlessMochaPlugin from 'serverless-mocha-plugin';
 import RequestService, {REQUEST_TYPES} from '../../../../../src/Service/Request.service';
 import DependencyInjection from "../../../../../src/DependencyInjection/DependencyInjection.class";
@@ -48,4 +47,4 @@ describe('LambdaWrapper', () => {
   });
 
 });
-*/
+

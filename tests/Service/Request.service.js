@@ -1,4 +1,3 @@
-/*
 import ServerlessMochaPlugin from 'serverless-mocha-plugin';
 import QueryString from 'querystring';
 import { DependencyInjection } from '@comicrelief/lapper';
@@ -188,4 +187,3 @@ describe('Service/Request.service', () => {
   });
 
 });
-*/

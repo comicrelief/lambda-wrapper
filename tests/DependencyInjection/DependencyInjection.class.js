@@ -1,4 +1,3 @@
-/*
 import ServerlessMochaPlugin from 'serverless-mocha-plugin';
 import { DependencyInjection } from '@comicrelief/lapper';
 import { DEFINITIONS } from '../../../../src/Config/Dependencies';
@@ -90,4 +89,3 @@ describe('DependencyInjection', () => {
   });
 
 });
-*/

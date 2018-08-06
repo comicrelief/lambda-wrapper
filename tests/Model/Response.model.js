@@ -1,4 +1,3 @@
-/*
 import ServerlessMochaPlugin from 'serverless-mocha-plugin';
 import ResponseModel, { DEFAULT_MESSAGE, RESPONSE_HEADERS } from '../../src/Model/Response.model';
 
@@ -86,4 +85,3 @@ describe('Model/Response.model', () => {
   });
 
 });
-*/
