@@ -30,4 +30,4 @@ jobs:
           command: yarn eslint src
       - run:
           name: Run unit tests
-          command: test
+          command: yarn test
