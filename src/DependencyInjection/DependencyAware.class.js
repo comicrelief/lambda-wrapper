@@ -1,22 +1,20 @@
-import DependencyInjection from './DependencyInjection.class';
-
 /**
  * DependencyAwareClass Class
  */
 export default class DependencyAwareClass {
   /**
    * DependencyAwareClass constructor
-   * @param di
+   * @param di DependencyInjection
    */
-  constructor(di: DependencyInjection) {
+  constructor(di) {
     this.di = di;
   }
 
   /**
    * Get Dependency Injection Container
-   * @return {*}
+   * @return DependencyInjection
    */
-  getContainer(): DependencyInjection {
+  getContainer() {
     return this.di;
   }
 }

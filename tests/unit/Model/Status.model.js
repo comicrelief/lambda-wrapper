@@ -1,10 +1,10 @@
 import ServerlessMochaPlugin from 'serverless-mocha-plugin';
-import StatusModel, { STATUS_TYPES } from "../../src/Model/Status.model";
+import StatusModel, { STATUS_TYPES } from "../../../src/Model/Status.model";
 
 const expect = ServerlessMochaPlugin.chai.expect;
 
 // Test definitions.
-describe('Model/Status.model', () => {
+describe('Model/StatusModel', () => {
 
   describe('Ensure setting and getting of variables', () => {
 

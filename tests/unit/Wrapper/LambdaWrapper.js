@@ -1,19 +1,24 @@
 import ServerlessMochaPlugin from 'serverless-mocha-plugin';
-import RequestService, {REQUEST_TYPES} from '../../../../../src/Service/Request.service';
-import DependencyInjection from "../../../../../src/DependencyInjection/DependencyInjection.class";
-import LambdaWrapper from "../../src/Wrapper/LambdaWrapper";
+import RequestService, {REQUEST_TYPES} from '../../../src/Service/Request.service';
+import DependencyInjection from "../../../src/DependencyInjection/DependencyInjection.class";
+import LambdaWrapper from "../../../src/Wrapper/LambdaWrapper";
 
 const expect = ServerlessMochaPlugin.chai.expect;
 
-let getEvent = require('../../../../../tests/mocks/aws/event.json');
-let getContext = require('../../../../../tests/mocks/aws/context.json');
+let getEvent = require('../../mocks/aws/event.json');
+let getContext = require('../../mocks/aws/context.json');
 
-describe('LambdaWrapper', () => {
+describe('Wrapper/LambdaWrapper', () => {
 
   let dependencyInjection = {};
   let requestService = {};
 
-  LambdaWrapper((di, request) => {
+  let configuration = {
+    DEFINITIONS: {},
+    DEPENDENCIES: {},
+  };
+
+  LambdaWrapper(configuration, (di, request) => {
     dependencyInjection = di;
     requestService = request;
   })(getEvent, getContext);

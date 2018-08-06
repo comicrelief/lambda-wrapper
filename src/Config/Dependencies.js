@@ -10,3 +10,8 @@ export const DEPENDENCIES = {
   [DEFINITIONS.LOGGER]: LoggerService,
   [DEFINITIONS.REQUEST]: RequestService,
 };
+
+export default {
+  DEFINITIONS,
+  DEPENDENCIES,
+};

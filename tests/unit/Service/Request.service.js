@@ -1,16 +1,16 @@
 import ServerlessMochaPlugin from 'serverless-mocha-plugin';
 import QueryString from 'querystring';
-import { DependencyInjection } from '@comicrelief/lapper';
+import DependencyInjection from '../../../src/DependencyInjection/DependencyInjection.class';
 
-import RequestService, { REQUEST_TYPES } from '../../src/Service/Request.service';
-import {DEPENDENCIES} from "../../../../../src/Config/Dependencies";
+import RequestService, { REQUEST_TYPES } from '../../../src/Service/Request.service';
+import CONFIGURATION from "../../../src/Config/Dependencies";
 
 const expect = ServerlessMochaPlugin.chai.expect;
 
-let getEvent = require('../../../../../tests/mocks/aws/event.json');
-let getContext = require('../../../../../tests/mocks/aws/context.json');
+let getEvent = require('../../mocks/aws/event.json');
+let getContext = require('../../mocks/aws/context.json');
 
-describe('Service/Request.service', () => {
+describe('Service/RequestService', () => {
 
   describe('test GET request getter', () => {
 
@@ -18,22 +18,22 @@ describe('Service/Request.service', () => {
     testEvent.queryStringParameters.test = 123;
 
     it('should fetch a GET parameter from an AWS event', () => {
-      let request = new RequestService(new DependencyInjection(DEPENDENCIES, testEvent, getContext));
+      let request = new RequestService(new DependencyInjection(CONFIGURATION, testEvent, getContext));
       expect(request.get('test')).to.eql(getEvent.queryStringParameters.test);
     });
 
     it('should fetch a GET parameter from an AWS event when the request type is set', () => {
-      let request = new RequestService(new DependencyInjection(DEPENDENCIES, testEvent, getContext));
+      let request = new RequestService(new DependencyInjection(CONFIGURATION, testEvent, getContext));
       expect(request.get('test'), null, REQUEST_TYPES.GET).to.eql(getEvent.queryStringParameters.test);
     });
 
     it('should return null from a non existent GET parameter from an AWS event', () => {
-      let request = new RequestService(new DependencyInjection(DEPENDENCIES, testEvent, getContext));
+      let request = new RequestService(new DependencyInjection(CONFIGURATION, testEvent, getContext));
       expect(request.get('fake')).to.eql(null);
     });
 
     it('should return null from a non existent GET parameter from an AWS event when the request type is set', () => {
-      let request = new RequestService(new DependencyInjection(DEPENDENCIES, testEvent, getContext));
+      let request = new RequestService(new DependencyInjection(CONFIGURATION, testEvent, getContext));
       expect(request.get('fake', null, REQUEST_TYPES.GET)).to.eql(null);
     });
 
@@ -49,22 +49,22 @@ describe('Service/Request.service', () => {
     let queryParams = QueryString.parse(testEvent.body);
 
     it('should fetch a POST parameter from an AWS event', () => {
-      let request = new RequestService(new DependencyInjection(DEPENDENCIES, testEvent, getContext));
+      let request = new RequestService(new DependencyInjection(CONFIGURATION, testEvent, getContext));
       expect(request.get('grant_type')).to.eql(queryParams['grant_type']);
     });
 
     it('should fetch a POST parameter from an AWS event when the request type is set', () => {
-      let request = new RequestService(new DependencyInjection(DEPENDENCIES, testEvent, getContext));
+      let request = new RequestService(new DependencyInjection(CONFIGURATION, testEvent, getContext));
       expect(request.get('grant_type'), null, REQUEST_TYPES.POST).to.eql(queryParams['grant_type']);
     });
 
     it('should return null from a non existent POST parameter from an AWS event', () => {
-      let request = new RequestService(new DependencyInjection(DEPENDENCIES, testEvent, getContext));
+      let request = new RequestService(new DependencyInjection(CONFIGURATION, testEvent, getContext));
       expect(request.get('fake')).to.eql(null);
     });
 
     it('should return null from a non existent POST parameter from an AWS event when the request type is set', () => {
-      let request = new RequestService(new DependencyInjection(DEPENDENCIES, testEvent, getContext), getEvent);
+      let request = new RequestService(new DependencyInjection(CONFIGURATION, testEvent, getContext), getEvent);
       expect(request.get('fake', null, REQUEST_TYPES.POST)).to.eql(null);
     });
 
@@ -77,7 +77,7 @@ describe('Service/Request.service', () => {
     testEvent.queryStringParameters.testTwo = 123;
 
     it('should return all get parameters as an array', () => {
-      let request = new RequestService(new DependencyInjection(DEPENDENCIES, testEvent, getContext));
+      let request = new RequestService(new DependencyInjection(CONFIGURATION, testEvent, getContext));
       expect(request.getAll()).to.eql(testEvent.queryStringParameters);
     });
 
@@ -93,7 +93,7 @@ describe('Service/Request.service', () => {
     let queryParams = QueryString.parse(testEvent.body);
 
     it('should return all post parameters as an array', () => {
-      let request = new RequestService(new DependencyInjection(DEPENDENCIES, testEvent, getContext));
+      let request = new RequestService(new DependencyInjection(CONFIGURATION, testEvent, getContext));
       expect(request.getAll()).to.eql(queryParams);
     });
 
@@ -112,7 +112,7 @@ describe('Service/Request.service', () => {
 
       it('should resolve if there are no validation errors', (done) => {
         testEvent.queryStringParameters.giftaid = 123;
-        let request = new RequestService(new DependencyInjection(DEPENDENCIES, testEvent, getContext));
+        let request = new RequestService(new DependencyInjection(CONFIGURATION, testEvent, getContext));
 
         request.validateAgainstConstraints(constraints)
           .then(() => {
@@ -128,7 +128,7 @@ describe('Service/Request.service', () => {
 
       it('should return a response containing validation errors if the data provided is incorrect', (done) => {
         testEvent.queryStringParameters.giftaid = 'abc';
-        let request = new RequestService(new DependencyInjection(DEPENDENCIES, testEvent, getContext));
+        let request = new RequestService(new DependencyInjection(CONFIGURATION, testEvent, getContext));
 
         request.validateAgainstConstraints(constraints)
           .then(() => {
@@ -151,7 +151,7 @@ describe('Service/Request.service', () => {
       it('should resolve if there are no validation errors', (done) => {
 
         testEvent.body = 'giftaid=123';
-        let request = new RequestService(new DependencyInjection(DEPENDENCIES, testEvent, getContext));
+        let request = new RequestService(new DependencyInjection(CONFIGURATION, testEvent, getContext));
 
         request.validateAgainstConstraints(constraints)
           .then(() => {
@@ -168,7 +168,7 @@ describe('Service/Request.service', () => {
       it('should return a response containing validation errors if the data provided is incorrect', (done) => {
 
         testEvent.body = 'giftaid=abc';
-        let request = new RequestService(new DependencyInjection(DEPENDENCIES, testEvent, getContext));
+        let request = new RequestService(new DependencyInjection(CONFIGURATION, testEvent, getContext));
 
         request.validateAgainstConstraints(constraints)
           .then(() => {

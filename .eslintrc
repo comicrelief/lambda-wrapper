@@ -12,6 +12,8 @@
     "react/destructuring-assignment": "off",
     "flowtype/no-types-missing-file-annotation": "off",
     "max-len": "off",
-    "import/no-cycle": "off"
+    "import/no-cycle": "off",
+    "no-else-return": "off",
+    "class-methods-use-this": "off"
   }
 }

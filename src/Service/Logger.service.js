@@ -7,9 +7,9 @@ function replaceErrors(key, value) {
   } else if (value instanceof Error) {
     const error = {};
 
-    Object.getOwnPropertyNames(value).forEach(function (key) {
-      error[key] = value[key];
-    });
+    Object.getOwnPropertyNames(value).forEach(((objectKey) => {
+      error[objectKey] = value[objectKey];
+    }));
 
     return error;
   }
@@ -32,7 +32,6 @@ const logger = Winston.createLogger({
  * LoggerService class
  */
 export default class LoggerService extends DependencyAwareClass {
-
   /**
    * Log Information Message
    * @param message string

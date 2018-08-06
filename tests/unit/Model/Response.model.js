@@ -1,9 +1,9 @@
 import ServerlessMochaPlugin from 'serverless-mocha-plugin';
-import ResponseModel, { DEFAULT_MESSAGE, RESPONSE_HEADERS } from '../../src/Model/Response.model';
+import ResponseModel, { DEFAULT_MESSAGE, RESPONSE_HEADERS } from '../../../src/Model/Response.model';
 
 const expect = ServerlessMochaPlugin.chai.expect;
 
-describe('Model/Response.model', () => {
+describe('Model/ResponseModel', () => {
 
   it('should return the expected headers', () => {
     const response = new ResponseModel({}, 500);
