@@ -11,6 +11,7 @@
     "no-param-reassign": "off",
     "react/destructuring-assignment": "off",
     "flowtype/no-types-missing-file-annotation": "off",
-    "max-len": "off"
+    "max-len": "off",
+    "import/no-cycle": "off"
   }
 }
