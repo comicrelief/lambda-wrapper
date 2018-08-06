@@ -6,11 +6,11 @@ import { DEFINITIONS, DEPENDENCIES } from '../Config/Dependencies';
 export default class DependencyInjection {
   /**
    * DependencyInjection constructor
-   * @param dependencies
+   * @param configuration
    * @param event
    * @param context
    */
-  constructor(dependencies, event, context) {
+  constructor(configuration, event, context) {
     this.event = event;
     this.context = context;
 
@@ -23,9 +23,11 @@ export default class DependencyInjection {
       });
 
       // Iterate over child dependencies and add to container
-      Object.keys(dependencies).forEach((dependencyKey) => {
-        this.dependencies[dependencyKey] = new dependencies[dependencyKey](this);
-      });
+      if (typeof configuration.DEPENDENCIES !== 'undefined') {
+        Object.keys(configuration.DEPENDENCIES).forEach((dependencyKey) => {
+          this.dependencies[dependencyKey] = new configuration.DEPENDENCIES[dependencyKey](this);
+        });
+      }
     }
   }
 

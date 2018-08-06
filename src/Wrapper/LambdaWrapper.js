@@ -1,9 +1,9 @@
 import DependencyInjection from '../DependencyInjection/DependencyInjection.class';
 import { DEFINITIONS } from '../Config/Dependencies';
 
-export default ((dependencies, handler) => {
+export default ((configuration, handler) => {
   const instance = (event, context) => {
-    const di = new DependencyInjection(dependencies, event, context);
+    const di = new DependencyInjection(configuration, event, context);
     const request = di.get(DEFINITIONS.REQUEST);
 
     context.callbackWaitsForEmptyEventLoop = false;
