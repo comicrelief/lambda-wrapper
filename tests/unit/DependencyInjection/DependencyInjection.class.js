@@ -14,14 +14,21 @@ describe('DependencyInjection/DependencyInjectionClass', () => {
 
   describe('should instantiate', () => {
 
-    const dependencyInjection = new DependencyInjection({}, getEvent, getContext);
+    const configuration = {
+      test: 123,
+    };
+    const dependencyInjection = new DependencyInjection(configuration, getEvent, getContext);
 
     it('should output the event that was provided to it', () => {
       expect(dependencyInjection.getEvent()).to.eql(getEvent);
     });
 
-    it('should output the event that was provided to it', () => {
+    it('should output the context that was provided to it', () => {
       expect(dependencyInjection.getContext()).to.eql(getContext);
+    });
+
+    it('should output the configuration that was provided to it', () => {
+      expect(dependencyInjection.getConfiguration()).to.eql(configuration);
     });
 
   });

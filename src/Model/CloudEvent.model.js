@@ -1,5 +1,5 @@
 import UUID from 'uuid/v4';
-import Model from './Model';
+import Model from './Model.model';
 
 /**
  * CloudEventModel class
@@ -12,7 +12,7 @@ export default class CloudEventModel extends Model {
   constructor() {
     super();
 
-    this.cloudEventsVersion = 0.1;
+    this.cloudEventsVersion = '0.1';
     this.eventType = '';
     this.source = '';
     this.eventID = UUID();

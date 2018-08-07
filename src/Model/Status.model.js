@@ -1,4 +1,4 @@
-import Model from './Model';
+import Model from './Model.model';
 
 export const STATUS_TYPES = {
   OK: 'OK',
