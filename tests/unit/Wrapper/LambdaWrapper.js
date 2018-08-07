@@ -18,12 +18,12 @@ describe('Wrapper/LambdaWrapper', () => {
     DEPENDENCIES: {},
   };
 
-  LambdaWrapper(configuration, (di, request) => {
-    dependencyInjection = di;
-    requestService = request;
-  })(getEvent, getContext);
-
   describe('should inject dependency injection into the function', () => {
+
+    LambdaWrapper(configuration, (di, request) => {
+      dependencyInjection = di;
+      requestService = request;
+    })(getEvent, getContext);
 
     it('depndency injection variables should be an instance of the dependency injection class', () => {
       expect(dependencyInjection instanceof DependencyInjection).to.be.true;
@@ -41,6 +41,11 @@ describe('Wrapper/LambdaWrapper', () => {
 
   describe('should inject the request service into the function', () => {
 
+    LambdaWrapper(configuration, (di, request) => {
+      dependencyInjection = di;
+      requestService = request;
+    })(getEvent, getContext);
+
     it('request service variables should be an instance of the dependency injection class', () => {
       expect(requestService instanceof RequestService).to.be.true;
     });
@@ -50,6 +55,5 @@ describe('Wrapper/LambdaWrapper', () => {
     });
 
   });
-
 });
 

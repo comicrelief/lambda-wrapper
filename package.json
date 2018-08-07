@@ -1,10 +1,10 @@
 {
   "name": "@comicrelief/lambda-wrapper",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "Lambda wrapper for Comic Relief Serverless Projects",
   "main": "dist/index.js",
   "scripts": {
-    "test": "./node_modules/.bin/mocha \"tests/unit/**/*.js\" --require babel-core/register --require babel-polyfill --colors",
+    "test": "./node_modules/.bin/babel-node ./node_modules/.bin/babel-istanbul cover ./node_modules/.bin/_mocha \"tests/unit/**/*.js\" --report text",
     "build": "babel src --presets babel-preset-env --out-dir dist",
     "prepublish": "npm run build"
   },
@@ -14,6 +14,7 @@
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.3",
     "babel-eslint": "^8.2.6",
+    "babel-istanbul": "^0.12.2",
     "babel-plugin-syntax-flow": "^6.18.0",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
     "babel-plugin-transform-flow-strip-types": "^6.22.0",
@@ -39,6 +40,7 @@
     ]
   },
   "dependencies": {
+    "uuid": "^3.3.2",
     "validate.js": "^0.12.0",
     "winston": "^3.0.0",
     "xml2js": "^0.4.19"
