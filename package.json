@@ -39,6 +39,7 @@
     ]
   },
   "dependencies": {
+    "uuid": "^3.3.2",
     "validate.js": "^0.12.0",
     "winston": "^3.0.0",
     "xml2js": "^0.4.19"

@@ -1,3 +1,5 @@
+import Model from './Model';
+
 /**
  *
  * @type {object}
@@ -17,7 +19,7 @@ export const DEFAULT_MESSAGE = 'success';
 /**
  * class ResponseModel
  */
-export default class ResponseModel {
+export default class ResponseModel extends Model {
   /**
    * ResponseModel Constructor
    * @param data
@@ -25,6 +27,8 @@ export default class ResponseModel {
    * @param message
    */
   constructor(data = null, code = null, message = null) {
+    super();
+
     this.body = {
       data: data !== null ? data : {},
       message: message !== null ? message : DEFAULT_MESSAGE,

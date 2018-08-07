@@ -1,3 +1,5 @@
+import Model from './Model';
+
 export const STATUS_TYPES = {
   OK: 'OK',
   ACCEPTABLE_FAILURE: 'ACCEPTABLE_FAILURE',
@@ -7,13 +9,15 @@ export const STATUS_TYPES = {
 /**
  * StatusModel Class
  */
-export default class StatusModel {
+export default class StatusModel extends Model {
   /**
    * StatusModel constructor
    * @param service
    * @param status
    */
   constructor(service: string, status: string) {
+    super();
+
     this.setService(service);
     this.setStatus(status);
   }
