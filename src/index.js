@@ -5,6 +5,7 @@ export { default as DependencyAwareClass } from './DependencyInjection/Dependenc
 export { default as DependencyInjection } from './DependencyInjection/DependencyInjection.class';
 
 // Model
+export { default as Model } from './Model/Model.model';
 export { default as ResponseModel } from './Model/Response.model';
 export { default as StatusModel, STATUS_TYPES } from './Model/Status.model';
 
