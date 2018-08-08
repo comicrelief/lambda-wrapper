@@ -109,6 +109,10 @@ ajv@^6.0.1, ajv@^6.5.0:
     json-schema-traverse "^0.4.1"
     uri-js "^4.2.1"
 
+alai@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/alai/-/alai-1.0.3.tgz#9303a2f7f0d8515067d157d79a9b876678ac9bf9"
+
 align-text@^0.1.1, align-text@^0.1.3:
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/align-text/-/align-text-0.1.4.tgz#0cd90a561093f35d0a99256c22b7069433fad117"
@@ -225,11 +229,25 @@ async@1.x, async@^1.4.0:
   version "1.5.2"
   resolved "https://registry.yarnpkg.com/async/-/async-1.5.2.tgz#ec6a61ae56480c0c3cb241c95618e20892f9672a"
 
-async@^2.6.0:
+async@^2.6.0, async@^2.6.1:
   version "2.6.1"
   resolved "https://registry.yarnpkg.com/async/-/async-2.6.1.tgz#b245a23ca71930044ec53fa46aa00a3e87c6a610"
   dependencies:
     lodash "^4.17.10"
+
+aws-sdk@^2.288.0:
+  version "2.288.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.288.0.tgz#9665f4a908cb2048bc1af6e0ef5084c5bf96a6c8"
+  dependencies:
+    buffer "4.9.1"
+    events "1.1.1"
+    ieee754 "1.1.8"
+    jmespath "0.15.0"
+    querystring "0.2.0"
+    sax "1.2.1"
+    url "0.10.3"
+    uuid "3.1.0"
+    xml2js "0.4.19"
 
 aws-sdk@^2.4.0, aws-sdk@^2.6.3:
   version "2.286.2"
