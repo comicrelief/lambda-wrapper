@@ -63,9 +63,16 @@ export default class DependencyInjection {
 
   /**
    * Get Configuration
+   * @param definition string
    * @return {*}
    */
-  getConfiguration() {
+  getConfiguration(definition = null) {
+    if (definition !== null && typeof this.configuration[definition] === 'undefined') {
+      return null;
+    } else if (typeof this.configuration[definition] !== 'undefined') {
+      return this.configuration[definition];
+    }
+
     return this.configuration;
   }
 }
