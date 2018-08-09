@@ -60,13 +60,21 @@ export default class RequestService extends DependencyAwareClass {
 
       if ((typeof event.headers['Content-Type'] !== 'undefined' && event.headers['Content-Type'].indexOf('application/json') !== -1)
         || (typeof event.headers['content-type'] !== 'undefined' && event.headers['content-type'].indexOf('application/json') !== -1)) {
-        queryParams = JSON.parse(event.body);
+        try {
+          queryParams = JSON.parse(event.body);
+        } catch (e) {
+          queryParams = {};
+        }
       }
 
       if ((typeof event.headers['Content-Type'] !== 'undefined' && event.headers['Content-Type'].indexOf('text/xml') !== -1)
         || (typeof event.headers['content-type'] !== 'undefined' && event.headers['content-type'].indexOf('text/xml') !== -1)) {
         XML2JS.parseString(event.body, ((err, result) => {
-          queryParams = result;
+          if (err) {
+            queryParams = {};
+          } else {
+            queryParams = result;
+          }
         }));
       }
 
