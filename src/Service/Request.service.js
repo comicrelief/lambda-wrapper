@@ -39,6 +39,28 @@ export default class RequestService extends DependencyAwareClass {
   }
 
   /**
+   * Get a path parameter
+   * @param param  string|null
+   * @param ifNull mixed
+   * @return {*}
+   */
+  getPathParameter(param: string = null, ifNull = {}) {
+    const event = this.getContainer().getEvent();
+
+    // If no parameter has been requested, return all path parameters
+    if (param === null && typeof event.pathParameters === 'object') {
+      return event.pathParameters;
+    }
+
+    // If a specifc parameter has been requested, return the parameter if it exists
+    if (typeof param === 'string' && typeof event.pathParameters === 'object' && typeof event.pathParameters[param] !== 'undefined') {
+      return event.pathParameters[param];
+    }
+
+    return ifNull;
+  }
+
+  /**
    * Get all request parameters
    * @param requestType
    * @return {{}}
