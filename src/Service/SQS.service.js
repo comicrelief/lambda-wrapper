@@ -156,7 +156,9 @@ export default class SQSService extends DependencyAwareClass {
           Logger.error(err);
         }
 
-        resolve();
+        resolve({
+          queue,
+        });
       }));
     });
   }
