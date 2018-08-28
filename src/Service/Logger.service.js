@@ -1,4 +1,6 @@
 import Winston from 'winston';
+import Raven from 'raven';
+
 import DependencyAwareClass from '../DependencyInjection/DependencyAware.class';
 
 function replaceErrors(key, value) {
@@ -32,6 +34,48 @@ const logger = Winston.createLogger({
  * LoggerService class
  */
 export default class LoggerService extends DependencyAwareClass {
+  constructor() {
+    super();
+    this.raven = null;
+
+    // Instantiate the raven client
+    if (typeof process.env.RAVEN_DSN !== 'undefined') {
+      const container = this.getContainer();
+      const event = container.getEvent();
+      const context = container.getContext();
+
+      Raven.config(process.env.RAVEN_DSN, {
+        environment: event.stage,
+        tags: {
+          lambda: context.functionName,
+          memory_size: context.memoryLimitInMB,
+          log_group: context.log_group_name,
+          log_stream: context.log_stream_name,
+          stage: event.stage,
+          path: event.path,
+          httpMethod: event.httpMethod,
+        },
+      }).install();
+
+      Raven.setContext({
+        extra: {
+          Event: event,
+          Context: context,
+        },
+      });
+
+      this.raven = Raven;
+    }
+  }
+
+  /**
+   * Get raven client
+   * @return {null|*}
+   */
+  getRaven() {
+    return this.raven;
+  }
+
   /**
    * Log Information Message
    * @param message string
@@ -46,6 +90,10 @@ export default class LoggerService extends DependencyAwareClass {
    * @param message string
    */
   error(error, message = '') {
+    if (process.env.RAVEN_DSN) {
+      Raven.captureException(error);
+    }
+
     logger.log('error', message, { error });
   }
 }
