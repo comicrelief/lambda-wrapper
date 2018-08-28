@@ -1,6 +1,6 @@
 {
   "name": "@comicrelief/lambda-wrapper",
-  "version": "0.0.16",
+  "version": "0.0.17",
   "description": "Lambda wrapper for Comic Relief Serverless Projects",
   "main": "dist/index.js",
   "scripts": {
@@ -40,6 +40,7 @@
     ]
   },
   "dependencies": {
+    "@iopipe/iopipe": "^1.9.0",
     "alai": "^1.0.3",
     "async": "^2.6.1",
     "aws-sdk": "^2.288.0",
