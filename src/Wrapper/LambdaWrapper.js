@@ -1,3 +1,4 @@
+import iopipe from '@iopipe/iopipe';
 import DependencyInjection from '../DependencyInjection/DependencyInjection.class';
 import { DEFINITIONS } from '../Config/Dependencies';
 
@@ -15,6 +16,11 @@ export default ((configuration, handler) => {
 
     return handler.call(instance, di, request, context.done);
   };
+
+
+  if (process.env.IOPIPE_TOKEN) {
+    return iopipe()(instance);
+  }
 
   return instance;
 });
