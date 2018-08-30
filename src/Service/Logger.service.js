@@ -2,6 +2,7 @@ import Winston from 'winston';
 import Raven from 'raven';
 
 import DependencyAwareClass from '../DependencyInjection/DependencyAware.class';
+import DependencyInjection from '../DependencyInjection/DependencyInjection.class';
 
 function replaceErrors(key, value) {
   if (value instanceof Buffer) {
@@ -34,8 +35,8 @@ const logger = Winston.createLogger({
  * LoggerService class
  */
 export default class LoggerService extends DependencyAwareClass {
-  constructor() {
-    super();
+  constructor(di: DependencyInjection) {
+    super(di);
     this.raven = null;
 
     // Instantiate the raven client
