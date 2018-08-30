@@ -91,7 +91,7 @@ export default class LoggerService extends DependencyAwareClass {
    * @param message string
    */
   error(error, message = '') {
-    if (process.env.RAVEN_DSN) {
+    if (process.env.RAVEN_DSN && error instanceof Error) {
       Raven.captureException(error);
     }
 
