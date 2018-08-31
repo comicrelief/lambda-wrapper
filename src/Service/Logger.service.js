@@ -45,7 +45,13 @@ export default class LoggerService extends DependencyAwareClass {
       const event = container.getEvent();
       const context = container.getContext();
 
-      Raven.config(process.env.RAVEN_DSN, {
+      Raven.config(process.env.RAVEN_DSN).install();
+
+      Raven.setContext({
+        extra: {
+          Event: event,
+          Context: context,
+        },
         environment: event.stage,
         tags: {
           lambda: context.functionName,
@@ -55,13 +61,6 @@ export default class LoggerService extends DependencyAwareClass {
           stage: event.stage,
           path: event.path,
           httpMethod: event.httpMethod,
-        },
-      }).install();
-
-      Raven.setContext({
-        extra: {
-          Event: event,
-          Context: context,
         },
       });
 
