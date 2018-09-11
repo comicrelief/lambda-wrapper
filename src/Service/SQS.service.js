@@ -35,7 +35,7 @@ export default class SQSService extends DependencyAwareClass {
     if (queues !== null && Object.keys(queues).length >= 1) {
       Object.keys(queues).forEach((queueDefinition) => {
         if (isOffline === true) {
-          this.queues[queueDefinition] = `http://localhost:4576/queue/${queues[queueDefinition].replace('.', '_')}`;
+          this.queues[queueDefinition] = `http://localhost:4576/queue/${queues[queueDefinition]}`;
         } else {
           this.queues[queueDefinition] = `https://sqs.${process.env.REGION}.amazonaws.com/${Alai.parse(context)}/${queues[queueDefinition]}`;
         }
@@ -49,7 +49,7 @@ export default class SQSService extends DependencyAwareClass {
    * @param messageModels [SQSMessageModel]
    * @return {Promise<any>}
    */
-  batchDelete(queue: string, messageModels: [SQSMessageModel]) {
+  batchDelete(queue: string, messageModels: [SQSMessageModel]
     const queueUrl = this.queues[queue];
     const Logger = this.getContainer().get(DEFINITIONS.LOGGER);
 
