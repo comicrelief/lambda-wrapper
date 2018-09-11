@@ -20,7 +20,7 @@ export default class PromisifiedDelay {
     Object.keys(DELAYS).forEach((delayDuration) => {
       const delayIterations = DELAYS[delayDuration];
 
-      for (let i = 0; i < delayIterations; i++) {
+      for (let i = 0; i < delayIterations; i += 1) {
         this.delays.push(delayDuration);
       }
     });
