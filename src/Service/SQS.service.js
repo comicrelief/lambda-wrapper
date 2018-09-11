@@ -49,7 +49,7 @@ export default class SQSService extends DependencyAwareClass {
    * @param messageModels [SQSMessageModel]
    * @return {Promise<any>}
    */
-  batchDelete(queue: string, messageModels: [SQSMessageModel]
+  batchDelete(queue: string, messageModels: [SQSMessageModel]) {
     const queueUrl = this.queues[queue];
     const Logger = this.getContainer().get(DEFINITIONS.LOGGER);
 
