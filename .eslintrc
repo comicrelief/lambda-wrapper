@@ -14,6 +14,7 @@
     "max-len": "off",
     "import/no-cycle": "off",
     "no-else-return": "off",
-    "class-methods-use-this": "off"
+    "class-methods-use-this": "off",
+    "consistent-return": "off"
   }
 }
