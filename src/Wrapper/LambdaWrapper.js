@@ -27,9 +27,13 @@ export default ((configuration, handler) => {
 
   // If the IOPipe token is enabled, then wrap the instance in the IOPipe wrapper
   if (process.env.IOPIPE_TOKEN) {
-    instance = iopipe({
-      plugins: [profiler({ enabled: true, heapSnapshot: true })],
-    })(instance);
+    const ioPipeConfiguration = {};
+
+    if (typeof process.env.IOPIPE_TRACING !== 'undefined' && process.env.IOPIPE_TRACING === 'enabled') {
+      ioPipeConfiguration.plugins = [profiler({ enabled: true, heapSnapshot: true })];
+    }
+
+    instance = iopipe(ioPipeConfiguration)(instance);
   }
 
   return instance;
