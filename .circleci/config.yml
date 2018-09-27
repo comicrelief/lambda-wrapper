@@ -28,6 +28,11 @@ jobs:
       - run:
           name: Test Code Style
           command: yarn eslint src
+
       - run:
           name: Run unit tests
           command: yarn test
+
+      - run:
+          name: Release to npm
+          command: yarn semantic-release

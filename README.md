@@ -4,6 +4,10 @@ When writing Serverless endpoints, we have found ourselves replicating boiler pl
 provide a wrapper for our lambda functions, to provide some level of dependency and configuration injection and to
 reduce time spent on project setup.
 
+## Semantic releases
+
+Release management is automated using [semantic-release](https://www.npmjs.com/package/semantic-release).
+
 [circleci-image]: https://circleci.com/gh/comicrelief/lambda-wrapper.svg?style=svg&circle-token=7db6e0ff0526bd635424f303fd4ffffc7ea05aed
 [circleci-url]: https://circleci.com/gh/comicrelief/lambda-wrapper
 [npm-image]: https://badge.fury.io/js/%40comicrelief%2Flambda-wrapper.svg
