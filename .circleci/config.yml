@@ -31,3 +31,8 @@ jobs:
       - run:
           name: Run unit tests
           command: yarn test
+
+      # Release to npm using semantic-release package
+      - run:
+        name: release
+        command: yarn semantic-release
