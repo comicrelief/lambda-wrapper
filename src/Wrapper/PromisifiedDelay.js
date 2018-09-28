@@ -1,9 +1,16 @@
-const DELAYS = {
-  2000: 65,
-  3500: 17,
-  4000: 11,
+const STANDARD_LATENCY_DELAYS = {
+  2000: 70,
+  3500: 15,
+  4000: 10,
   5000: 5,
-  10000: 1,
+};
+
+const HIGH_LATENCY_DELAYS = {
+  2000: 65,
+  3500: 15,
+  4000: 9,
+  5000: 5,
+  10000: 5,
   20000: 1,
 };
 
@@ -14,11 +21,13 @@ export default class PromisifiedDelay {
   /**
    * PromisifiedDelay constructor
    */
-  constructor() {
+  constructor(highLatency = true) {
     this.delays = [];
 
-    Object.keys(DELAYS).forEach((delayDuration) => {
-      const delayIterations = DELAYS[delayDuration];
+    const delayArray = highLatency === true ? HIGH_LATENCY_DELAYS : STANDARD_LATENCY_DELAYS;
+
+    Object.keys(delayArray).forEach((delayDuration) => {
+      const delayIterations = delayArray[delayDuration];
 
       for (let i = 0; i < delayIterations; i += 1) {
         this.delays.push(delayDuration);
