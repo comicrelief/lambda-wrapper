@@ -1,7 +1,6 @@
 import iopipe from '@iopipe/iopipe';
 import DependencyInjection from '../DependencyInjection/DependencyInjection.class';
 import { DEFINITIONS } from '../Config/Dependencies';
-import PromisifiedDelay from '../Chaos/PromisifiedDelay';
 
 export default ((configuration, handler) => {
   let instance = (event, context) => {
@@ -15,13 +14,7 @@ export default ((configuration, handler) => {
       return context.done(null, 'Lambda is warm!');
     }
 
-    if (typeof process.env.CHAOS !== 'undefined' && process.env.CHAOS === 'DELAYED') {
-      new PromisifiedDelay()
-        .get()
-        .then(() => handler.call(instance, di, request, context.done));
-    } else {
-      return handler.call(instance, di, request, context.done);
-    }
+    return handler.call(instance, di, request, context.done);
   };
 
   // If the IOPipe token is enabled, then wrap the instance in the IOPipe wrapper
