@@ -13,7 +13,7 @@ export default class TimerService extends DependencyAwareClass {
     super(di);
     this.iopipe = null;
 
-    // Instantiate the raven client
+    // Fetch iopipe from the context
     if (typeof process.env.IOPIPE_TOKEN !== 'undefined') {
       const container = this.getContainer();
       const context = container.getContext();
