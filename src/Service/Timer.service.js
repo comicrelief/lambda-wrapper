@@ -14,7 +14,7 @@ export default class TimerService extends DependencyAwareClass {
     this.iopipe = null;
 
     // Fetch iopipe from the context
-    if (typeof process.env.IOPIPE_TOKEN !== 'undefined') {
+    if (typeof process.env.IOPIPE_TOKEN === 'string' && process.env.IOPIPE_TOKEN !== 'undefined') {
       const container = this.getContainer();
       const context = container.getContext();
       this.iopipe = context.iopipe;
