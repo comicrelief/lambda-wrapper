@@ -109,5 +109,4 @@ export default class LoggerService extends DependencyAwareClass {
 
     logger.log('info', `label - ${descriptor}`);
   }
-
 }
