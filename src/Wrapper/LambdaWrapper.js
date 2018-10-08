@@ -26,7 +26,7 @@ export default ((configuration, handler) => {
       plugins: [
         trace({
           autoHttp: {
-            enabled: true,
+            enabled: false,
           },
         }),
       ],
