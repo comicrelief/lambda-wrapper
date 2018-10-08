@@ -21,7 +21,7 @@ export default ((configuration, handler) => {
   };
 
   // If the IOPipe token is enabled, then wrap the instance in the IOPipe wrapper
-  if (process.env.IOPIPE_TOKEN) {
+  if (typeof process.env.IOPIPE_TOKEN === 'string' && process.env.IOPIPE_TOKEN !== 'undefined') {
     const ioPipeConfiguration = {
       plugins: [
         trace({
