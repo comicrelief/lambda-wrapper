@@ -43,6 +43,7 @@
   "dependencies": {
     "@iopipe/iopipe": "^1.9.0",
     "@iopipe/profiler": "^2.0.3",
+    "@iopipe/trace": "^1.2.1",
     "alai": "^1.0.3",
     "async": "^2.6.1",
     "aws-sdk": "^2.288.0",
