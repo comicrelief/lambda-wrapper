@@ -169,7 +169,7 @@ export default class SQSService extends DependencyAwareClass {
         MessageGroupId: messageGroupId !== null ? messageGroupId : UUID(),
         QueueUrl: queueUrl,
       }, ((err) => {
-        Timer.stop('sqs-stop-message');
+        Timer.stop('sqs-send-message');
 
         if (err) {
           Logger.error(err);
