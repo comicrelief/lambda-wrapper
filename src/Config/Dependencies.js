@@ -7,14 +7,14 @@ export const DEFINITIONS = {
   LOGGER: 'LOGGER',
   REQUEST: 'REQUEST',
   SQS: 'SQS',
-  TIMER: 'TIMER'
+  TIMER: 'TIMER',
 };
 
 export const DEPENDENCIES = {
   [DEFINITIONS.LOGGER]: LoggerService,
   [DEFINITIONS.REQUEST]: RequestService,
   [DEFINITIONS.SQS]: SQSService,
-  [DEFINITIONS.TIMER]: TimerService
+  [DEFINITIONS.TIMER]: TimerService,
 };
 
 export default {

@@ -1,4 +1,4 @@
-import { mark, metric } from '@iopipe/iopipe';
+import { mark } from '@iopipe/iopipe';
 
 import DependencyAwareClass from '../DependencyInjection/DependencyAware.class';
 import DependencyInjection from '../DependencyInjection/DependencyInjection.class';

@@ -24,15 +24,16 @@ export default ((configuration, handler) => {
   if (process.env.IOPIPE_TOKEN) {
     const ioPipeConfiguration = {
       plugins: [
-        tracePlugin({
+        trace({
           autoHttp: {
             enabled: true,
+          },
         }),
       ],
     };
 
     if (typeof process.env.IOPIPE_TRACING !== 'undefined' && process.env.IOPIPE_TRACING === 'enabled') {
-      ioPipeConfiguration.plugins.profiler = ({ enabled: true, heapSnapshot: true });
+      ioPipeConfiguration.plugins.push(profiler({ enabled: true, heapSnapshot: true }));
     }
 
     instance = iopipe(ioPipeConfiguration)(instance);
