@@ -5,9 +5,9 @@ Lambda Wrapper
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
 [![semantic-release](https://badge.fury.io/js/%40comicrelief%2Flambda-wrapper.svg)](https://www.npmjs.com/package/@comicrelief/lambda-wrapper)
 
-When writing Serverless endpoints, we have found ourselves replicating boiler plate code. The aim of this package is to
-provide a wrapper for our lambda functions, to provide some level of dependency and configuration injection and to
-reduce time spent on project setup.
+When writing Serverless endpoints, we have found ourselves replicating a lot of the boiler plate code to do basic actions, 
+such as reading request variables or writing to SQS. The aim of this package is to provide a wrapper for our lambda 
+functions, to provide some level of dependency and configuration injection and to reduce time spent on project setup.
 
 # Installation & usage
 
