@@ -1,5 +1,6 @@
 import Winston from 'winston';
 import Raven from 'raven';
+import { label } from '@iopipe/iopipe';
 
 import DependencyAwareClass from '../DependencyInjection/DependencyAware.class';
 import DependencyInjection from '../DependencyInjection/DependencyInjection.class';
@@ -69,6 +70,19 @@ export default class LoggerService extends DependencyAwareClass {
   }
 
   /**
+   * Log Error Message
+   * @param error object
+   * @param message string
+   */
+  error(error, message = '') {
+    if (process.env.RAVEN_DSN && error instanceof Error) {
+      Raven.captureException(error);
+    }
+
+    logger.log('error', message, { error });
+  }
+
+  /**
    * Get raven client
    * @return {null|*}
    */
@@ -85,15 +99,14 @@ export default class LoggerService extends DependencyAwareClass {
   }
 
   /**
-   * Log Error Message
-   * @param error object
-   * @param message string
+   * Add a label
+   * @param descriptor string
    */
-  error(error, message = '') {
-    if (process.env.RAVEN_DSN && error instanceof Error) {
-      Raven.captureException(error);
+  label(descriptor) {
+    if (typeof process.env.IOPIPE_TOKEN === 'string' && process.env.IOPIPE_TOKEN !== 'undefined') {
+      label(descriptor);
     }
 
-    logger.log('error', message, { error });
+    logger.log('info', `label - ${descriptor}`);
   }
 }
