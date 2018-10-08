@@ -1,5 +1,7 @@
 import iopipe from '@iopipe/iopipe';
 import profiler from '@iopipe/profiler';
+import trace from '@iopipe/trace';
+
 import DependencyInjection from '../DependencyInjection/DependencyInjection.class';
 import { DEFINITIONS } from '../Config/Dependencies';
 
@@ -20,10 +22,17 @@ export default ((configuration, handler) => {
 
   // If the IOPipe token is enabled, then wrap the instance in the IOPipe wrapper
   if (process.env.IOPIPE_TOKEN) {
-    const ioPipeConfiguration = {};
+    const ioPipeConfiguration = {
+      plugins: [
+        tracePlugin({
+          autoHttp: {
+            enabled: true,
+        }),
+      ],
+    };
 
     if (typeof process.env.IOPIPE_TRACING !== 'undefined' && process.env.IOPIPE_TRACING === 'enabled') {
-      ioPipeConfiguration.plugins = [profiler({ enabled: true, heapSnapshot: true })];
+      ioPipeConfiguration.plugins.profiler = ({ enabled: true, heapSnapshot: true });
     }
 
     instance = iopipe(ioPipeConfiguration)(instance);
