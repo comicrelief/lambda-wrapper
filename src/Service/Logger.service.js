@@ -79,6 +79,7 @@ export default class LoggerService extends DependencyAwareClass {
       Raven.captureException(error);
     }
 
+    this.label('error');
     logger.log('error', message, { error });
   }
 
