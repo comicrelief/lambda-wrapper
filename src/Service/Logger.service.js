@@ -80,6 +80,7 @@ export default class LoggerService extends DependencyAwareClass {
     }
 
     logger.log('error', message, { error });
+    this.label('error');
   }
 
   /**
