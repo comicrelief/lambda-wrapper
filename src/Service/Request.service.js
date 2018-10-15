@@ -39,6 +39,27 @@ export default class RequestService extends DependencyAwareClass {
   }
 
   /**
+   * Get authorization token
+   * @return {*}
+   */
+  getAuthorizationToken() {
+    const event = this.getContainer().getEvent();
+
+    if (!event.authorizationToken) {
+      return null;
+    }
+
+    const tokenParts = event.authorizationToken.split(' ');
+    const tokenValue = tokenParts[1];
+
+    if (!(tokenParts[0].toLowerCase() === 'bearer' && tokenValue)) {
+      return null;
+    }
+
+    return tokenValue;
+  }
+
+  /**
    * Get a path parameter
    * @param param  string|null
    * @param ifNull mixed
