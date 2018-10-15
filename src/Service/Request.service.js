@@ -43,14 +43,14 @@ export default class RequestService extends DependencyAwareClass {
    * @return {*}
    */
   getAuthorizationToken() {
-    const event = this.getContainer().getEvent();
+    var headers = this.getContainer().getEvent().headers;
 
-    if (!event.authorizationToken) {
+    if (typeof headers.Authorization === 'undefined') {
       return null;
     }
 
-    const tokenParts = event.authorizationToken.split(' ');
-    const tokenValue = tokenParts[1];
+    var tokenParts = headers.Authorization.split(' ');
+    var tokenValue = tokenParts[1];
 
     if (!(tokenParts[0].toLowerCase() === 'bearer' && tokenValue)) {
       return null;
