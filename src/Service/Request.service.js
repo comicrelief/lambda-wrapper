@@ -49,7 +49,7 @@ export default class RequestService extends DependencyAwareClass {
       return null;
     }
 
-    const tokenParts = headers[typeof headers.Authorization === 'undefined' ? 'authorization ' : 'Authorization'].split(' ');
+    const tokenParts = headers[typeof headers.Authorization === 'undefined' ? 'authorization' : 'Authorization'].split(' ');
     const tokenValue = tokenParts[1];
 
     if (!(tokenParts[0].toLowerCase() === 'bearer' && tokenValue)) {
