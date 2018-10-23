@@ -39,5 +39,4 @@ export default LambdaWrapper({}, (di, request, done) => {
 ```
 
 # Semantic release
-
 Release management is automated using [semantic-release](https://www.npmjs.com/package/semantic-release).
