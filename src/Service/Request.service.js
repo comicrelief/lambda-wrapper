@@ -197,10 +197,10 @@ export default class RequestService extends DependencyAwareClass {
   }
 
   /**
-   * Fetch the request AWS event
+   * Fetch the request AWS event Records
    * @return {*}
    */
-  getAWSEvent() {
+  getAWSRecords() {
     const event = this.getContainer().getEvent();
     const eventRecord = event.Records && event.Records[0];
 
