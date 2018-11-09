@@ -120,7 +120,10 @@ export default class RequestService extends DependencyAwareClass {
           }
         }));
       }
-
+      if ((typeof event.headers['Content-Type'] !== 'undefined' && event.headers['Content-Type'].indexOf('multipart/form-data') !== -1)
+        || (typeof event.headers['content-type'] !== 'undefined' && event.headers['content-type'].indexOf('multipart/form-data') !== -1)) {
+        queryParams = this.parseForm(true);
+      }
       return typeof queryParams !== 'undefined' ? queryParams : {};
     }
 
@@ -161,5 +164,63 @@ export default class RequestService extends DependencyAwareClass {
         reject(validationErrorResponse);
       }
     });
+  }
+
+  /**
+   * Fetch the request multipart form
+   * @param useBuffer
+   * @return {*}
+   */
+  parseForm(useBuffer: boolean) {
+    const event = this.getContainer().getEvent();
+    const boundary = this.getBoundary(event);
+
+    const body = event.isBase64Encoded ? Buffer.from(event.body, 'base64').toString('binary').trim() : event.body;
+
+    const result = {};
+    body
+      .split(boundary)
+      .forEach((item) => {
+        if (/filename=".+"/g.test(item)) {
+          result[item.match(/name=".+";/g)[0].slice(6, -2)] = {
+            type: 'file',
+            filename: item.match(/filename=".+"/g)[0].slice(10, -1),
+            contentType: item.match(/Content-Type:\s.+/g)[0].slice(14),
+            content: useBuffer ? Buffer.from(item.slice(item.search(/Content-Type:\s.+/g) + item.match(/Content-Type:\s.+/g)[0].length + 4, -4), 'binary')
+              : item.slice(item.search(/Content-Type:\s.+/g) + item.match(/Content-Type:\s.+/g)[0].length + 4, -4),
+          };
+        } else if (/name=".+"/g.test(item)) {
+          result[item.match(/name=".+"/g)[0].slice(6, -1)] = item.slice(item.search(/name=".+"/g) + item.match(/name=".+"/g)[0].length + 4, -4);
+        }
+      });
+    return result;
+  }
+
+  /**
+   * Fetch the request AWS event Records
+   * @return {*}
+   */
+  getAWSRecords() {
+    const event = this.getContainer().getEvent();
+    const eventRecord = event.Records && event.Records[0];
+
+    if (typeof event.Records !== 'undefined'
+      && typeof event.Records[0] !== 'undefined'
+      && typeof eventRecord.eventSource !== 'undefined') {
+      return eventRecord;
+    }
+    return null;
+  }
+
+
+  getValueIgnoringKeyCase(object, key) {
+    const foundKey = Object
+      .keys(object)
+      .find(currentKey => currentKey.toLocaleLowerCase() === key.toLowerCase());
+    return object[foundKey];
+  }
+
+  getBoundary(event) {
+    return this.getValueIgnoringKeyCase(event.headers, 'Content-Type').split('=')[1];
   }
 }
