@@ -209,7 +209,6 @@ export default class RequestService extends DependencyAwareClass {
       && typeof eventRecord.eventSource !== 'undefined') {
       return eventRecord;
     }
-
     return null;
   }
 
