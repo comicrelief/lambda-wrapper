@@ -11,6 +11,12 @@ import SQSMessageModel from '../Model/SQS/Message.model';
 
 import { DEFINITIONS } from '../Config/Dependencies';
 
+// Set a timeout on S3 in case of outage
+AWS.Config.httpOptions = {
+  connectTimeout: 25000,
+  timeout: 25000,
+};
+
 const sqs = new AWS.SQS({
   region: process.env.REGION,
 });
