@@ -59,11 +59,12 @@ export default class SQSService extends DependencyAwareClass {
     const queueUrl = this.queues[queue];
     const Logger = this.getContainer().get(DEFINITIONS.LOGGER);
     const Timer = this.getContainer().get(DEFINITIONS.TIMER);
+    const timerId = `sqs-batch-delete-${UUID()}`;
 
     return new Promise((resolve) => {
       const messagesForDeletion = [];
 
-      Timer.start('sqs-batch-delete');
+      Timer.start(timerId);
       // assuming openFiles is an array of file names
       each(messageModels, ((messageModel, callback) => {
         if (messageModel instanceof SQSMessageModel && messageModel.isForDeletion() === true) {
@@ -83,7 +84,7 @@ export default class SQSService extends DependencyAwareClass {
           Entries: messagesForDeletion,
           QueueUrl: queueUrl,
         }, ((err) => {
-          Timer.stop('sqs-batch-delete');
+          Timer.stop(timerId);
 
           if (err) {
             Logger.error(err);
@@ -102,12 +103,13 @@ export default class SQSService extends DependencyAwareClass {
   checkStatus() {
     const Logger = this.getContainer().get(DEFINITIONS.LOGGER);
     const Timer = this.getContainer().get(DEFINITIONS.TIMER);
+    const timerId = `sqs-list-queues-${UUID()}`;
 
     return new Promise((resolve) => {
-      Timer.start('sqs-list-queues');
+      Timer.start(timerId);
 
       sqs.listQueues({}, ((err, data) => {
-        Timer.stop('sqs-list-queues');
+        Timer.stop(timerId);
 
         const statusModel = new StatusModel('SQS', STATUS_TYPES.OK);
 
@@ -134,15 +136,16 @@ export default class SQSService extends DependencyAwareClass {
     const queueUrl = this.queues[queue];
     const Logger = this.getContainer().get(DEFINITIONS.LOGGER);
     const Timer = this.getContainer().get(DEFINITIONS.TIMER);
+    const timerId = `sqs-get-queue-attributes-${UUID()}`;
 
     return new Promise((resolve) => {
-      Timer.start('sqs-get-queue-attributes');
+      Timer.start(timerId);
 
       sqs.getQueueAttributes({
         AttributeNames: ['ApproximateNumberOfMessages'],
         QueueUrl: queueUrl,
       }, ((err, data) => {
-        Timer.stop('sqs-get-queue-attributes');
+        Timer.stop(timerId);
 
         if (err) {
           Logger.error(err);
@@ -165,9 +168,10 @@ export default class SQSService extends DependencyAwareClass {
     const queueUrl = this.queues[queue];
     const Logger = this.getContainer().get(DEFINITIONS.LOGGER);
     const Timer = this.getContainer().get(DEFINITIONS.TIMER);
+    const timerId = `sqs-send-message-${UUID()}`;
 
     return new Promise((resolve) => {
-      Timer.start('sqs-send-message');
+      Timer.start(timerId);
 
       sqs.sendMessage({
         MessageBody: JSON.stringify(messageObject),
@@ -175,7 +179,7 @@ export default class SQSService extends DependencyAwareClass {
         MessageGroupId: messageGroupId !== null ? messageGroupId : UUID(),
         QueueUrl: queueUrl,
       }, ((err) => {
-        Timer.stop('sqs-send-message');
+        Timer.stop(timerId);
 
         if (err) {
           Logger.error(err);
@@ -198,16 +202,17 @@ export default class SQSService extends DependencyAwareClass {
     const queueUrl = this.queues[queue];
     const Logger = this.getContainer().get(DEFINITIONS.LOGGER);
     const Timer = this.getContainer().get(DEFINITIONS.TIMER);
+    const timerId = `sqs-receive-message-${UUID()}`;
 
     return new Promise((resolve, reject) => {
-      Timer.start('sqs-receive-message');
+      Timer.start(timerId);
 
       sqs.receiveMessage({
         QueueUrl: queueUrl,
         VisibilityTimeout: timeout,
         MaxNumberOfMessages: 10,
       }, ((err, data) => {
-        Timer.stop('sqs-receive-message');
+        Timer.stop(timerId);
 
         if (err) {
           Logger.error(err);
