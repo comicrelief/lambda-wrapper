@@ -62,6 +62,14 @@ export default class ResponseModel extends Model {
   }
 
   /**
+   * Get Status Code
+   * @return {*}
+   */
+  getCode() {
+    return this.code;
+  }
+
+  /**
    * Set message
    * @param message
    */

@@ -39,13 +39,13 @@ export default class LoggerService extends DependencyAwareClass {
   constructor(di: DependencyInjection) {
     super(di);
     this.raven = null;
+    const container = this.getContainer();
+    const event = container.getEvent();
+    const context = container.getContext();
+    const isOffline = context.invokedFunctionArn.indexOf('offline') !== -1;
 
     // Instantiate the raven client
-    if (typeof process.env.RAVEN_DSN !== 'undefined') {
-      const container = this.getContainer();
-      const event = container.getEvent();
-      const context = container.getContext();
-
+    if (typeof process.env.RAVEN_DSN !== 'undefined' && isOffline === false) {
       Raven.config(process.env.RAVEN_DSN, {
         sendTimeout: 5,
         environment: event.stage,
@@ -83,7 +83,8 @@ export default class LoggerService extends DependencyAwareClass {
     }
 
     logger.log('error', message, { error });
-    this.label('error');
+    this.label('error', true);
+    this.metric('error', 'error', true);
   }
 
   /**
@@ -105,25 +106,31 @@ export default class LoggerService extends DependencyAwareClass {
   /**
    * Add a label
    * @param descriptor string
+   * @param silent     boolean
    */
-  label(descriptor) {
+  label(descriptor, silent = false) {
     if (typeof process.env.IOPIPE_TOKEN === 'string' && process.env.IOPIPE_TOKEN !== 'undefined') {
       label(descriptor);
     }
 
-    logger.log('info', `label - ${descriptor}`);
+    if (silent === false) {
+      logger.log('info', `label - ${descriptor}`);
+    }
   }
 
   /**
    * Add a metric
-   * @param descriptor
-   * @param stat
+   * @param descriptor string
+   * @param stat       integer | string
+   * @param silent     boolean
    */
-  metric(descriptor, stat) {
+  metric(descriptor, stat, silent = false) {
     if (typeof process.env.IOPIPE_TOKEN === 'string' && process.env.IOPIPE_TOKEN !== 'undefined') {
       metric(descriptor, stat);
     }
 
-    logger.log('info', `metric - ${descriptor} - ${stat}`);
+    if (silent === false) {
+      logger.log('info', `metric - ${descriptor} - ${stat}`);
+    }
   }
 }
