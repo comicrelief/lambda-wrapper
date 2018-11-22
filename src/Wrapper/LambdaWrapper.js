@@ -17,6 +17,11 @@ export default ((configuration, handler) => {
       return context.done(null, 'Lambda is warm!');
     }
 
+    // Log the users ip address silently for use in error tracing
+    if (request.getIp() !== null) {
+      di.get(DEFINITIONS.LOGGER).metric('ipAddress', request.getIp(), true);
+    }
+
     return handler.call(instance, di, request, context.done);
   };
 
