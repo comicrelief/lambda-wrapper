@@ -90,7 +90,16 @@ export default class RequestService extends DependencyAwareClass {
     const event = this.getContainer().getEvent();
 
     if (event.httpMethod === 'GET' || requestType === REQUEST_TYPES.GET) {
-      return typeof event.queryStringParameters !== 'undefined' ? event.queryStringParameters : {};
+      if (typeof event.queryStringParameters !== 'undefined') {
+        return event.queryStringParameters;
+      }
+      if (event.query !== 'undefined' && event.query !== null && event.query !== '') {
+        return event.query;
+      }
+      if (typeof event.path !== 'undefined') {
+        return event.path;
+      }
+      return {};
     }
 
     if (event.httpMethod === 'POST' || requestType === REQUEST_TYPES.POST) {
