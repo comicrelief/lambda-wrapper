@@ -75,7 +75,7 @@ export default class RequestService extends DependencyAwareClass {
 
     // If a specifc parameter has been requested, return the parameter if it exists
     if (typeof param === 'string' && typeof event.pathParameters === 'object' && event.pathParameters !== null && typeof event.pathParameters[param] !== 'undefined') {
-      return event.g[param];
+      return event.pathParameters[param];
     }
 
     return ifNull;
