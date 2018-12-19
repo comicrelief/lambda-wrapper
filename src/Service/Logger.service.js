@@ -33,7 +33,7 @@ const logger = Winston.createLogger({
 });
 
 // Instantiate the raven client
-if (typeof process.env.RAVEN_DSN !== 'undefined' && isOffline === false) {
+if (typeof process.env.RAVEN_DSN !== 'undefined') {
   Raven.config(process.env.RAVEN_DSN, {
     sendTimeout: 5,
     environment: process.env.STAGE,
