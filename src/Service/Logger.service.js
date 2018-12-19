@@ -48,7 +48,7 @@ export default class LoggerService extends DependencyAwareClass {
     if (typeof process.env.RAVEN_DSN !== 'undefined' && isOffline === false) {
       Raven.config(process.env.RAVEN_DSN, {
         sendTimeout: 5,
-        environment: event.stage,
+        environment: process.env.STAGE,
       }).install();
 
       Raven.setContext({
@@ -56,13 +56,13 @@ export default class LoggerService extends DependencyAwareClass {
           Event: event,
           Context: context,
         },
-        environment: event.stage,
+        environment: process.env.STAGE,
         tags: {
           lambda: context.functionName,
           memory_size: context.memoryLimitInMB,
           log_group: context.log_group_name,
           log_stream: context.log_stream_name,
-          stage: event.stage,
+          stage: process.env.STAGE,
           path: event.path,
           httpMethod: event.httpMethod,
         },
