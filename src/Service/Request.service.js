@@ -5,7 +5,7 @@ import XML2JS from 'xml2js';
 
 import DependencyAwareClass from '../DependencyInjection/DependencyAware.class';
 import ResponseModel from '../Model/Response.model';
-import {DEFINITIONS} from "../Config/Dependencies";
+import { DEFINITIONS } from '../Config/Dependencies';
 
 export const REQUEST_TYPES = {
   GET: 'GET',
