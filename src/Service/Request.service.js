@@ -5,6 +5,7 @@ import XML2JS from 'xml2js';
 
 import DependencyAwareClass from '../DependencyInjection/DependencyAware.class';
 import ResponseModel from '../Model/Response.model';
+import { DEFINITIONS } from '../Config/Dependencies';
 
 export const REQUEST_TYPES = {
   GET: 'GET',
@@ -152,12 +153,15 @@ export default class RequestService extends DependencyAwareClass {
    * @return {Promise<any>}
    */
   validateAgainstConstraints(constraints: object) {
+    const Logger = this.getContainer().get(DEFINITIONS.LOGGER);
+
     return new Promise((resolve, reject) => {
       const validation = validate(this.getAll(), constraints);
 
       if (typeof validation === 'undefined') {
         resolve();
       } else {
+        Logger.label('request-validation-failed');
         const validationErrorResponse = ERROR_TYPES.VALIDATION_ERROR;
         validationErrorResponse.setBodyVariable('validation_errors', validation);
 
