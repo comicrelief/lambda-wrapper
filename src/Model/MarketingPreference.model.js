@@ -1,5 +1,12 @@
+import validate from 'validate.js';
 import Model from './Model.model';
 import requestConstraints from '../Constraints/MarketingPreferences.constraints.json';
+import ResponseModel from './Response.model';
+
+// Define action specific error types
+export const ERROR_TYPES = {
+  VALIDATION_ERROR: new ResponseModel({}, 400, 'required fields are missing'),
+};
 
 export default class MarketingPreference extends Model {
   /**
@@ -362,7 +369,23 @@ export default class MarketingPreference extends Model {
     };
   }
 
+  /**
+   * Test a request against validation constraints
+   * @param entityDataValues
+   * @return {Promise<any>}
+   */
   validateRequest(entityDataValues) {
-    return this.validateAgainstConstraints(entityDataValues, requestConstraints);
+    return new Promise((resolve, reject) => {
+      const validation = validate(entityDataValues, requestConstraints);
+
+      if (typeof validation === 'undefined') {
+        resolve();
+      } else {
+        const validationErrorResponse = ERROR_TYPES.VALIDATION_ERROR;
+        validationErrorResponse.setBodyVariable('validation_errors', validation);
+
+        reject(validationErrorResponse);
+      }
+    });
   }
 }
