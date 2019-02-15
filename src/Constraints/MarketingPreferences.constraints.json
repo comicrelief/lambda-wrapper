@@ -1,0 +1,112 @@
+{
+  "firstname": {
+    "format": {
+      "pattern": "[a-zA-Z.'-_ ]+",
+      "flags": "i",
+      "message": "can only contain alphabetical characters"
+    }
+  },
+  "lastname": {
+    "format": {
+      "pattern": "[a-zA-Z.'-_ ]+",
+      "flags": "i",
+      "message": "can only contain alphabetical characters"
+    }
+  },
+  "email": {
+    "email": true
+  },
+  "phone": {
+    "format": {
+      "pattern": "[0-9 ]+",
+      "flags": "i",
+      "message": "can only contain numerical characters"
+    }
+  },
+  "mobile": {
+    "format": {
+      "pattern": "[0-9 ]+",
+      "flags": "i",
+      "message": "can only contain numerical characters"
+    }
+  },
+  "address1": {
+    "format": {
+      "pattern": "[a-zA-Z.'-_& ]+",
+      "flags": "i",
+      "message": "can only contain alphanumeric characters and . ' - _ &"
+    }
+  },
+  "address2": {
+    "presence": false
+  },
+  "address3": {
+    "presence": false
+  },
+  "town": {
+    "presence": {
+      "allowEmpty": false
+    }
+  },
+  "postcode": {
+    "presence": {
+      "allowEmpty": false
+    }
+  },
+  "country": {
+    "format": {
+      "pattern": "[a-zA-Z.'-_& ]+",
+      "flags": "i",
+      "message": "can only contain alphabetical characters"
+    }
+  },
+  "campaign": {
+    "presence": {
+      "allowEmpty": false
+    }
+  },
+  "transSource": {
+    "presence": {
+      "allowEmpty": false
+    }
+  },
+  "transSourceUrl": {
+    "presence": {
+      "allowEmpty": false
+    },
+    "url": true
+  },
+  "transType": {
+    "presence": {
+      "allowEmpty": false
+    }
+  },
+  "permissionPost": {
+    "numericality": {
+      "onlyInteger": true,
+      "greaterThanOrEqualTo": 0,
+      "lessThanOrEqualTo": 1
+    }
+  },
+  "permissionEmail": {
+    "numericality": {
+      "onlyInteger": true,
+      "greaterThanOrEqualTo": 0,
+      "lessThanOrEqualTo": 1
+    }
+  },
+  "permissionPhone": {
+    "numericality": {
+      "onlyInteger": true,
+      "greaterThanOrEqualTo": 0,
+      "lessThanOrEqualTo": 1
+    }
+  },
+  "permissionSMS": {
+    "numericality": {
+      "onlyInteger": true,
+      "greaterThanOrEqualTo": 0,
+      "lessThanOrEqualTo": 1
+    }
+  }
+}

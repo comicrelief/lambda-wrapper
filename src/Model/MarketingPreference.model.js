@@ -1,4 +1,5 @@
 import Model from './Model.model';
+import requestConstraints from '../Constraints/MarketingPreferences.constraints.json';
 
 export default class MarketingPreference extends Model {
   /**
@@ -359,5 +360,9 @@ export default class MarketingPreference extends Model {
       permissionPhone: this.getPermissionPhone(),
       permissionSMS: this.getPermissionSMS(),
     };
+  }
+
+  validateRequest(entityDataValues) {
+    return this.validateAgainstConstraints(entityDataValues, requestConstraints);
   }
 }
