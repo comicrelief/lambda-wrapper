@@ -1,5 +1,6 @@
 import ServerlessMochaPlugin from 'serverless-mocha-plugin';
-import MarketingPreferencesModel from '../../../src/Model/MarketingPreference.model';
+import MarketingPreferencesModel from '../../../../src/Model/SQS/MarketingPreference.model';
+import ResponseModel from '../../../../src/Model/Response.model';
 
 const expect = ServerlessMochaPlugin.chai.expect;
 
@@ -7,8 +8,6 @@ const expect = ServerlessMochaPlugin.chai.expect;
 describe('Model/MarketingPreferencesModel', () => {
 
   describe('Ensure setting and getting of variables', () => {
-
-
     const mockedData = {
       firstname: 'Tim',
       lastname: 'Jones',
@@ -108,5 +107,38 @@ describe('Model/MarketingPreferencesModel', () => {
     it('should set and get the permissionSMS', () => {
       expect(model.getPermissionSMS()).to.eql(mockedData.permissionSMS);
     });
+
+    it('should validate the model', (done) => {
+      model.validate()
+        .then(() => {
+          expect(true).to.eql(true);
+          done();
+        })
+        .catch(() => {
+          expect(true).to.eql(false);
+          done();
+        });
+    });
   });
+
+  describe('Ensure validation fails when variables are not correctly set', () => {
+    const mockedData = {};
+
+    const model = new MarketingPreferencesModel(mockedData);
+
+    it('should validate the model and return an error response', (done) => {
+      model.validate()
+        .then(() => {
+          expect(true).to.eql(false);
+          done();
+        })
+        .catch((error) => {
+          expect(error instanceof ResponseModel).to.eql(true);
+          expect(error.getCode()).to.eql(400);
+          expect(true).to.eql(true);
+          done();
+        });
+    });
+  });
+
 });

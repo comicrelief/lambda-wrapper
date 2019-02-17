@@ -1,7 +1,7 @@
 import validate from 'validate.js';
-import Model from './Model.model';
-import requestConstraints from '../Constraints/MarketingPreferences.constraints.json';
-import ResponseModel from './Response.model';
+import Model from '../Model.model';
+import requestConstraints from './MarketingPreference.constraints.json';
+import ResponseModel from '../Response.model';
 
 // Define action specific error types
 export const ERROR_TYPES = {
@@ -11,30 +11,50 @@ export const ERROR_TYPES = {
 export default class MarketingPreference extends Model {
   /**
    * Message constructor
-   * @param data
+   * @param data object
    */
-  constructor(data) {
+  constructor(data = {}) {
     super();
 
-    this.firstname = data.firstname;
-    this.lastname = data.lastname;
-    this.phone = data.phone;
-    this.mobile = data.mobile;
-    this.address1 = data.address1;
-    this.address2 = data.address2;
-    this.address3 = data.address3;
-    this.town = data.town;
-    this.postcode = data.postcode;
-    this.country = data.country;
-    this.campaign = data.campaign;
-    this.transSource = data.transSource;
-    this.transSourceUrl = data.transSourceUrl;
-    this.transType = data.transType;
-    this.email = data.email;
-    this.permissionPost = data.permissionPost;
-    this.permissionEmail = data.permissionEmail;
-    this.permissionPhone = data.permissionPhone;
-    this.permissionSMS = data.permissionSMS;
+    this.firstname = null;
+    this.lastname = null;
+    this.phone = null;
+    this.mobile = null;
+    this.address1 = null;
+    this.address2 = null;
+    this.address3 = null;
+    this.town = null;
+    this.postcode = null;
+    this.country = null;
+    this.campaign = null;
+    this.transSource = null;
+    this.transSourceUrl = null;
+    this.transType = null;
+    this.email = null;
+    this.permissionPost = null;
+    this.permissionEmail = null;
+    this.permissionPhone = null;
+    this.permissionSMS = null;
+
+    this.instantiateFunctionWithDefinedValue('setFirstName', data.firstname);
+    this.instantiateFunctionWithDefinedValue('setLastName', data.lastname);
+    this.instantiateFunctionWithDefinedValue('setPhone', data.phone);
+    this.instantiateFunctionWithDefinedValue('setMobile', data.mobile);
+    this.instantiateFunctionWithDefinedValue('setAddress1', data.address1);
+    this.instantiateFunctionWithDefinedValue('setAddress2', data.address2);
+    this.instantiateFunctionWithDefinedValue('setAddress3', data.address3);
+    this.instantiateFunctionWithDefinedValue('setTown', data.town);
+    this.instantiateFunctionWithDefinedValue('setPostcode', data.postcode);
+    this.instantiateFunctionWithDefinedValue('setCountry', data.country);
+    this.instantiateFunctionWithDefinedValue('setCampaign', data.campaign);
+    this.instantiateFunctionWithDefinedValue('setTransSource', data.transSource);
+    this.instantiateFunctionWithDefinedValue('setTransSourceUrl', data.transSourceUrl);
+    this.instantiateFunctionWithDefinedValue('setTransType', data.transType);
+    this.instantiateFunctionWithDefinedValue('setEmail', data.email);
+    this.instantiateFunctionWithDefinedValue('setPermissionPost', data.permissionPost);
+    this.instantiateFunctionWithDefinedValue('setPermissionEmail', data.permissionEmail);
+    this.instantiateFunctionWithDefinedValue('setPermissionPhone', data.permissionPhone);
+    this.instantiateFunctionWithDefinedValue('setPermissionSMS', data.permissionSMS);
   }
 
   /**
@@ -370,22 +390,21 @@ export default class MarketingPreference extends Model {
   }
 
   /**
-   * Test a request against validation constraints
-   * @param entityDataValues
+   * Validate the model
    * @return {Promise<any>}
    */
-  validateRequest(entityDataValues) {
+  validate() {
     return new Promise((resolve, reject) => {
-      const validation = validate(entityDataValues, requestConstraints);
+      const validation = validate(this.getEntityMappings(), requestConstraints);
 
       if (typeof validation === 'undefined') {
-        resolve();
-      } else {
-        const validationErrorResponse = ERROR_TYPES.VALIDATION_ERROR;
-        validationErrorResponse.setBodyVariable('validation_errors', validation);
-
-        reject(validationErrorResponse);
+        return resolve();
       }
+
+      const validationErrorResponse = ERROR_TYPES.VALIDATION_ERROR;
+      validationErrorResponse.setBodyVariable('validation_errors', validation);
+
+      return reject(validationErrorResponse);
     });
   }
 }
