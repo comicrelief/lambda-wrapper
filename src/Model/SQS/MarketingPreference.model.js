@@ -16,21 +16,21 @@ export default class MarketingPreference extends Model {
   constructor(data = {}) {
     super();
 
-    this.firstname = null;
-    this.lastname = null;
-    this.phone = null;
-    this.mobile = null;
-    this.address1 = null;
-    this.address2 = null;
-    this.address3 = null;
-    this.town = null;
-    this.postcode = null;
-    this.country = null;
-    this.campaign = null;
-    this.transSource = null;
-    this.transSourceUrl = null;
-    this.transType = null;
-    this.email = null;
+    this.firstname = '';
+    this.lastname = '';
+    this.phone = '';
+    this.mobile = '';
+    this.address1 = '';
+    this.address2 = '';
+    this.address3 = '';
+    this.town = '';
+    this.postcode = '';
+    this.country = '';
+    this.campaign = '';
+    this.transSource = '';
+    this.transSourceUrl = '';
+    this.transType = '';
+    this.email = '';
     this.permissionPost = null;
     this.permissionEmail = null;
     this.permissionPhone = null;
