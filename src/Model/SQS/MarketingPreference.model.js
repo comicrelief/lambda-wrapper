@@ -31,10 +31,10 @@ export default class MarketingPreference extends Model {
     this.transSourceUrl = '';
     this.transType = '';
     this.email = '';
-    this.permissionPost = null;
-    this.permissionEmail = null;
-    this.permissionPhone = null;
-    this.permissionSMS = null;
+    this.permissionPost = '';
+    this.permissionEmail = '';
+    this.permissionPhone = '';
+    this.permissionSMS = '';
 
     this.instantiateFunctionWithDefinedValue('setFirstName', data.firstname);
     this.instantiateFunctionWithDefinedValue('setLastName', data.lastname);
@@ -396,11 +396,11 @@ export default class MarketingPreference extends Model {
   validate() {
     return new Promise((resolve, reject) => {
       const requestConstraintsClone = Object.assign({}, requestConstraints);
-      if ((this.getEntityMappings().permissionEmail !== null
-        && this.getEntityMappings().permissionEmail !== ''
-        && this.getEntityMappings().permissionEmail !== '0')
-      || this.getEntityMappings().email.trim() !== '') {
-        if (this.getEntityMappings().email.trim() !== '') {
+      if ((this.getPermissionEmail !== null
+        && this.getPermissionEmail !== ''
+        && this.getPermissionEmail !== '0')
+      || this.getEmail.trim() !== '') {
+        if (this.getEmail().email.trim() !== '') {
           requestConstraintsClone.email = { email: true };
         } else {
           requestConstraintsClone.email = { presence: { allowEmpty: false } };
