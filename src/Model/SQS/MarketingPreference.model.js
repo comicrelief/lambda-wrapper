@@ -396,11 +396,11 @@ export default class MarketingPreference extends Model {
   validate() {
     return new Promise((resolve, reject) => {
       const requestConstraintsClone = Object.assign({}, requestConstraints);
-      if ((this.getPermissionEmail !== null
-        && this.getPermissionEmail !== ''
-        && this.getPermissionEmail !== '0')
-      || this.getEmail.trim() !== '') {
-        if (this.getEmail().email.trim() !== '') {
+      if ((this.getPermissionEmail() !== null
+        && this.getPermissionEmail() !== ''
+        && this.getPermissionEmail() !== '0')
+      || this.getEmail().trim() !== '') {
+        if (this.getEmail().trim() !== '') {
           requestConstraintsClone.email = { email: true };
         } else {
           requestConstraintsClone.email = { presence: { allowEmpty: false } };
