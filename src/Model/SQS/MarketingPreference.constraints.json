@@ -1,65 +1,4 @@
 {
-  "firstname": {
-    "format": {
-      "pattern": "[a-zA-Z.'-_ ]+",
-      "flags": "i",
-      "message": "can only contain alphabetical characters"
-    }
-  },
-  "lastname": {
-    "presence": false,
-    "format": {
-      "pattern": "[a-zA-Z.'-_ ]+",
-      "flags": "i",
-      "message": "can only contain alphabetical characters"
-    }
-  },
-  "phone": {
-    "presence": false,
-    "format": {
-      "pattern": "[0-9 ]+",
-      "flags": "i",
-      "message": "can only contain numerical characters"
-    }
-  },
-  "mobile": {
-    "presence": false,
-    "format": {
-      "pattern": "[0-9 ]+",
-      "flags": "i",
-      "message": "can only contain numerical characters"
-    }
-  },
-  "address1": {
-    "format": {
-      "pattern": "[a-zA-Z.'-_& ]+",
-      "flags": "i",
-      "message": "can only contain alphanumeric characters and . ' - _ &"
-    }
-  },
-  "address2": {
-    "presence": false
-  },
-  "address3": {
-    "presence": false
-  },
-  "town": {
-    "presence": {
-      "allowEmpty": false
-    }
-  },
-  "postcode": {
-    "presence": {
-      "allowEmpty": false
-    }
-  },
-  "country": {
-    "format": {
-      "pattern": "[a-zA-Z.'-_& ]+",
-      "flags": "i",
-      "message": "can only contain alphabetical characters"
-    }
-  },
   "campaign": {
     "presence": {
       "allowEmpty": false
@@ -80,17 +19,5 @@
     "presence": {
       "allowEmpty": false
     }
-  },
-  "permissionPost": {
-    "presence": false
-  },
-  "permissionEmail": {
-    "presence": false
-  },
-  "permissionPhone": {
-    "presence": false
-  },
-  "permissionSMS": {
-    "presence": false
   }
 }

@@ -135,6 +135,7 @@ describe('Model/MarketingPreferencesModel', () => {
         .catch((error) => {
           expect(error instanceof ResponseModel).to.eql(true);
           expect(error.getCode()).to.eql(400);
+          expect(error.body.message).to.eql('required fields are missing');
           expect(true).to.eql(true);
           done();
         });
@@ -145,7 +146,6 @@ describe('Model/MarketingPreferencesModel', () => {
     const mockedData = {
       firstname: 'Tim',
       lastname: 'Jones',
-      phone: '0208 254 3062',
       mobile: '07917 321 492',
       address1: '32-36',
       address2: 'St. Smith\'s Avenue',
