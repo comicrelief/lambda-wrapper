@@ -145,7 +145,6 @@ describe('Model/MarketingPreferencesModel', () => {
     const mockedData = {
       firstname: 'Tim',
       lastname: 'Jones',
-      phone: '0208 254 3062',
       mobile: '07917 321 492',
       address1: '32-36',
       address2: 'St. Smith\'s Avenue',

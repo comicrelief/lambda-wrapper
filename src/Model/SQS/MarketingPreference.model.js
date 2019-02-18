@@ -406,6 +406,12 @@ export default class MarketingPreference extends Model {
           requestConstraintsClone.email = { presence: { allowEmpty: false } };
         }
       }
+      // Update constraints if fields are not empty
+      requestConstraintsClone.firstname = this.getFirstName() !== null && this.getFirstName() !== '' ? { format: { pattern: "[a-zA-Z.'-_ ]+", flags: 'i', message: 'can only contain alphabetical characters' } } : '';
+      requestConstraintsClone.lastname = this.getLastName() !== null && this.getLastName() !== '' ? { format: { pattern: "[a-zA-Z.'-_ ]+", flags: 'i', message: 'can only contain alphabetical characters' } } : '';
+      requestConstraintsClone.phone = this.getPhone() !== null && this.getPhone() !== '' ? { format: { pattern: '[0-9 ]+', flags: 'i', message: 'can only contain numerical characters' } } : '';
+      requestConstraintsClone.mobile = this.getMobile() !== null && this.getMobile() !== '' ? { format: { pattern: '[0-9 ]+', flags: 'i', message: 'can only contain numerical characters' } } : '';
+
       const validation = validate(this.getEntityMappings(), requestConstraintsClone);
 
       if (typeof validation === 'undefined') {

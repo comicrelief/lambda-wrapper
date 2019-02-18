@@ -1,34 +1,15 @@
 {
   "firstname": {
-    "format": {
-      "pattern": "[a-zA-Z.'-_ ]+",
-      "flags": "i",
-      "message": "can only contain alphabetical characters"
-    }
+    "presence": false
   },
   "lastname": {
-    "presence": false,
-    "format": {
-      "pattern": "[a-zA-Z.'-_ ]+",
-      "flags": "i",
-      "message": "can only contain alphabetical characters"
-    }
+    "presence": false
   },
   "phone": {
-    "presence": false,
-    "format": {
-      "pattern": "[0-9 ]+",
-      "flags": "i",
-      "message": "can only contain numerical characters"
-    }
+    "presence": false
   },
   "mobile": {
-    "presence": false,
-    "format": {
-      "pattern": "[0-9 ]+",
-      "flags": "i",
-      "message": "can only contain numerical characters"
-    }
+    "presence": false
   },
   "address1": {
     "format": {
