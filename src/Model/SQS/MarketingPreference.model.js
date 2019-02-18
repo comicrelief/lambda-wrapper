@@ -31,10 +31,10 @@ export default class MarketingPreference extends Model {
     this.transSourceUrl = '';
     this.transType = '';
     this.email = '';
-    this.permissionPost = '';
-    this.permissionEmail = '';
-    this.permissionPhone = '';
-    this.permissionSMS = '';
+    this.permissionPost = null;
+    this.permissionEmail = null;
+    this.permissionPhone = null;
+    this.permissionSMS = null;
 
     this.instantiateFunctionWithDefinedValue('setFirstName', data.firstname);
     this.instantiateFunctionWithDefinedValue('setLastName', data.lastname);
