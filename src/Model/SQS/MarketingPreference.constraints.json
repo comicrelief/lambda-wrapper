@@ -7,16 +7,15 @@
     }
   },
   "lastname": {
+    "presence": false,
     "format": {
       "pattern": "[a-zA-Z.'-_ ]+",
       "flags": "i",
       "message": "can only contain alphabetical characters"
     }
   },
-  "email": {
-    "email": true
-  },
   "phone": {
+    "presence": false,
     "format": {
       "pattern": "[0-9 ]+",
       "flags": "i",
@@ -24,6 +23,7 @@
     }
   },
   "mobile": {
+    "presence": false,
     "format": {
       "pattern": "[0-9 ]+",
       "flags": "i",
