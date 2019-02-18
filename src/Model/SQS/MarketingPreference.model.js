@@ -310,7 +310,7 @@ export default class MarketingPreference extends Model {
    * @param value string
    */
   setPermissionEmail(value: string) {
-    this.permissionEmail = value;
+    this.permissionEmail = typeof value === 'undefined' || value === '' ? null : value;
   }
 
   /**
@@ -326,7 +326,7 @@ export default class MarketingPreference extends Model {
    * @param value string
    */
   setPermissionPost(value: string) {
-    this.permissionPost = value;
+    this.permissionPost = typeof value === 'undefined' || value === '' ? null : value;
   }
 
   /**
@@ -342,7 +342,7 @@ export default class MarketingPreference extends Model {
    * @param value string
    */
   setPermissionPhone(value: string) {
-    this.permissionPhone = value;
+    this.permissionPhone = typeof value === 'undefined' || value === '' ? null : value;
   }
 
   /**
@@ -358,7 +358,7 @@ export default class MarketingPreference extends Model {
    * @param value string
    */
   setPermissionSMS(value: string) {
-    this.permissionSMS = value;
+    this.permissionSMS = typeof value === 'undefined' || value === '' ? null : value;
   }
 
   /**
@@ -395,7 +395,18 @@ export default class MarketingPreference extends Model {
    */
   validate() {
     return new Promise((resolve, reject) => {
-      const validation = validate(this.getEntityMappings(), requestConstraints);
+      const requestConstraintsClone = Object.assign({}, requestConstraints);
+      if ((this.getEntityMappings().permissionEmail !== null
+        && this.getEntityMappings().permissionEmail !== ''
+        && this.getEntityMappings().permissionEmail !== '0')
+      || this.getEntityMappings().email.trim() !== '') {
+        if (this.getEntityMappings().email.trim() !== '') {
+          requestConstraintsClone.email = { email: true };
+        } else {
+          requestConstraintsClone.email = { presence: { allowEmpty: false } };
+        }
+      }
+      const validation = validate(this.getEntityMappings(), requestConstraintsClone);
 
       if (typeof validation === 'undefined') {
         return resolve();

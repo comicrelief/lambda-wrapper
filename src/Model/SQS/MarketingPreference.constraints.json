@@ -82,31 +82,15 @@
     }
   },
   "permissionPost": {
-    "numericality": {
-      "onlyInteger": true,
-      "greaterThanOrEqualTo": 0,
-      "lessThanOrEqualTo": 1
-    }
+    "presence": false
   },
   "permissionEmail": {
-    "numericality": {
-      "onlyInteger": true,
-      "greaterThanOrEqualTo": 0,
-      "lessThanOrEqualTo": 1
-    }
+    "presence": false
   },
   "permissionPhone": {
-    "numericality": {
-      "onlyInteger": true,
-      "greaterThanOrEqualTo": 0,
-      "lessThanOrEqualTo": 1
-    }
+    "presence": false
   },
   "permissionSMS": {
-    "numericality": {
-      "onlyInteger": true,
-      "greaterThanOrEqualTo": 0,
-      "lessThanOrEqualTo": 1
-    }
+    "presence": false
   }
 }

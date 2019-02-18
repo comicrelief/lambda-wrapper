@@ -141,4 +141,125 @@ describe('Model/MarketingPreferencesModel', () => {
     });
   });
 
+  describe('Ensure validation fails when email permission is set and no email is provided', () => {
+    const mockedData = {
+      firstname: 'Tim',
+      lastname: 'Jones',
+      phone: '0208 254 3062',
+      mobile: '07917 321 492',
+      address1: '32-36',
+      address2: 'St. Smith\'s Avenue',
+      address3: '',
+      town: 'London',
+      postcode: 'sw184bx',
+      country: 'United Kindgom',
+      campaign: 'sr18',
+      transSource: 'giftaid-sportrelief',
+      transSourceUrl: 'https://giftaid.sportrelief.com/',
+      transType: 'prefs',
+      email: '',
+      permissionEmail: 1,
+      permissionPost: 0,
+      permissionPhone: 0,
+      permissionSMS: 0,
+    };
+
+    const model = new MarketingPreferencesModel(mockedData);
+
+    it('should validate the model and return an error response', (done) => {
+      model.validate()
+        .then(() => {
+          expect(true).to.eql(false);
+          done();
+        })
+        .catch((error) => {
+          expect(error instanceof ResponseModel).to.eql(true);
+          expect(error.getCode()).to.eql(400);
+          expect(error.body.validation_errors.email[0]).to.eql('Email can\'t be blank');
+          expect(true).to.eql(true);
+          done();
+        });
+    });
+  });
+
+  describe('Ensure validation fails when email permission is set and invalid email is provided', () => {
+    const mockedData = {
+      firstname: 'Tim',
+      lastname: 'Jones',
+      phone: '0208 254 3062',
+      mobile: '07917 321 492',
+      address1: '32-36',
+      address2: 'St. Smith\'s Avenue',
+      address3: '',
+      town: 'London',
+      postcode: 'sw184bx',
+      country: 'United Kindgom',
+      campaign: 'sr18',
+      transSource: 'giftaid-sportrelief',
+      transSourceUrl: 'https://giftaid.sportrelief.com/',
+      transType: 'prefs',
+      email: 'tim@',
+      permissionEmail: 1,
+      permissionPost: 0,
+      permissionPhone: 0,
+      permissionSMS: 0,
+    };
+
+    const model = new MarketingPreferencesModel(mockedData);
+
+    it('should validate the model and return an error response', (done) => {
+      model.validate()
+        .then(() => {
+          expect(true).to.eql(false);
+          done();
+        })
+        .catch((error) => {
+          expect(error instanceof ResponseModel).to.eql(true);
+          expect(error.getCode()).to.eql(400);
+          expect(error.body.validation_errors.email[0]).to.eql('Email is not a valid email');
+          expect(true).to.eql(true);
+          done();
+        });
+    });
+  });
+
+  describe('Ensure validation passes when permissions are not set', () => {
+    const mockedData = {
+      firstname: 'Tim',
+      lastname: 'Jones',
+      phone: '0208 254 3062',
+      mobile: '07917 321 492',
+      address1: '32-36',
+      address2: 'St. Smith\'s Avenue',
+      address3: '',
+      town: 'London',
+      postcode: 'sw184bx',
+      country: 'United Kindgom',
+      campaign: 'sr18',
+      transSource: 'giftaid-sportrelief',
+      transSourceUrl: 'https://giftaid.sportrelief.com/',
+      transType: 'prefs',
+      email: '',
+      permissionEmail: '',
+      permissionPost: '',
+      permissionPhone: '',
+      permissionSMS: '',
+    };
+
+    const model = new MarketingPreferencesModel(mockedData);
+
+    it('should validate the model', (done) => {
+      model.validate()
+        .then(() => {
+          expect(true).to.eql(true);
+          done();
+        })
+        .catch((error) => {
+          console.log('Error: ', error);
+          expect(true).to.eql(false);
+          done();
+        });
+    });
+  });
+
 });
