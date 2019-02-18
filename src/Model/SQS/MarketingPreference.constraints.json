@@ -7,16 +7,15 @@
     }
   },
   "lastname": {
+    "presence": false,
     "format": {
       "pattern": "[a-zA-Z.'-_ ]+",
       "flags": "i",
       "message": "can only contain alphabetical characters"
     }
   },
-  "email": {
-    "email": true
-  },
   "phone": {
+    "presence": false,
     "format": {
       "pattern": "[0-9 ]+",
       "flags": "i",
@@ -24,6 +23,7 @@
     }
   },
   "mobile": {
+    "presence": false,
     "format": {
       "pattern": "[0-9 ]+",
       "flags": "i",
@@ -82,31 +82,15 @@
     }
   },
   "permissionPost": {
-    "numericality": {
-      "onlyInteger": true,
-      "greaterThanOrEqualTo": 0,
-      "lessThanOrEqualTo": 1
-    }
+    "presence": false
   },
   "permissionEmail": {
-    "numericality": {
-      "onlyInteger": true,
-      "greaterThanOrEqualTo": 0,
-      "lessThanOrEqualTo": 1
-    }
+    "presence": false
   },
   "permissionPhone": {
-    "numericality": {
-      "onlyInteger": true,
-      "greaterThanOrEqualTo": 0,
-      "lessThanOrEqualTo": 1
-    }
+    "presence": false
   },
   "permissionSMS": {
-    "numericality": {
-      "onlyInteger": true,
-      "greaterThanOrEqualTo": 0,
-      "lessThanOrEqualTo": 1
-    }
+    "presence": false
   }
 }
