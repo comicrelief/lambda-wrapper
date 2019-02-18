@@ -16,21 +16,21 @@ export default class MarketingPreference extends Model {
   constructor(data = {}) {
     super();
 
-    this.firstname = '';
-    this.lastname = '';
-    this.phone = '';
-    this.mobile = '';
-    this.address1 = '';
-    this.address2 = '';
-    this.address3 = '';
-    this.town = '';
-    this.postcode = '';
-    this.country = '';
+    this.firstname = null;
+    this.lastname = null;
+    this.phone = null;
+    this.mobile = null;
+    this.address1 = null;
+    this.address2 = null;
+    this.address3 = null;
+    this.town = null;
+    this.postcode = null;
+    this.country = null;
     this.campaign = '';
     this.transSource = '';
     this.transSourceUrl = '';
     this.transType = '';
-    this.email = '';
+    this.email = null;
     this.permissionPost = null;
     this.permissionEmail = null;
     this.permissionPhone = null;
@@ -407,10 +407,13 @@ export default class MarketingPreference extends Model {
         }
       }
       // Update constraints if fields are not empty
+
       requestConstraintsClone.firstname = this.getFirstName() !== null && this.getFirstName() !== '' ? { format: { pattern: "[a-zA-Z.'-_ ]+", flags: 'i', message: 'can only contain alphabetical characters' } } : '';
       requestConstraintsClone.lastname = this.getLastName() !== null && this.getLastName() !== '' ? { format: { pattern: "[a-zA-Z.'-_ ]+", flags: 'i', message: 'can only contain alphabetical characters' } } : '';
       requestConstraintsClone.phone = this.getPhone() !== null && this.getPhone() !== '' ? { format: { pattern: '[0-9 ]+', flags: 'i', message: 'can only contain numerical characters' } } : '';
       requestConstraintsClone.mobile = this.getMobile() !== null && this.getMobile() !== '' ? { format: { pattern: '[0-9 ]+', flags: 'i', message: 'can only contain numerical characters' } } : '';
+      requestConstraintsClone.address1 = this.getAddress1() !== null && this.getAddress1() !== '' ? { format: { pattern: "[a-zA-Z.'-_& ]+", flags: 'i', message: 'can only contain alphanumeric characters and . \' - _ &' } } : '';
+      requestConstraintsClone.country = this.getCountry() !== null && this.getCountry() !== '' ? { format: { pattern: "[a-zA-Z.'-_& ]+", flags: 'i', message: 'can only contain alphabetical characters and . \' - _ &' } } : '';
 
       const validation = validate(this.getEntityMappings(), requestConstraintsClone);
 
