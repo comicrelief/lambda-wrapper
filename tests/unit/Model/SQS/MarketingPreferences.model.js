@@ -135,6 +135,7 @@ describe('Model/MarketingPreferencesModel', () => {
         .catch((error) => {
           expect(error instanceof ResponseModel).to.eql(true);
           expect(error.getCode()).to.eql(400);
+          expect(error.body.message).to.eql('required fields are missing');
           expect(true).to.eql(true);
           done();
         });
