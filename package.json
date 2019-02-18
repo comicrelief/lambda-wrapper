@@ -1,7 +1,7 @@
 {
   "name": "@comicrelief/lambda-wrapper",
   "version": "0.0.0-see.readme.for.semantic.release.process",
-  "description": "Lambda wrapper for Comic Relief Serverless Projects",
+  "description": "Lambda wrapper for all Comic Relief Serverless Projects",
   "main": "dist/index.js",
   "scripts": {
     "test": "./node_modules/.bin/babel-node ./node_modules/.bin/babel-istanbul cover ./node_modules/.bin/_mocha \"tests/unit/**/*.js\" --report text",
