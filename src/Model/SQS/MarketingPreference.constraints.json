@@ -1,16 +1,4 @@
 {
-  "firstname": {
-    "presence": false
-  },
-  "lastname": {
-    "presence": false
-  },
-  "phone": {
-    "presence": false
-  },
-  "mobile": {
-    "presence": false
-  },
   "address1": {
     "format": {
       "pattern": "[a-zA-Z.'-_& ]+",
