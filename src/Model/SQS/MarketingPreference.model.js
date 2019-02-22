@@ -29,12 +29,13 @@ export default class MarketingPreference extends Model {
     this.campaign = '';
     this.transSource = '';
     this.transSourceUrl = '';
-    this.transType = '';
+    this.transType = 'prefs';
     this.email = null;
     this.permissionPost = null;
     this.permissionEmail = null;
     this.permissionPhone = null;
     this.permissionSMS = null;
+    this.timestamp = null;
 
     this.instantiateFunctionWithDefinedValue('setFirstName', data.firstname);
     this.instantiateFunctionWithDefinedValue('setLastName', data.lastname);
@@ -49,12 +50,16 @@ export default class MarketingPreference extends Model {
     this.instantiateFunctionWithDefinedValue('setCampaign', data.campaign);
     this.instantiateFunctionWithDefinedValue('setTransSource', data.transSource);
     this.instantiateFunctionWithDefinedValue('setTransSourceUrl', data.transSourceUrl);
-    this.instantiateFunctionWithDefinedValue('setTransType', data.transType);
     this.instantiateFunctionWithDefinedValue('setEmail', data.email);
     this.instantiateFunctionWithDefinedValue('setPermissionPost', data.permissionPost);
     this.instantiateFunctionWithDefinedValue('setPermissionEmail', data.permissionEmail);
     this.instantiateFunctionWithDefinedValue('setPermissionPhone', data.permissionPhone);
     this.instantiateFunctionWithDefinedValue('setPermissionSMS', data.permissionSMS);
+    if (typeof data.timestamp !== 'undefined' && data.timestamp !== '' && data.timestamp !== null) {
+      this.instantiateFunctionWithDefinedValue('setTimestamp', data.timestamp);
+    } else {
+      this.generateTimestamp();
+    }
   }
 
   /**
@@ -362,6 +367,30 @@ export default class MarketingPreference extends Model {
   }
 
   /**
+   * Get Timestamp
+   * @return {string|*}
+   */
+  getTimestamp() {
+    return this.timestamp;
+  }
+
+  /**
+   * Set Timestamp
+   * @param value string
+   */
+  setTimestamp(value: string) {
+    this.timestamp = value;
+  }
+
+  /**
+   * Generate Timestamp
+   * @return {string|*}
+   */
+  generateTimestamp() {
+    this.timestamp = Math.floor(Date.now() / 1000);
+  }
+
+  /**
    * Get Base entity mappings
    * @return {object}
    */
@@ -386,6 +415,7 @@ export default class MarketingPreference extends Model {
       permissionPost: this.getPermissionPost(),
       permissionPhone: this.getPermissionPhone(),
       permissionSMS: this.getPermissionSMS(),
+      timestamp: this.getTimestamp(),
     };
   }
 

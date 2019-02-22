@@ -28,6 +28,7 @@ describe('Model/MarketingPreferencesModel', () => {
       permissionPost: 0,
       permissionPhone: 0,
       permissionSMS: 0,
+      timestamp: '1550841771',
     };
 
     const model = new MarketingPreferencesModel(mockedData);
@@ -108,6 +109,10 @@ describe('Model/MarketingPreferencesModel', () => {
       expect(model.getPermissionSMS()).to.eql(mockedData.permissionSMS);
     });
 
+    it('should set and get the Timestamp', () => {
+      expect(model.getTimestamp()).to.eql(mockedData.timestamp);
+    });
+
     it('should validate the model', (done) => {
       model.validate()
         .then(() => {
@@ -162,6 +167,7 @@ describe('Model/MarketingPreferencesModel', () => {
       permissionPost: 0,
       permissionPhone: 0,
       permissionSMS: 0,
+      timestamp: '1550841771',
     };
 
     const model = new MarketingPreferencesModel(mockedData);
@@ -244,6 +250,7 @@ describe('Model/MarketingPreferencesModel', () => {
       permissionPost: '',
       permissionPhone: '',
       permissionSMS: '',
+      timestamp: '1550841771',
     };
 
     const model = new MarketingPreferencesModel(mockedData);
