@@ -269,4 +269,49 @@ describe('Model/MarketingPreferencesModel', () => {
     });
   });
 
+
+  describe('Ensure generating of timestamp when not set', () => {
+
+    const mockedData = {
+      firstname: 'Tim',
+      lastname: 'Jones',
+      phone: '0208 254 3062',
+      mobile: '07917 321 492',
+      address1: '32-36',
+      address2: 'St. Smith\'s Avenue',
+      address3: '',
+      town: 'London',
+      postcode: 'sw184bx',
+      country: 'United Kindgom',
+      campaign: 'sr18',
+      transSource: 'giftaid-sportrelief',
+      transSourceUrl: 'https://giftaid.sportrelief.com/',
+      transType: 'prefs',
+      email: 'tim.jones@comicrelief.com',
+      permissionEmail: 1,
+      permissionPost: 0,
+      permissionPhone: 0,
+      permissionSMS: 0,
+    };
+
+    const model = new MarketingPreferencesModel(mockedData);
+
+    it('should get a timestamp', () => {
+      expect(model.getTimestamp() > 0).to.eql(true);
+    });
+
+    it('should validate the model', (done) => {
+      model.validate()
+        .then(() => {
+          expect(true).to.eql(true);
+          done();
+        })
+        .catch(() => {
+          expect(true).to.eql(false);
+          done();
+        });
+    });
+  });
+
+
 });
