@@ -19,5 +19,10 @@
     "presence": {
       "allowEmpty": false
     }
+  },
+  "timestamp": {
+    "presence": {
+      "allowEmpty": false
+    }
   }
 }
