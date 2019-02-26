@@ -314,4 +314,39 @@ describe('Model/MarketingPreferencesModel', () => {
   });
 
 
+  describe('Ensure validation passes when nullable fields are not present', () => {
+    const mockedData = {
+      firstname: 'Tim',
+      lastname: 'Jones',
+      phone: '0208 254 3062',
+      mobile: '07917 321 492',
+      address1: '32 Smith\'s Avenue',
+      town: 'London',
+      postcode: 'sw184bx',
+      country: 'United Kindgom',
+      campaign: 'sr18',
+      transSource: 'giftaid-sportrelief',
+      transSourceUrl: 'https://giftaid.sportrelief.com/',
+      transType: 'prefs',
+      email: '',
+    };
+
+    const model = new MarketingPreferencesModel(mockedData);
+
+    it('should validate the model', (done) => {
+      model.validate()
+        .then(() => {
+          expect(true).to.eql(true);
+          done();
+        })
+        .catch((error) => {
+          console.log('Error: ', error);
+          expect(true).to.eql(false);
+          done();
+        });
+    });
+  });
+
+
+
 });
