@@ -58,7 +58,7 @@ describe('Model/MarketingPreferencesModel', () => {
     });
 
     it('should set and get the address3', () => {
-      expect(model.getAddress3()).to.eql(mockedData.address3);
+      expect(model.getAddress3()).to.eql(null);
     });
 
     it('should set and get the town', () => {
