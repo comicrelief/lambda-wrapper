@@ -155,7 +155,7 @@ export default class MarketingPreference extends Model {
    * @param value string
    */
   setAddress2(value: string) {
-    this.address2 = value;
+    this.address2 = typeof value === 'undefined' || value.trim() === '' ? null : value;
   }
 
   /**
@@ -171,7 +171,7 @@ export default class MarketingPreference extends Model {
    * @param value string
    */
   setAddress3(value: string) {
-    this.address3 = value;
+    this.address3 = typeof value === 'undefined' || value.trim() === '' ? null : value;
   }
 
   /**
