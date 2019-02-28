@@ -420,6 +420,21 @@ export default class MarketingPreference extends Model {
   }
 
   /**
+   * Check if any permission is set
+   * @returns {boolean}
+   */
+  isPermissionSet() {
+    return (this.getPermissionEmail() !== null
+      && this.getPermissionEmail() !== '')
+      || (this.getPermissionPost() !== null
+        && this.getPermissionPost() !== '')
+      || (this.getPermissionPhone() !== null
+        && this.getPermissionPhone() !== '')
+      || (this.getPermissionSMS() !== null
+        && this.getPermissionSMS() !== '');
+  }
+
+  /**
    * Validate the model
    * @return {Promise<any>}
    */
