@@ -37,8 +37,10 @@ export default class MarketingPreference extends Model {
     this.permissionSMS = null;
     this.timestamp = null;
 
-    this.instantiateFunctionWithDefinedValue('setFirstName', typeof data.firstName !== 'undefined' ? data.firstName : data.firstname);
-    this.instantiateFunctionWithDefinedValue('setLastName', typeof data.lastName !== 'undefined' ? data.lastName : data.lastname);
+    this.instantiateFunctionWithDefinedValue('setFirstName', data.firstName);
+    this.instantiateFunctionWithDefinedValue('setFirstName', data.firstname);
+    this.instantiateFunctionWithDefinedValue('setLastName', data.lastName);
+    this.instantiateFunctionWithDefinedValue('setLastName', data.lastname);
     this.instantiateFunctionWithDefinedValue('setPhone', data.phone);
     this.instantiateFunctionWithDefinedValue('setMobile', data.mobile);
     this.instantiateFunctionWithDefinedValue('setAddress1', data.address1);
