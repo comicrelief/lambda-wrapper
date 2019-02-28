@@ -348,5 +348,68 @@ describe('Model/MarketingPreferencesModel', () => {
   });
 
 
+  describe('Ensure model permission evaluates to false when no permission is set', () => {
+    const mockedData = {
+      firstname: 'Tim',
+      lastname: 'Jones',
+      phone: '0208 254 3062',
+      mobile: '07917 321 492',
+      address1: '32 Smith\'s Avenue',
+      town: 'London',
+      postcode: 'sw184bx',
+      country: 'United Kindgom',
+      campaign: 'sr18',
+      transSource: 'giftaid-sportrelief',
+      transSourceUrl: 'https://giftaid.sportrelief.com/',
+      transType: 'prefs',
+      email: '',
+      permissionEmail: '',
+      permissionPost: '',
+      permissionPhone: '',
+      permissionSMS: '',
+    };
+
+    const model = new MarketingPreferencesModel(mockedData);
+
+    it('should evaluate model permissions to false', (done) => {
+
+      expect(model.isPermissionSet()).to.eql(false);
+      done();
+    });
+  });
+
+
+  describe('Ensure model permission evaluates to true when at least one permission is set', () => {
+    const mockedData = {
+      firstname: 'Tim',
+      lastname: 'Jones',
+      phone: '0208 254 3062',
+      mobile: '07917 321 492',
+      address1: '32 Smith\'s Avenue',
+      town: 'London',
+      postcode: 'sw184bx',
+      country: 'United Kindgom',
+      campaign: 'sr18',
+      transSource: 'giftaid-sportrelief',
+      transSourceUrl: 'https://giftaid.sportrelief.com/',
+      transType: 'prefs',
+      email: 'tim@example.com',
+      permissionEmail: 1,
+      permissionPost: '',
+      permissionPhone: '',
+      permissionSMS: '',
+    };
+
+    const model = new MarketingPreferencesModel(mockedData);
+
+    it('should evaluate model permissions to true', (done) => {
+
+      expect(model.isPermissionSet()).to.eql(true);
+      done();
+    });
+  });
+
+
+
 
 });

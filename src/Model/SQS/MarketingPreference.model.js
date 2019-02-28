@@ -155,7 +155,7 @@ export default class MarketingPreference extends Model {
    * @param value string
    */
   setAddress2(value: string) {
-    this.address2 = typeof value !== 'undefined' && value.trim() !== '' ? value : null;
+    this.address2 = typeof value === 'undefined' || value === '' ? null : value;
   }
 
   /**
@@ -171,7 +171,7 @@ export default class MarketingPreference extends Model {
    * @param value string
    */
   setAddress3(value: string) {
-    this.address3 = typeof value !== 'undefined' && value.trim() !== '' ? value : null;
+    this.address3 = typeof value === 'undefined' || value === '' ? null : value;
   }
 
   /**
@@ -417,6 +417,21 @@ export default class MarketingPreference extends Model {
       permissionSMS: this.getPermissionSMS(),
       timestamp: this.getTimestamp(),
     };
+  }
+
+  /**
+   * Check if any permission is set
+   * @returns {boolean}
+   */
+  isPermissionSet() {
+    return (this.getPermissionEmail() !== null
+      && this.getPermissionEmail() !== '')
+      || (this.getPermissionPost() !== null
+        && this.getPermissionPost() !== '')
+      || (this.getPermissionPhone() !== null
+        && this.getPermissionPhone() !== '')
+      || (this.getPermissionSMS() !== null
+        && this.getPermissionSMS() !== '');
   }
 
   /**
