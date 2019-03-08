@@ -41,6 +41,13 @@ describe('Model/SQS/Message.model', () => {
       expect(messageModel.isForDeletion()).to.be.true;
     });
 
+    it('should be able to set metadata', () => {
+      messageModel.setMetaData('test', 123);
+      expect(messageModel.getMetaData()).to.eql({
+        test: 123,
+      });
+    });
+
   });
 
 });

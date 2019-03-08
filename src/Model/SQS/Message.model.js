@@ -13,6 +13,7 @@ export default class Message extends Model {
 
     this.body = JSON.parse(message.Body);
     this.forDeletion = false;
+    this.metadata = {};
   }
 
   /**
@@ -53,5 +54,24 @@ export default class Message extends Model {
    */
   isForDeletion() {
     return this.forDeletion;
+  }
+
+  /**
+   * Get all message metadata
+   * @return {{}}
+   */
+  getMetaData() {
+    return this.metadata;
+  }
+
+  /**
+   * Set message metadata value
+   * @param key
+   * @param value
+   */
+  setMetaData(key, value) {
+    this.metadata[key] = value;
+
+    return this;
   }
 }
