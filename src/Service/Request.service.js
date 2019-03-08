@@ -171,7 +171,16 @@ export default class RequestService extends DependencyAwareClass {
     }
 
     try {
-      return useragent.parse(userAgent).toString();
+      const agent = useragent.parse(userAgent);
+      const os = agent.os.toJSON();
+
+      return {
+        'browser-type': agent.family,
+        'browser-version': agent.toVersion(),
+        'device-type': agent.device.family,
+        'operating-system': os.family,
+        'operating-system-version': agent.os.toVersion(),
+      };
     } catch (error) {
       this.getContainer().get(DEFINITIONS.LOGGER).label('user-agent-parsing-failed');
 

@@ -39,7 +39,13 @@ describe('Service/RequestService', () => {
 
     it('should return a prettified user agent', () => {
       let request = new RequestService(new DependencyInjection(CONFIGURATION, testEvent, getContext));
-      expect(request.getUserBrowserAndDevice()).to.eql('Safari 9.1.1 / Mac OS X 10.11.5');
+      expect(request.getUserBrowserAndDevice()).to.eql({
+        'browser-type': 'Safari',
+        'browser-version': '9.1.1',
+        'device-type': 'Other',
+        'operating-system': 'Mac OS X',
+        'operating-system-version': '10.11.5'
+      });
     });
 
   });

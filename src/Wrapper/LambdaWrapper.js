@@ -23,9 +23,12 @@ export default ((configuration, handler) => {
       logger.metric('ipAddress', request.getIp(), true);
     }
 
+    // Add metrics with user browser information for rapid debugging
     const userBrowserAndDevice = request.getUserBrowserAndDevice();
-    if (userBrowserAndDevice !== null) {
-      logger.metric('browser / device', userBrowserAndDevice, true);
+    if (userBrowserAndDevice !== null && typeof userBrowserAndDevice === 'object') {
+      Object.keys(userBrowserAndDevice).forEach((metricKey) => {
+        logger.metric(metricKey, userBrowserAndDevice[metricKey], true);
+      });
     }
 
     return handler.call(instance, di, request, context.done);
