@@ -2,6 +2,7 @@
 import QueryString from 'querystring';
 import validate from 'validate.js/validate';
 import XML2JS from 'xml2js';
+import useragent from 'useragent';
 
 import DependencyAwareClass from '../DependencyInjection/DependencyAware.class';
 import ResponseModel from '../Model/Response.model';
@@ -145,6 +146,27 @@ export default class RequestService extends DependencyAwareClass {
     }
 
     return null;
+  }
+
+  /**
+   * Get user agent
+   * @return {*}
+   */
+  getUserBrowserAndDevice() {
+    const { headers } = this.getContainer().getEvent();
+    let userAgent = null;
+
+    Object.keys(headers).forEach((header) => {
+      if (header.toUpperCase() === 'USER-AGENT') {
+        userAgent = headers[header];
+      }
+    });
+
+    if (userAgent === null) {
+      return null;
+    }
+
+    return useragent.parse(userAgent).toString();
   }
 
   /**

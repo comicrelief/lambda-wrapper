@@ -9,6 +9,7 @@ export default ((configuration, handler) => {
   let instance = (event, context) => {
     const di = new DependencyInjection(configuration, event, context);
     const request = di.get(DEFINITIONS.REQUEST);
+    const logger = di.get(DEFINITIONS.LOGGER);
 
     context.callbackWaitsForEmptyEventLoop = false;
 
@@ -19,7 +20,12 @@ export default ((configuration, handler) => {
 
     // Log the users ip address silently for use in error tracing
     if (request.getIp() !== null) {
-      di.get(DEFINITIONS.LOGGER).metric('ipAddress', request.getIp(), true);
+      logger.metric('ipAddress', request.getIp(), true);
+    }
+
+    const userBrowserAndDevice = request.getUserBrowserAndDevice();
+    if (userBrowserAndDevice !== null) {
+      logger.metric('browser / device', userBrowserAndDevice, true);
     }
 
     return handler.call(instance, di, request, context.done);

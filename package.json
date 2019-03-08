@@ -48,6 +48,7 @@
     "async": "^2.6.1",
     "aws-sdk": "^2.288.0",
     "raven": "^2.6.3",
+    "useragent": "^2.3.0",
     "uuid": "^3.3.2",
     "validate.js": "^0.12.0",
     "winston": "^3.0.0",
