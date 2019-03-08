@@ -37,6 +37,11 @@ describe('Service/RequestService', () => {
       expect(request.get('fake', null, REQUEST_TYPES.GET)).to.eql(null);
     });
 
+    it('should return a prettified user agent', () => {
+      let request = new RequestService(new DependencyInjection(CONFIGURATION, testEvent, getContext));
+      expect(request.getUserBrowserAndDevice()).to.eql('Safari 9.1.1 / Mac OS X 10.11.5');
+    });
+
   });
 
   describe('test POST request getter', () => {
