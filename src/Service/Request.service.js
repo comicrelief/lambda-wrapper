@@ -166,7 +166,11 @@ export default class RequestService extends DependencyAwareClass {
       return null;
     }
 
-    return useragent.parse(userAgent).toString();
+    try {
+      return useragent.parse(userAgent).toString();
+    } catch {
+      return null;
+    }
   }
 
   /**
