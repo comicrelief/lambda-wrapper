@@ -168,7 +168,9 @@ export default class RequestService extends DependencyAwareClass {
 
     try {
       return useragent.parse(userAgent).toString();
-    } catch {
+    } catch (error) {
+      this.getContainer().get(DEFINITIONS.LOGGER).label('user-agent-parsing-failed');
+
       return null;
     }
   }
