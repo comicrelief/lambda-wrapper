@@ -156,6 +156,10 @@ export default class RequestService extends DependencyAwareClass {
     const { headers } = this.getContainer().getEvent();
     let userAgent = null;
 
+    if (typeof headers !== 'object') {
+      return null;
+    }
+
     Object.keys(headers).forEach((header) => {
       if (header.toUpperCase() === 'USER-AGENT') {
         userAgent = headers[header];
