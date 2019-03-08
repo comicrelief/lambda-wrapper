@@ -57,7 +57,7 @@ export default class Message extends Model {
   }
 
   /**
-   * Get all message metadata
+   * Get all of the message metadata
    * @return {{}}
    */
   getMetaData() {
