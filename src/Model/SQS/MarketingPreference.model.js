@@ -27,6 +27,7 @@ export default class MarketingPreference extends Model {
     this.postcode = null;
     this.country = null;
     this.campaign = '';
+    this.actionId = null;
     this.transSource = '';
     this.transSourceUrl = '';
     this.transType = 'prefs';
@@ -50,6 +51,7 @@ export default class MarketingPreference extends Model {
     this.instantiateFunctionWithDefinedValue('setPostcode', data.postcode);
     this.instantiateFunctionWithDefinedValue('setCountry', data.country);
     this.instantiateFunctionWithDefinedValue('setCampaign', data.campaign);
+    this.instantiateFunctionWithDefinedValue('setActionId', data.actionId);
     this.instantiateFunctionWithDefinedValue('setTransSource', data.transSource);
     this.instantiateFunctionWithDefinedValue('setTransSourceUrl', data.transSourceUrl);
     this.instantiateFunctionWithDefinedValue('setEmail', data.email);
@@ -241,6 +243,22 @@ export default class MarketingPreference extends Model {
   }
 
   /**
+   * Get Action Id
+   * @return {string|*}
+   */
+  getActionId() {
+    return this.actionId;
+  }
+
+  /**
+   * Set Action Id
+   * @param value string
+   */
+  setActionId(value: string) {
+    this.actionId = value;
+  }
+
+  /**
    * Get Transaction Source
    * @return {string|*}
    */
@@ -409,6 +427,7 @@ export default class MarketingPreference extends Model {
       postcode: this.getPostcode(),
       country: this.getCountry(),
       campaign: this.getCampaign(),
+      actionId: this.getActionId(),
       transSource: this.getTransSource(),
       transSourceUrl: this.getTransSourceUrl(),
       transType: this.getTransType(),
