@@ -20,6 +20,7 @@ describe('Model/MarketingPreferencesModel', () => {
       postcode: 'sw184bx',
       country: 'United Kindgom',
       campaign: 'sr18',
+      transactionId: 'AN129MNDJDJ',
       transSource: 'giftaid-sportrelief',
       transSourceUrl: 'https://giftaid.sportrelief.com/',
       transType: 'prefs',
@@ -75,6 +76,10 @@ describe('Model/MarketingPreferencesModel', () => {
 
     it('should set and get the campaign', () => {
       expect(model.getCampaign()).to.eql(mockedData.campaign);
+    });
+
+    it('should set and get the transaction id', () => {
+      expect(model.getTransactionId()).to.eql(mockedData.transactionId);
     });
 
     it('should set and get the transSource', () => {
@@ -159,6 +164,7 @@ describe('Model/MarketingPreferencesModel', () => {
       postcode: 'sw184bx',
       country: 'United Kindgom',
       campaign: 'sr18',
+      transactionId: 'AN129MNDJDJ',
       transSource: 'giftaid-sportrelief',
       transSourceUrl: 'https://giftaid.sportrelief.com/',
       transType: 'prefs',
@@ -201,6 +207,7 @@ describe('Model/MarketingPreferencesModel', () => {
       postcode: 'sw184bx',
       country: 'United Kindgom',
       campaign: 'sr18',
+      transactionId: 'AN129MNDJDJ',
       transSource: 'giftaid-sportrelief',
       transSourceUrl: 'https://giftaid.sportrelief.com/',
       transType: 'prefs',
@@ -242,6 +249,7 @@ describe('Model/MarketingPreferencesModel', () => {
       postcode: 'sw184bx',
       country: 'United Kindgom',
       campaign: 'sr18',
+      transactionId: 'AN129MNDJDJ',
       transSource: 'giftaid-sportrelief',
       transSourceUrl: 'https://giftaid.sportrelief.com/',
       transType: 'prefs',
@@ -284,6 +292,7 @@ describe('Model/MarketingPreferencesModel', () => {
       postcode: 'sw184bx',
       country: 'United Kindgom',
       campaign: 'sr18',
+      transactionId: 'AN129MNDJDJ',
       transSource: 'giftaid-sportrelief',
       transSourceUrl: 'https://giftaid.sportrelief.com/',
       transType: 'prefs',
@@ -390,6 +399,7 @@ describe('Model/MarketingPreferencesModel', () => {
       postcode: 'sw184bx',
       country: 'United Kindgom',
       campaign: 'sr18',
+      transactionId: 'AN129MNDJDJ',
       transSource: 'giftaid-sportrelief',
       transSourceUrl: 'https://giftaid.sportrelief.com/',
       transType: 'prefs',
