@@ -173,12 +173,17 @@ export default class SQSService extends DependencyAwareClass {
     return new Promise((resolve) => {
       Timer.start(timerId);
 
-      sqs.sendMessage({
+      const messageParams = {
         MessageBody: JSON.stringify(messageObject),
-        MessageDeduplicationId: UUID(),
-        MessageGroupId: messageGroupId !== null ? messageGroupId : UUID(),
         QueueUrl: queueUrl,
-      }, ((err) => {
+      };
+
+      if (queueUrl.includes('.fifo') === true) {
+        messageParams.MessageDeduplicationId = UUID();
+        messageParams.MessageGroupId = messageGroupId !== null ? messageGroupId : UUID();
+      }
+
+      sqs.sendMessage(messageParams, ((err) => {
         Timer.stop(timerId);
 
         if (err) {
