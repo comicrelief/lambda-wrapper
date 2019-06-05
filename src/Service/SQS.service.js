@@ -41,7 +41,10 @@ export default class SQSService extends DependencyAwareClass {
     if (queues !== null && Object.keys(queues).length >= 1) {
       Object.keys(queues).forEach((queueDefinition) => {
         if (isOffline === true) {
-          this.queues[queueDefinition] = `http://localhost:4576/queue/${queues[queueDefinition]}`;
+          const offlineHost = typeof process.env.LAMBDA_WRAPPER_OFFLINE_SQS_HOST !== 'undefined'
+            ? process.env.LAMBDA_WRAPPER_OFFLINE_SQS_HOST : 'localhost';
+
+          this.queues[queueDefinition] = `http://${offlineHost}:4576/queue/${queues[queueDefinition]}`;
         } else {
           this.queues[queueDefinition] = `https://sqs.${process.env.REGION}.amazonaws.com/${Alai.parse(context)}/${queues[queueDefinition]}`;
         }
