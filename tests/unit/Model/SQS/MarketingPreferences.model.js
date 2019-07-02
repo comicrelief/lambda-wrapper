@@ -168,8 +168,7 @@ describe('Model/MarketingPreferencesModel', () => {
       transSource: 'giftaid-sportrelief',
       transSourceUrl: 'https://giftaid.sportrelief.com/',
       transType: 'prefs',
-      email: '',
-      permissionEmail: 1,
+      permissionEmail: 0,
       permissionPost: 0,
       permissionPhone: 0,
       permissionSMS: 0,
@@ -185,6 +184,8 @@ describe('Model/MarketingPreferencesModel', () => {
           done();
         })
         .catch((error) => {
+          console.log('Error: ', error);
+
           expect(error instanceof ResponseModel).to.eql(true);
           expect(error.getCode()).to.eql(400);
           expect(error.body.validation_errors.email[0]).to.eql('Email can\'t be blank');

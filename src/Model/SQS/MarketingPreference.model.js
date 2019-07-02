@@ -466,14 +466,13 @@ export default class MarketingPreference extends Model {
         && this.getPermissionEmail() !== ''
         && this.getPermissionEmail() !== '0')
       || this.getEmail() !== '') {
-        if (this.getEmail() !== '') {
+        if (this.getEmail()) {
           requestConstraintsClone.email = { email: true };
         } else {
-          requestConstraintsClone.email = { presence: { allowEmpty: false } };
+          requestConstraintsClone.email = { presence: { allowEmpty: false }, email: true };
         }
       }
       // Update constraints if fields are not empty
-
       requestConstraintsClone.firstname = this.getFirstName() !== null && this.getFirstName() !== '' ? { format: { pattern: "[a-zA-Z.'-_ ]+", flags: 'i', message: 'can only contain alphabetical characters' } } : '';
       requestConstraintsClone.lastname = this.getLastName() !== null && this.getLastName() !== '' ? { format: { pattern: "[a-zA-Z.'-_ ]+", flags: 'i', message: 'can only contain alphabetical characters' } } : '';
       requestConstraintsClone.phone = this.getPhone() !== null && this.getPhone() !== '' ? { format: { pattern: '[0-9 ]+', flags: 'i', message: 'can only contain numerical characters' } } : '';
