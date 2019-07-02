@@ -466,7 +466,7 @@ export default class MarketingPreference extends Model {
         && this.getPermissionEmail() !== ''
         && this.getPermissionEmail() !== '0')
       || this.getEmail() !== '') {
-        if (this.getEmail() !== '' && this.getEmail() !== null) {
+        if (this.getEmail()) {
           requestConstraintsClone.email = { email: true };
         } else {
           requestConstraintsClone.email = { presence: { allowEmpty: false }, email: true };
