@@ -464,7 +464,8 @@ export default class MarketingPreference extends Model {
       const requestConstraintsClone = Object.assign({}, requestConstraints);
       if ((this.getPermissionEmail() !== null
         && this.getPermissionEmail() !== ''
-        && this.getPermissionEmail() !== '0')
+        && this.getPermissionEmail() !== '0'
+        && this.getPermissionEmail() !== 0)
       || (this.getEmail())) {
         if (this.getEmail()) {
           requestConstraintsClone.email = { email: true };
