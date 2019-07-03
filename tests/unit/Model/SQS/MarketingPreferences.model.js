@@ -168,7 +168,7 @@ describe('Model/MarketingPreferencesModel', () => {
       transSource: 'giftaid-sportrelief',
       transSourceUrl: 'https://giftaid.sportrelief.com/',
       transType: 'prefs',
-      permissionEmail: 0,
+      permissionEmail: 1,
       permissionPost: 0,
       permissionPhone: 0,
       permissionSMS: 0,
@@ -278,6 +278,47 @@ describe('Model/MarketingPreferencesModel', () => {
     });
   });
 
+
+  describe('Ensure validation passes when email permission is NO', () => {
+    const mockedData = {
+      firstname: 'Kelvin',
+      lastname: 'James',
+      phone: '0208 254 3062',
+      mobile: '07425253522',
+      address1: 'COMIC RELIEF',
+      address2: 'CAMELFORD HOUSE 87-90',
+      address3: 'ALBERT EMBANKMENT',
+      town: 'LONDON',
+      postcode: 'SE1 7TP',
+      country: 'GB',
+      campaign: 'RND19',
+      transactionId: 'AN129MNDJDJ',
+      transSource: 'RND19_GiftAid',
+      transSourceUrl: 'https://giftaid.sportrelief.com/',
+      transType: 'prefs',
+      confirm: 1,
+      permissionEmail: 0,
+      permissionPost: null,
+      permissionPhone: null,
+      permissionSMS: null,
+      timestamp: '1562165588',
+    };
+
+    const model = new MarketingPreferencesModel(mockedData);
+
+    it('should validate the model', (done) => {
+      model.validate()
+        .then(() => {
+          expect(true).to.eql(true);
+          done();
+        })
+        .catch((error) => {
+          console.log('Error: ', error);
+          expect(true).to.eql(false);
+          done();
+        });
+    });
+  });
 
   describe('Ensure generating of timestamp when not set', () => {
 
