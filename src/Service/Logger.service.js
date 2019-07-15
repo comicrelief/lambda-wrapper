@@ -5,27 +5,26 @@ import { label, metric } from '@iopipe/iopipe';
 import DependencyAwareClass from '../DependencyInjection/DependencyAware.class';
 import DependencyInjection from '../DependencyInjection/DependencyInjection.class';
 
-function replaceErrors(key, value) {
-  if (value instanceof Buffer) {
-    return value.toString('base64');
-  } else if (value instanceof Error) {
-    const error = {};
-
-    Object.getOwnPropertyNames(value).forEach(((objectKey) => {
-      error[objectKey] = value[objectKey];
-    }));
-
-    return error;
-  }
-
-  return value;
-}
-
-
 const logger = Winston.createLogger({
   level: 'info',
   format: Winston.format.combine(
-    Winston.format.json({ replacer: replaceErrors }),
+    Winston.format.json({
+      replacer: (key, value) => {
+        if (value instanceof Buffer) {
+          return value.toString('base64');
+        } else if (value instanceof Error) {
+          const error = {};
+
+          Object.getOwnPropertyNames(value).forEach(((objectKey) => {
+            error[objectKey] = value[objectKey];
+          }));
+
+          return error;
+        }
+
+        return value;
+      },
+    }),
   ),
   transports: [
     new Winston.transports.Console(),
@@ -33,7 +32,9 @@ const logger = Winston.createLogger({
 });
 
 // Instantiate the raven client
-if (typeof process.env.RAVEN_DSN !== 'undefined') {
+const ravenIsAvailable = typeof process.env.RAVEN_DSN !== 'undefined' && (typeof process.env.RAVEN_DSN === 'string' && process.env.RAVEN_DSN !== 'undefined');
+
+if (ravenIsAvailable) {
   Raven.config(process.env.RAVEN_DSN, {
     sendTimeout: 5,
     environment: process.env.STAGE,
@@ -53,7 +54,7 @@ export default class LoggerService extends DependencyAwareClass {
     const isOffline = context.invokedFunctionArn.indexOf('offline') !== -1;
 
     // Set raven client context
-    if (typeof process.env.RAVEN_DSN !== 'undefined' && isOffline === false) {
+    if (ravenIsAvailable && isOffline === false) {
       Raven.setContext({
         extra: {
           Event: event,
@@ -81,7 +82,7 @@ export default class LoggerService extends DependencyAwareClass {
    * @param message string
    */
   error(error, message = '') {
-    if (process.env.RAVEN_DSN && error instanceof Error) {
+    if (ravenIsAvailable && error instanceof Error) {
       Raven.captureException(error);
     }
 
