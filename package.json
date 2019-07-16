@@ -49,12 +49,12 @@
     "async": "2.6.3",
     "aws-sdk": "2.493.0",
     "raven": "2.6.3",
+    "snyk": "1.193.2",
     "useragent": "2.3.0",
     "uuid": "3.3.2",
     "validate.js": "0.13.1",
     "winston": "3.2.1",
-    "xml2js": "0.4.19",
-    "snyk": "1.193.2"
+    "xml2js": "0.4.19"
   },
   "snyk": true
 }
