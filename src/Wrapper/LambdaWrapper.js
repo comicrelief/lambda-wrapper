@@ -6,7 +6,7 @@ import DependencyInjection from '../DependencyInjection/DependencyInjection.clas
 import { DEFINITIONS } from '../Config/Dependencies';
 
 export default ((configuration, handler) => {
-  let instance = (event, context, callback) => {
+  let instance = (event, context) => {
     const di = new DependencyInjection(configuration, event, context);
     const request = di.get(DEFINITIONS.REQUEST);
     const logger = di.get(DEFINITIONS.LOGGER);
@@ -15,7 +15,7 @@ export default ((configuration, handler) => {
 
     // If the event is to trigger a warm up, then don't bother returning the function.
     if (di.getEvent().source === 'serverless-plugin-warmup') {
-      return callback(null, 'Lambda is warm!');
+      return context.done(null, 'Lambda is warm!');
     }
 
     // Log the users ip address silently for use in error tracing
@@ -31,7 +31,7 @@ export default ((configuration, handler) => {
       });
     }
 
-    return handler.call(instance, di, request, callback);
+    return handler.call(instance, di, request, context.done);
   };
 
   // If the IOPipe token is enabled, then wrap the instance in the IOPipe wrapper
