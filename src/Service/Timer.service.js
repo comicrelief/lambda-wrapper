@@ -1,5 +1,3 @@
-import { mark } from '@iopipe/iopipe';
-
 import DependencyAwareClass from '../DependencyInjection/DependencyAware.class';
 import DependencyInjection from '../DependencyInjection/DependencyInjection.class';
 import { DEFINITIONS } from '../Config/Dependencies';
@@ -25,7 +23,7 @@ export default class TimerService extends DependencyAwareClass {
     this.timers[identifier] = new Date().getTime();
 
     if (typeof process.env.IOPIPE_TOKEN === 'string' && process.env.IOPIPE_TOKEN !== 'undefined') {
-      mark.start(identifier);
+      this.getContainer().getContext().iopipe.mark.start(identifier);
     }
   }
 
@@ -41,7 +39,7 @@ export default class TimerService extends DependencyAwareClass {
     }
 
     if (typeof process.env.IOPIPE_TOKEN === 'string' && process.env.IOPIPE_TOKEN !== 'undefined') {
-      mark.end(identifier);
+      this.getContainer().getContext().iopipe.mark.end(identifier);
     }
   }
 }
