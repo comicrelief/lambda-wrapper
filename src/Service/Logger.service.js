@@ -1,6 +1,5 @@
 import Winston from 'winston';
 import Raven from 'raven';
-import { label, metric } from '@iopipe/iopipe';
 
 import DependencyAwareClass from '../DependencyInjection/DependencyAware.class';
 import DependencyInjection from '../DependencyInjection/DependencyInjection.class';
@@ -114,7 +113,7 @@ export default class LoggerService extends DependencyAwareClass {
    */
   label(descriptor, silent = false) {
     if (typeof process.env.IOPIPE_TOKEN === 'string' && process.env.IOPIPE_TOKEN !== 'undefined') {
-      label(descriptor);
+      this.getContainer().getContext().iopipe.label(descriptor);
     }
 
     if (silent === false) {
@@ -130,7 +129,7 @@ export default class LoggerService extends DependencyAwareClass {
    */
   metric(descriptor, stat, silent = false) {
     if (typeof process.env.IOPIPE_TOKEN === 'string' && process.env.IOPIPE_TOKEN !== 'undefined') {
-      metric(descriptor, stat);
+      this.getContainer().getContext().iopipe.metric(descriptor, stat);
     }
 
     if (silent === false) {
