@@ -50,7 +50,7 @@ export default class LoggerService extends DependencyAwareClass {
     const container = this.getContainer();
     const event = container.getEvent();
     const context = container.getContext();
-    const isOffline = context.invokedFunctionArn.indexOf('offline') !== -1;
+    const isOffline = !Object.prototype.hasOwnProperty.call(context, 'invokedFunctionArn') || context.invokedFunctionArn.indexOf('offline') !== -1;
 
     // Set raven client context
     if (ravenIsAvailable && isOffline === false) {
