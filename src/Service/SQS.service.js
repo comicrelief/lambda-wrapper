@@ -33,7 +33,7 @@ export default class SQSService extends DependencyAwareClass {
     super(di);
     const context = this.getContainer().getContext();
     const queues = this.getContainer().getConfiguration('QUEUES');
-    const isOffline = context.invokedFunctionArn.indexOf('offline') !== -1;
+    const isOffline = !Object.prototype.hasOwnProperty.call(context, 'invokedFunctionArn') || context.invokedFunctionArn.indexOf('offline') !== -1;
 
     this.queues = {};
 
