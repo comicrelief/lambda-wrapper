@@ -1,8 +1,9 @@
 import Winston from 'winston';
-import Raven from 'raven';
 
 import DependencyAwareClass from '../DependencyInjection/DependencyAware.class';
 import DependencyInjection from '../DependencyInjection/DependencyInjection.class';
+
+const Sentry = require('@sentry/node');
 
 const logger = Winston.createLogger({
   level: 'info',
@@ -34,10 +35,10 @@ const logger = Winston.createLogger({
 const ravenIsAvailable = typeof process.env.RAVEN_DSN !== 'undefined' && (typeof process.env.RAVEN_DSN === 'string' && process.env.RAVEN_DSN !== 'undefined');
 
 if (ravenIsAvailable) {
-  Raven.config(process.env.RAVEN_DSN, {
-    sendTimeout: 5,
+  Sentry.init({
+    dsn: process.env.RAVEN_DSN,
     environment: process.env.STAGE,
-  }).install();
+  });
 }
 
 /**
@@ -54,24 +55,18 @@ export default class LoggerService extends DependencyAwareClass {
 
     // Set raven client context
     if (ravenIsAvailable && isOffline === false) {
-      Raven.setContext({
-        extra: {
-          Event: event,
-          Context: context,
-        },
-        environment: process.env.STAGE,
-        tags: {
-          lambda: context.functionName,
-          memory_size: context.memoryLimitInMB,
-          log_group: context.log_group_name,
-          log_stream: context.log_stream_name,
-          stage: process.env.STAGE,
-          path: event.path,
-          httpMethod: event.httpMethod,
-        },
+      Sentry.configureScope((scope) => {
+        scope.setExtra('Event', event);
+        scope.setExtra('Context', context);
+        scope.setTag('lambda', context.functionName);
+        scope.setTag('memory_size', context.memoryLimitInMB);
+        scope.setTag('log_group', context.logGroupName);
+        scope.setTag('log_stream', context.logStreamName);
+        scope.setTag('stage', process.env.STAGE);
+        scope.setTag('path', event.path);
+        scope.setTag('httpMethod', event.httpMethod);
       });
-
-      this.raven = Raven;
+      this.raven = Sentry;
     }
   }
 
@@ -82,7 +77,7 @@ export default class LoggerService extends DependencyAwareClass {
    */
   error(error, message = '') {
     if (ravenIsAvailable && error instanceof Error) {
-      Raven.captureException(error);
+      Sentry.captureException(error);
     }
 
     logger.log('error', message, { error });
