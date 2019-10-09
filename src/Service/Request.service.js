@@ -191,13 +191,14 @@ export default class RequestService extends DependencyAwareClass {
   /**
    * Test a request against validation constraints
    * @param constraints
+   * @param data
    * @return {Promise<any>}
    */
-  validateAgainstConstraints(constraints: object) {
+  validateAgainstConstraints(constraints: object, data: ?object) {
     const Logger = this.getContainer().get(DEFINITIONS.LOGGER);
 
     return new Promise((resolve, reject) => {
-      const validation = validate(this.getAll(), constraints);
+      const validation = validate(data || this.getAll(), constraints);
 
       if (typeof validation === 'undefined') {
         resolve();
