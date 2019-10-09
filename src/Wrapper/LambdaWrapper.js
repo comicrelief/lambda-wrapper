@@ -4,8 +4,9 @@ import trace from '@iopipe/trace';
 
 import DependencyInjection from '../DependencyInjection/DependencyInjection.class';
 import { DEFINITIONS } from '../Config/Dependencies';
+import ResponseModel from '../Model/Response.model';
 
-export default ((configuration, handler) => {
+export const LambdaWrapper = (configuration, handler, slimAction = false) => {
   let instance = (event, context, callback) => {
     const di = new DependencyInjection(configuration, event, context);
     const request = di.get(DEFINITIONS.REQUEST);
@@ -31,7 +32,17 @@ export default ((configuration, handler) => {
       });
     }
 
-    return handler.call(instance, di, request, callback);
+    const handlerResponse = handler.call(instance, di, request, callback);
+    if (slimAction === true) {
+      // Slim action by moving response handling logic here
+      return handlerResponse
+        .catch((error) => {
+          logger.error(error);
+          return (error instanceof ResponseModel) ? error : new ResponseModel({}, 500, 'unknown error');
+        })
+        .then(response => callback(null, (response instanceof ResponseModel) ? response.generate() : response));
+    }
+    return handlerResponse;
   };
 
   // If the IOPipe token is enabled, then wrap the instance in the IOPipe wrapper
@@ -54,4 +65,6 @@ export default ((configuration, handler) => {
   }
 
   return instance;
-});
+};
+
+export const LambdaWrapperV2 = (configuration, handler) => LambdaWrapper(configuration, handler, true);
