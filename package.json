@@ -1,6 +1,6 @@
 {
   "name": "@comicrelief/lambda-wrapper",
-  "version": "github:comicrelief/lambda-wrapper#237_centeralize_wrapper_logic",
+  "version": "#237_centeralize_wrapper_logic",
   "description": "Lambda wrapper for all Comic Relief Serverless Projects",
   "main": "dist/index.js",
   "scripts": {
