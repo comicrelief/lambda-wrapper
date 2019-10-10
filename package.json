@@ -1,6 +1,6 @@
 {
   "name": "@comicrelief/lambda-wrapper",
-  "version": "0.0.0-see.readme.for.semantic.release.process",
+  "version": "1.0.0",
   "description": "Lambda wrapper for all Comic Relief Serverless Projects",
   "main": "dist/index.js",
   "scripts": {
