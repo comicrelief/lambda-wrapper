@@ -37,3 +37,8 @@ patch:
         patched: '2019-07-04T01:08:54.716Z'
     - '@iopipe/iopipe > @iopipe/config > @iopipe/profiler > archiver > zip-stream > archiver-utils > lodash':
         patched: '2019-07-04T01:08:54.716Z'
+  SNYK-JS-HTTPSPROXYAGENT-469131:
+    - snyk > proxy-agent > https-proxy-agent:
+        patched: '2019-10-04T01:10:08.040Z'
+    - snyk > proxy-agent > pac-proxy-agent > https-proxy-agent:
+        patched: '2019-10-04T01:10:08.040Z'
