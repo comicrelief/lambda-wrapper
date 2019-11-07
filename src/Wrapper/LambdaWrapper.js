@@ -47,6 +47,7 @@ export default ((configuration, handler) => {
       appName: process.env.EPSAGON_SERVICE_NAME,
     });
 
+    console.log('Epsagon Acitve');
     Epsagon.lambdaWrapper(instance);
   }
 
