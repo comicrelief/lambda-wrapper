@@ -1,6 +1,7 @@
 import iopipe from '@iopipe/iopipe';
 import profiler from '@iopipe/profiler';
 import trace from '@iopipe/trace';
+import Epsagon from 'epsagon';
 
 import DependencyInjection from '../DependencyInjection/DependencyInjection.class';
 import { DEFINITIONS } from '../Config/Dependencies';
@@ -33,6 +34,21 @@ export default ((configuration, handler) => {
 
     return handler.call(instance, di, request, callback);
   };
+
+  // If the Epsagon token is enabled, then wrap the instance in the Epsagon wrapper
+  if (
+    typeof process.env.EPSAGON_TOKEN === 'string'
+    && process.env.EPSAGON_TOKEN !== 'undefined'
+    && typeof process.env.EPSAGON_SERVICE_NAME === 'string'
+    && process.env.EPSAGON_SERVICE_NAME !== 'undefined'
+  ) {
+    Epsagon.init({
+      token: process.env.EPSAGON_TOKEN,
+      appName: process.env.EPSAGON_SERVICE_NAME,
+    });
+
+    Epsagon.lambdaWrapper(instance);
+  }
 
   // If the IOPipe token is enabled, then wrap the instance in the IOPipe wrapper
   if (typeof process.env.IOPIPE_TOKEN === 'string' && process.env.IOPIPE_TOKEN !== 'undefined') {

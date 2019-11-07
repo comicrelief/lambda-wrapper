@@ -1,5 +1,6 @@
 import Winston from 'winston';
 import Raven from 'raven';
+import Epsagon from 'epsagon';
 
 import DependencyAwareClass from '../DependencyInjection/DependencyAware.class';
 import DependencyInjection from '../DependencyInjection/DependencyInjection.class';
@@ -85,6 +86,16 @@ export default class LoggerService extends DependencyAwareClass {
       Raven.captureException(error);
     }
 
+    if (
+      typeof process.env.EPSAGON_TOKEN === 'string'
+      && process.env.EPSAGON_TOKEN !== 'undefined'
+      && typeof process.env.EPSAGON_SERVICE_NAME === 'string'
+      && process.env.EPSAGON_SERVICE_NAME !== 'undefined'
+      && error instanceof Error
+    ) {
+      Epsagon.setError(error);
+    }
+
     logger.log('error', message, { error });
     this.label('error', true);
     this.metric('error', 'error', true);
@@ -116,6 +127,15 @@ export default class LoggerService extends DependencyAwareClass {
       this.getContainer().getContext().iopipe.label(descriptor);
     }
 
+    if (
+      typeof process.env.EPSAGON_TOKEN === 'string'
+      && process.env.EPSAGON_TOKEN !== 'undefined'
+      && typeof process.env.EPSAGON_SERVICE_NAME === 'string'
+      && process.env.EPSAGON_SERVICE_NAME !== 'undefined'
+    ) {
+      Epsagon.label(descriptor);
+    }
+
     if (silent === false) {
       logger.log('info', `label - ${descriptor}`);
     }
@@ -131,6 +151,16 @@ export default class LoggerService extends DependencyAwareClass {
     if (typeof process.env.IOPIPE_TOKEN === 'string' && process.env.IOPIPE_TOKEN !== 'undefined') {
       this.getContainer().getContext().iopipe.metric(descriptor, stat);
     }
+
+    if (
+      typeof process.env.EPSAGON_TOKEN === 'string'
+      && process.env.EPSAGON_TOKEN !== 'undefined'
+      && typeof process.env.EPSAGON_SERVICE_NAME === 'string'
+      && process.env.EPSAGON_SERVICE_NAME !== 'undefined'
+    ) {
+      Epsagon.label(descriptor, stat);
+    }
+
 
     if (silent === false) {
       logger.log('info', `metric - ${descriptor} - ${stat}`);
