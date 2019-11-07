@@ -161,7 +161,6 @@ export default class LoggerService extends DependencyAwareClass {
       Epsagon.label(descriptor, stat);
     }
 
-
     if (silent === false) {
       logger.log('info', `metric - ${descriptor} - ${stat}`);
     }

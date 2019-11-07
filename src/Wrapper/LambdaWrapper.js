@@ -47,7 +47,7 @@ export default ((configuration, handler) => {
       appName: process.env.EPSAGON_SERVICE_NAME,
     });
 
-    Epsagon.lambdaWrapper(instance);
+    instance = Epsagon.lambdaWrapper(instance);
   }
 
   // If the IOPipe token is enabled, then wrap the instance in the IOPipe wrapper
