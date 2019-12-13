@@ -42,9 +42,6 @@
     ]
   },
   "dependencies": {
-    "@iopipe/iopipe": "1.15.1",
-    "@iopipe/profiler": "2.1.2",
-    "@iopipe/trace": "1.5.1",
     "alai": "1.0.3",
     "async": "2.6.3",
     "aws-sdk": "2.493.0",

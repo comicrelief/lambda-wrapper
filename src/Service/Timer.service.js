@@ -21,10 +21,6 @@ export default class TimerService extends DependencyAwareClass {
    */
   start(identifier: string) {
     this.timers[identifier] = new Date().getTime();
-
-    if (typeof process.env.IOPIPE_TOKEN === 'string' && process.env.IOPIPE_TOKEN !== 'undefined') {
-      this.getContainer().getContext().iopipe.mark.start(identifier);
-    }
   }
 
   /**
@@ -36,10 +32,6 @@ export default class TimerService extends DependencyAwareClass {
       const duration = new Date().getTime() - this.timers[identifier];
 
       this.getContainer().get(DEFINITIONS.LOGGER).info(`Timing - ${identifier} took ${duration}ms to complete`);
-    }
-
-    if (typeof process.env.IOPIPE_TOKEN === 'string' && process.env.IOPIPE_TOKEN !== 'undefined') {
-      this.getContainer().getContext().iopipe.mark.end(identifier);
     }
   }
 }

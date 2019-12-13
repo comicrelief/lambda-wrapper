@@ -1,6 +1,3 @@
-import iopipe from '@iopipe/iopipe';
-import profiler from '@iopipe/profiler';
-import trace from '@iopipe/trace';
 import Epsagon from 'epsagon';
 
 import DependencyInjection from '../DependencyInjection/DependencyInjection.class';
@@ -48,25 +45,6 @@ export default ((configuration, handler) => {
     });
 
     instance = Epsagon.lambdaWrapper(instance);
-  }
-
-  // If the IOPipe token is enabled, then wrap the instance in the IOPipe wrapper
-  if (typeof process.env.IOPIPE_TOKEN === 'string' && process.env.IOPIPE_TOKEN !== 'undefined') {
-    const ioPipeConfiguration = {
-      plugins: [
-        trace({
-          autoHttp: {
-            enabled: false,
-          },
-        }),
-      ],
-    };
-
-    if (typeof process.env.IOPIPE_TRACING !== 'undefined' && process.env.IOPIPE_TRACING === 'enabled') {
-      ioPipeConfiguration.plugins.push(profiler({ enabled: true, heapSnapshot: true }));
-    }
-
-    instance = iopipe(ioPipeConfiguration)(instance);
   }
 
   return instance;
