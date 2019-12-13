@@ -123,10 +123,6 @@ export default class LoggerService extends DependencyAwareClass {
    * @param silent     boolean
    */
   label(descriptor, silent = false) {
-    if (typeof process.env.IOPIPE_TOKEN === 'string' && process.env.IOPIPE_TOKEN !== 'undefined') {
-      this.getContainer().getContext().iopipe.label(descriptor);
-    }
-
     if (
       typeof process.env.EPSAGON_TOKEN === 'string'
       && process.env.EPSAGON_TOKEN !== 'undefined'
@@ -148,10 +144,6 @@ export default class LoggerService extends DependencyAwareClass {
    * @param silent     boolean
    */
   metric(descriptor, stat, silent = false) {
-    if (typeof process.env.IOPIPE_TOKEN === 'string' && process.env.IOPIPE_TOKEN !== 'undefined') {
-      this.getContainer().getContext().iopipe.metric(descriptor, stat);
-    }
-
     if (
       typeof process.env.EPSAGON_TOKEN === 'string'
       && process.env.EPSAGON_TOKEN !== 'undefined'
