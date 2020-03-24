@@ -1,6 +1,11 @@
 {
   "queryStringParameters": {
-    "test": "test"
+    "test": "test",
+    "array[]": "three"
+  },
+  "multiValueQueryStringParameters": {
+    "test": ["test"],
+    "array[]": ["one", "two", "three"]
   },
   "body": {},
   "httpMethod": "GET",

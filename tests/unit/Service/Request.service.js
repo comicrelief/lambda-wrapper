@@ -48,6 +48,10 @@ describe('Service/RequestService', () => {
       });
     });
 
+    it('should fetch an array-type GET parameter if its name ends []', () => {
+      let request = new RequestService(new DependencyInjection(CONFIGURATION, testEvent, getContext));
+      expect(request.get('array[]')).to.deep.equal(['one', 'two', 'three']);
+    });
   });
 
   describe('test POST request getter', () => {
