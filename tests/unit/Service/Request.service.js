@@ -93,7 +93,10 @@ describe('Service/RequestService', () => {
 
     it('should return all get parameters as an array', () => {
       let request = new RequestService(new DependencyInjection(CONFIGURATION, testEvent, getContext));
-      expect(request.getAll()).to.eql(testEvent.queryStringParameters);
+      const params = request.getAll();
+      expect(params).to.have.property('test').that.equals(123);
+      expect(params).to.have.property('testTwo').that.equals(123);
+      expect(params).to.have.property('array[]').that.deep.equals(['one', 'two', 'three']);
     });
 
   });
