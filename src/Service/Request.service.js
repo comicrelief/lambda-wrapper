@@ -92,7 +92,13 @@ export default class RequestService extends DependencyAwareClass {
     const event = this.getContainer().getEvent();
 
     if (event.httpMethod === 'GET' || requestType === REQUEST_TYPES.GET) {
-      return typeof event.queryStringParameters !== 'undefined' ? event.queryStringParameters : {};
+      // get simple parameters
+      const params = Object.assign({}, event.queryStringParameters);
+      // add array parameters as arrays
+      Object.keys(params).filter(key => key.endsWith('[]')).forEach((key) => {
+        params[key] = event.multiValueQueryStringParameters[key];
+      });
+      return params;
     }
 
     if (event.httpMethod === 'POST' || requestType === REQUEST_TYPES.POST) {
