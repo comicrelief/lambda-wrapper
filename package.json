@@ -6,7 +6,7 @@
   "scripts": {
     "test": "./node_modules/.bin/babel-node ./node_modules/.bin/babel-istanbul cover ./node_modules/.bin/_mocha \"tests/unit/**/*.js\" --report text",
     "build": "babel src --presets babel-preset-env --out-dir dist --copy-files",
-    "prepublish": "npm run snyk-protect; npm run build",
+    "prepublish": "yarn run snyk-protect; npm run build",
     "snyk-protect": "snyk protect"
   },
   "author": "Adam Clark",
@@ -47,7 +47,7 @@
     "aws-sdk": "2.493.0",
     "epsagon": "^1.40.4",
     "raven": "2.6.3",
-    "snyk": "^1.230.5",
+    "snyk": "^1.316.1",
     "useragent": "2.3.0",
     "uuid": "3.3.2",
     "validate.js": "0.13.1",
