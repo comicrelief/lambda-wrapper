@@ -18,7 +18,6 @@ export const ERROR_TYPES = {
   VALIDATION_ERROR: new ResponseModel({}, 400, 'required fields are missing'),
 };
 
-
 /**
  * RequestService class
  */
@@ -257,11 +256,10 @@ export default class RequestService extends DependencyAwareClass {
     return null;
   }
 
-
   getValueIgnoringKeyCase(object, key) {
     const foundKey = Object
       .keys(object)
-      .find(currentKey => currentKey.toLocaleLowerCase() === key.toLowerCase());
+      .find((currentKey) => currentKey.toLocaleLowerCase() === key.toLowerCase());
     return object[foundKey];
   }
 

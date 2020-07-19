@@ -461,7 +461,7 @@ export default class MarketingPreference extends Model {
    */
   validate() {
     return new Promise((resolve, reject) => {
-      const requestConstraintsClone = Object.assign({}, requestConstraints);
+      const requestConstraintsClone = { ...requestConstraints };
       if ((this.getPermissionEmail() !== null
         && this.getPermissionEmail() !== ''
         && this.getPermissionEmail() !== '0'
