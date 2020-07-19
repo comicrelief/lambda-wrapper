@@ -1,4 +1,4 @@
-import UUID from 'uuid/v4';
+import { v4 as UUID } from 'uuid';
 import Model from './Model.model';
 
 /**
