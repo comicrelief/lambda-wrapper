@@ -1,5 +1,5 @@
 import Winston from 'winston';
-import Raven from 'raven';
+import Sentry from '@sentry/node';
 import Epsagon from 'epsagon';
 
 import DependencyAwareClass from '../DependencyInjection/DependencyAware.class';
@@ -31,14 +31,15 @@ const logger = Winston.createLogger({
   ],
 });
 
-// Instantiate the raven client
-const ravenIsAvailable = typeof process.env.RAVEN_DSN !== 'undefined' && (typeof process.env.RAVEN_DSN === 'string' && process.env.RAVEN_DSN !== 'undefined');
+// Instantiate the sentry client
+const sentryIsAvailable = typeof process.env.RAVEN_DSN !== 'undefined' && (typeof process.env.RAVEN_DSN === 'string' && process.env.RAVEN_DSN !== 'undefined');
 
-if (ravenIsAvailable) {
-  Raven.config(process.env.RAVEN_DSN, {
-    sendTimeout: 5,
+if (sentryIsAvailable) {
+  Sentry.init({
+    dsn: process.env.RAVEN_DSN,
+    shutdownTimeout: 5,
     environment: process.env.STAGE,
-  }).install();
+  });
 }
 
 /**
@@ -47,21 +48,20 @@ if (ravenIsAvailable) {
 export default class LoggerService extends DependencyAwareClass {
   constructor(di: DependencyInjection) {
     super(di);
-    this.raven = null;
+    this.sentry = null;
     const container = this.getContainer();
     const event = container.getEvent();
     const context = container.getContext();
     const isOffline = !Object.prototype.hasOwnProperty.call(context, 'invokedFunctionArn') || context.invokedFunctionArn.indexOf('offline') !== -1;
 
-    // Set raven client context
-    if (ravenIsAvailable && isOffline === false) {
-      Raven.setContext({
-        extra: {
+    // Set sentry client context
+    if (sentryIsAvailable && isOffline === false) {
+      Sentry.configureScope((scope) => {
+        scope.setTags({
           Event: event,
           Context: context,
-        },
-        environment: process.env.STAGE,
-        tags: {
+        });
+        scope.setExtras({
           lambda: context.functionName,
           memory_size: context.memoryLimitInMB,
           log_group: context.log_group_name,
@@ -69,10 +69,10 @@ export default class LoggerService extends DependencyAwareClass {
           stage: process.env.STAGE,
           path: event.path,
           httpMethod: event.httpMethod,
-        },
+        });
       });
 
-      this.raven = Raven;
+      this.sentry = Sentry;
     }
   }
 
@@ -82,8 +82,8 @@ export default class LoggerService extends DependencyAwareClass {
    * @param message string
    */
   error(error, message = '') {
-    if (ravenIsAvailable && error instanceof Error) {
-      Raven.captureException(error);
+    if (sentryIsAvailable && error instanceof Error) {
+      Sentry.captureException(error);
     }
 
     if (
@@ -102,11 +102,11 @@ export default class LoggerService extends DependencyAwareClass {
   }
 
   /**
-   * Get raven client
+   * Get sentry client
    * @return {null|*}
    */
-  getRaven() {
-    return this.raven;
+  getSentry() {
+    return this.sentry;
   }
 
   /**
