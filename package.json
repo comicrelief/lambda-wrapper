@@ -66,12 +66,5 @@
       "text"
     ]
   },
-  "release": {
-    "branches": [
-      "master",
-      "80_update_deps"
-    ],
-    "debug": false
-  },
   "snyk": true
 }
