@@ -29,6 +29,19 @@
     "semantic-release": "^17.1.1",
     "serverless-mocha-plugin": "^1.12.0"
   },
+  "dependencies": {
+    "@sentry/node": "5.19.2",
+    "alai": "1.0.3",
+    "async": "^3.2.0",
+    "aws-sdk": "^2.715.0",
+    "epsagon": "^1.76.0",
+    "snyk": "^1.362.1",
+    "useragent": "2.3.0",
+    "uuid": "^8.2.0",
+    "validate.js": "0.13.1",
+    "winston": "^3.3.3",
+    "xml2js": "^0.4.23"
+  },
   "babel": {
     "env": {
       "test": {
@@ -53,18 +66,12 @@
       "text"
     ]
   },
-  "dependencies": {
-    "@sentry/node": "5.19.2",
-    "alai": "1.0.3",
-    "async": "^3.2.0",
-    "aws-sdk": "^2.715.0",
-    "epsagon": "^1.76.0",
-    "snyk": "^1.362.1",
-    "useragent": "2.3.0",
-    "uuid": "^8.2.0",
-    "validate.js": "0.13.1",
-    "winston": "^3.3.3",
-    "xml2js": "^0.4.23"
+  "release": {
+    "branches": [
+      "master",
+      "80_update_deps"
+    ],
+    "debug": false
   },
   "snyk": true
 }
