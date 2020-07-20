@@ -8,6 +8,7 @@ describe('Model/CloudEventModel', () => {
 
   describe('Ensure setting and getting of variables', () => {
 
+    const expectedEventTime = (new Date()).toISOString();
     const model = new CloudEventModel();
 
     it('should get the cloud event version', () => {
@@ -33,7 +34,7 @@ describe('Model/CloudEventModel', () => {
     });
 
     it('should generate the current timestamp as the current time', () => {
-      expect(new CloudEventModel().getEventTime()).to.eql((new Date()).toISOString());
+      expect(new CloudEventModel().getEventTime()).to.eql(expectedEventTime);
     });
 
     it('should set and get the extensions', () => {
