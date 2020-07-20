@@ -1,5 +1,5 @@
 import Winston from 'winston';
-import Sentry from '@sentry/node';
+import * as Sentry from '@sentry/node';
 import Epsagon from 'epsagon';
 
 import DependencyAwareClass from '../DependencyInjection/DependencyAware.class';
