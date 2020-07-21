@@ -1,0 +1,28 @@
+{
+  "campaign": {
+    "presence": {
+      "allowEmpty": false
+    }
+  },
+  "transSource": {
+    "presence": {
+      "allowEmpty": false
+    }
+  },
+  "transSourceUrl": {
+    "presence": {
+      "allowEmpty": false
+    },
+    "url": true
+  },
+  "transType": {
+    "presence": {
+      "allowEmpty": false
+    }
+  },
+  "timestamp": {
+    "presence": {
+      "allowEmpty": false
+    }
+  }
+}
