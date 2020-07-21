@@ -2,7 +2,7 @@
 import Alai from 'alai';
 import AWS from 'aws-sdk';
 import each from 'async/each';
-import UUID from 'uuid/v4';
+import { v4 as UUID } from 'uuid';
 
 import DependencyAwareClass from '../DependencyInjection/DependencyAware.class';
 import DependencyInjection from '../DependencyInjection/DependencyInjection.class';
@@ -231,7 +231,7 @@ export default class SQSService extends DependencyAwareClass {
           return resolve([]);
         }
 
-        return resolve(data.Messages.map(message => new SQSMessageModel(message)));
+        return resolve(data.Messages.map((message) => new SQSMessageModel(message)));
       }));
     });
   }

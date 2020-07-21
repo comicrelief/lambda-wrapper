@@ -33,7 +33,7 @@ describe('Model/CloudEventModel', () => {
     });
 
     it('should generate the current timestamp as the current time', () => {
-      expect(new CloudEventModel().getEventTime()).to.eql((new Date()).toISOString());
+      expect(new CloudEventModel().getEventTime().replace(/:[^:]+$/, '')).to.eql((new Date()).toISOString().replace(/:[^:]+$/, ''));
     });
 
     it('should set and get the extensions', () => {
