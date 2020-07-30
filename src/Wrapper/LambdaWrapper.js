@@ -2,6 +2,7 @@ import Epsagon from 'epsagon';
 
 import DependencyInjection from '../DependencyInjection/DependencyInjection.class';
 import { DEFINITIONS } from '../Config/Dependencies';
+import ResponseModel from '../Model/Response.model';
 
 export default ((configuration, handler) => {
   let instance = (event, context, callback) => {
@@ -29,7 +30,25 @@ export default ((configuration, handler) => {
       });
     }
 
-    return handler.call(instance, di, request, callback);
+    try {
+      return handler.call(instance, di, request, callback);
+    } catch (error) {
+      logger.error(error);
+
+      const responseDetails = {
+        body: error.body || {},
+        code: error.code || 500,
+        message: 'unknown error',
+      };
+
+      const response = new ResponseModel(
+        responseDetails.body,
+        responseDetails.code,
+        responseDetails.message,
+      );
+
+      return response.generate();
+    }
   };
 
   // If the Epsagon token is enabled, then wrap the instance in the Epsagon wrapper

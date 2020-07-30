@@ -5,7 +5,7 @@ import Epsagon from 'epsagon';
 import DependencyAwareClass from '../DependencyInjection/DependencyAware.class';
 import DependencyInjection from '../DependencyInjection/DependencyInjection.class';
 
-const logger = Winston.createLogger({
+export const logger = Winston.createLogger({
   level: 'info',
   format: Winston.format.combine(
     Winston.format.json({
