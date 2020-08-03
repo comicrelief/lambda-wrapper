@@ -17,5 +17,6 @@ export { default as RequestService } from './Service/Request.service';
 export { default as SQSService } from './Service/SQS.service';
 
 // Wrapper
+export { default as LambdaTermination } from './Wrapper/LambdaTermination';
 export { default as LambdaWrapper } from './Wrapper/LambdaWrapper';
 export { default as PromisifiedDelay } from './Wrapper/PromisifiedDelay';
