@@ -9,7 +9,7 @@ export default class LambdaTermination extends Error {
    * @param {number?} code
    * @param {object|string?} body
    */
-  constructor(internal, code = 500, body = null) {
+  constructor(internal, code = 500, body = null, details = 'unknown error') {
     let stringified = internal;
 
     if (typeof internal !== 'string') {
@@ -20,5 +20,6 @@ export default class LambdaTermination extends Error {
     this.internal = internal;
     this.code = code;
     this.body = body || 'unknown error';
+    this.details = details;
   }
 }

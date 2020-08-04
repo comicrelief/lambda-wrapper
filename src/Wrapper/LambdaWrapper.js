@@ -10,6 +10,24 @@ export default ((configuration, handler) => {
     const request = di.get(DEFINITIONS.REQUEST);
     const logger = di.get(DEFINITIONS.LOGGER);
 
+    const handleError = (error) => {
+      logger.error(error);
+
+      const responseDetails = {
+        body: error.body || {},
+        code: error.code || 500,
+        details: error.details || 'unknown error',
+      };
+
+      const response = new ResponseModel(
+        responseDetails.body,
+        responseDetails.code,
+        responseDetails.details,
+      );
+
+      return response.generate();
+    };
+
     context.callbackWaitsForEmptyEventLoop = false;
 
     // If the event is to trigger a warm up, then don't bother returning the function.
@@ -31,23 +49,15 @@ export default ((configuration, handler) => {
     }
 
     try {
-      return handler.call(instance, di, request, callback);
+      let outcome = handler.call(instance, di, request, callback);
+
+      if (outcome instanceof Promise) {
+        outcome = outcome.catch(handleError);
+      }
+
+      return outcome;
     } catch (error) {
-      logger.error(error);
-
-      const responseDetails = {
-        body: error.body || {},
-        code: error.code || 500,
-        message: 'unknown error',
-      };
-
-      const response = new ResponseModel(
-        responseDetails.body,
-        responseDetails.code,
-        responseDetails.message,
-      );
-
-      return response.generate();
+      return handleError(error);
     }
   };
 
