@@ -37,16 +37,38 @@ describe('Service/RequestService', () => {
       expect(request.get('fake', null, REQUEST_TYPES.GET)).to.eql(null);
     });
 
-    it('should return a prettified user agent', () => {
-      let request = new RequestService(new DependencyInjection(CONFIGURATION, testEvent, getContext));
-      expect(request.getUserBrowserAndDevice()).to.eql({
-        'browser-type': 'Safari',
-        'browser-version': '9.1.1',
-        'device-type': 'Other',
-        'operating-system': 'Mac OS X',
-        'operating-system-version': '10.11.5'
+    describe('.getUserBrowserAndDevice', () => {
+      it('should return null with `headers === undefined`', () => {
+        const event = {
+          ...testEvent,
+          headers: undefined,
+        };
+        let request = new RequestService(new DependencyInjection(CONFIGURATION, event, getContext));
+
+        expect(request.getUserBrowserAndDevice()).to.eql(null);
       });
-    });
+
+      it('should return null with `headers === null`', () => {
+        const event = {
+          ...testEvent,
+          headers: null,
+        };
+        let request = new RequestService(new DependencyInjection(CONFIGURATION, event, getContext));
+
+        expect(request.getUserBrowserAndDevice()).to.eql(null);
+      });
+
+      it('should return a prettified user agent', () => {
+        let request = new RequestService(new DependencyInjection(CONFIGURATION, testEvent, getContext));
+        expect(request.getUserBrowserAndDevice()).to.eql({
+          'browser-type': 'Safari',
+          'browser-version': '9.1.1',
+          'device-type': 'Other',
+          'operating-system': 'Mac OS X',
+          'operating-system-version': '10.11.5'
+        });
+      });
+    })
 
   });
 
