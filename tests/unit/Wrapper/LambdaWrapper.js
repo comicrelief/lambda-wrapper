@@ -102,18 +102,22 @@ describe('Wrapper/LambdaWrapper', () => {
       expect(body.message).to.be.equal('some message');
     });
 
-    it('Catches async errors', async () => {
-      const lambda = LambdaWrapper(configuration, async di => {
-        sinon.stub(di.dependencies[DEFINITIONS.LOGGER], 'error');
-        throw new LambdaTermination('internal', 403, 'external');
+    it('Catches async errors', () => {
+      const lambda = LambdaWrapper(configuration, di => {
+        return new Promise((resolve) => {
+          sinon.stub(di.dependencies[DEFINITIONS.LOGGER], 'error');
+          throw new LambdaTermination('internal', 403, 'external');
+        });
       });
 
-      const response = await lambda(getEvent, getContext);
-      const body = JSON.parse(response.body);
+      return lambda(getEvent, getContext)
+        .then((response) => {
+          const body = JSON.parse(response.body);
 
-      expect(response.statusCode).to.be.equal(403);
-      expect(body.message).to.be.equal('unknown error');
-      expect(body.data).to.be.equal('external');
+          expect(response.statusCode).to.be.equal(403);
+          expect(body.message).to.be.equal('unknown error');
+          expect(body.data).to.be.equal('external');
+        });
     });
   });
 });
