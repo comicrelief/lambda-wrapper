@@ -62,7 +62,7 @@ export default class SQSService extends DependencyAwareClass {
     const queueUrl = this.queues[queue];
     const Logger = this.getContainer().get(DEFINITIONS.LOGGER);
     const Timer = this.getContainer().get(DEFINITIONS.TIMER);
-    const timerId = `sqs-batch-delete-${UUID()}`;
+    const timerId = `sqs-batch-delete-${UUID()} - Queue: '${queueUrl}'`;
 
     return new Promise((resolve) => {
       const messagesForDeletion = [];
@@ -139,7 +139,7 @@ export default class SQSService extends DependencyAwareClass {
     const queueUrl = this.queues[queue];
     const Logger = this.getContainer().get(DEFINITIONS.LOGGER);
     const Timer = this.getContainer().get(DEFINITIONS.TIMER);
-    const timerId = `sqs-get-queue-attributes-${UUID()}`;
+    const timerId = `sqs-get-queue-attributes-${UUID()} - Queue: '${queueUrl}'`;
 
     return new Promise((resolve) => {
       Timer.start(timerId);
@@ -171,7 +171,7 @@ export default class SQSService extends DependencyAwareClass {
     const queueUrl = this.queues[queue];
     const Logger = this.getContainer().get(DEFINITIONS.LOGGER);
     const Timer = this.getContainer().get(DEFINITIONS.TIMER);
-    const timerId = `sqs-send-message-${UUID()}`;
+    const timerId = `sqs-send-message-${UUID()} - Queue: '${queueUrl}'`;
 
     return new Promise((resolve) => {
       Timer.start(timerId);
@@ -210,7 +210,7 @@ export default class SQSService extends DependencyAwareClass {
     const queueUrl = this.queues[queue];
     const Logger = this.getContainer().get(DEFINITIONS.LOGGER);
     const Timer = this.getContainer().get(DEFINITIONS.TIMER);
-    const timerId = `sqs-receive-message-${UUID()}`;
+    const timerId = `sqs-receive-message-${UUID()} - Queue: '${queueUrl}'`;
 
     return new Promise((resolve, reject) => {
       Timer.start(timerId);
