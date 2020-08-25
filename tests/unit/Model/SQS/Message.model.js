@@ -1,13 +1,11 @@
 import ServerlessMochaPlugin from 'serverless-mocha-plugin';
-import Message from "../../../../src/Model/SQS/Message.model";
+import Message from '../../../../src/Model/SQS/Message.model';
 
-const expect = ServerlessMochaPlugin.chai.expect;
+const { expect } = ServerlessMochaPlugin.chai;
 
 // Test definitions.
 describe('Model/SQS/Message.model', () => {
-
   describe('Ensure setting and getting of variables', () => {
-
     const messageData = {
       test: 123,
     };
@@ -47,7 +45,5 @@ describe('Model/SQS/Message.model', () => {
         test: 123,
       });
     });
-
   });
-
 });

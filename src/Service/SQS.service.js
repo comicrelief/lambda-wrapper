@@ -33,7 +33,7 @@ export default class SQSService extends DependencyAwareClass {
     super(di);
     const context = this.getContainer().getContext();
     const queues = this.getContainer().getConfiguration('QUEUES');
-    const isOffline = !Object.prototype.hasOwnProperty.call(context, 'invokedFunctionArn') || context.invokedFunctionArn.indexOf('offline') !== -1;
+    const isOffline = !Object.prototype.hasOwnProperty.call(context, 'invokedFunctionArn') || context.invokedFunctionArn.includes('offline');
 
     this.queues = {};
 
@@ -41,8 +41,8 @@ export default class SQSService extends DependencyAwareClass {
     if (queues !== null && Object.keys(queues).length >= 1) {
       Object.keys(queues).forEach((queueDefinition) => {
         if (isOffline === true) {
-          const offlineHost = typeof process.env.LAMBDA_WRAPPER_OFFLINE_SQS_HOST !== 'undefined'
-            ? process.env.LAMBDA_WRAPPER_OFFLINE_SQS_HOST : 'localhost';
+          const offlineHost =
+            typeof process.env.LAMBDA_WRAPPER_OFFLINE_SQS_HOST !== 'undefined' ? process.env.LAMBDA_WRAPPER_OFFLINE_SQS_HOST : 'localhost';
 
           this.queues[queueDefinition] = `http://${offlineHost}:4576/queue/${queues[queueDefinition]}`;
         } else {
@@ -69,33 +69,40 @@ export default class SQSService extends DependencyAwareClass {
 
       Timer.start(timerId);
       // assuming openFiles is an array of file names
-      each(messageModels, ((messageModel, callback) => {
-        if (messageModel instanceof SQSMessageModel && messageModel.isForDeletion() === true) {
-          messagesForDeletion.push({
-            Id: messageModel.getMessageId(),
-            ReceiptHandle: messageModel.getReceiptHandle(),
-          });
-        }
-        callback();
-      }), ((loopErr) => {
-        if (loopErr) {
-          Logger.error(loopErr);
-          resolve();
-        }
-
-        sqs.deleteMessageBatch({
-          Entries: messagesForDeletion,
-          QueueUrl: queueUrl,
-        }, ((err) => {
-          Timer.stop(timerId);
-
-          if (err) {
-            Logger.error(err);
+      each(
+        messageModels,
+        (messageModel, callback) => {
+          if (messageModel instanceof SQSMessageModel && messageModel.isForDeletion() === true) {
+            messagesForDeletion.push({
+              Id: messageModel.getMessageId(),
+              ReceiptHandle: messageModel.getReceiptHandle(),
+            });
+          }
+          callback();
+        },
+        (loopError) => {
+          if (loopError) {
+            Logger.error(loopError);
+            resolve();
           }
 
-          resolve();
-        }));
-      }));
+          sqs.deleteMessageBatch(
+            {
+              Entries: messagesForDeletion,
+              QueueUrl: queueUrl,
+            },
+            (error) => {
+              Timer.stop(timerId);
+
+              if (error) {
+                Logger.error(error);
+              }
+
+              resolve();
+            }
+          );
+        }
+      );
     });
   }
 
@@ -111,13 +118,13 @@ export default class SQSService extends DependencyAwareClass {
     return new Promise((resolve) => {
       Timer.start(timerId);
 
-      sqs.listQueues({}, ((err, data) => {
+      sqs.listQueues({}, (error, data) => {
         Timer.stop(timerId);
 
         const statusModel = new StatusModel('SQS', STATUS_TYPES.OK);
 
-        if (err) {
-          Logger.error(err);
+        if (error) {
+          Logger.error(error);
           statusModel.setStatus(STATUS_TYPES.APPLICATION_FAILURE);
         }
 
@@ -126,7 +133,7 @@ export default class SQSService extends DependencyAwareClass {
         }
 
         resolve(statusModel);
-      }));
+      });
     });
   }
 
@@ -144,19 +151,22 @@ export default class SQSService extends DependencyAwareClass {
     return new Promise((resolve) => {
       Timer.start(timerId);
 
-      sqs.getQueueAttributes({
-        AttributeNames: ['ApproximateNumberOfMessages'],
-        QueueUrl: queueUrl,
-      }, ((err, data) => {
-        Timer.stop(timerId);
+      sqs.getQueueAttributes(
+        {
+          AttributeNames: ['ApproximateNumberOfMessages'],
+          QueueUrl: queueUrl,
+        },
+        (error, data) => {
+          Timer.stop(timerId);
 
-        if (err) {
-          Logger.error(err);
-          resolve(0);
+          if (error) {
+            Logger.error(error);
+            resolve(0);
+          }
+
+          resolve(Number.parseInt(data.Attributes.ApproximateNumberOfMessages, 10));
         }
-
-        resolve(parseInt(data.Attributes.ApproximateNumberOfMessages, 10));
-      }));
+      );
     });
   }
 
@@ -176,27 +186,27 @@ export default class SQSService extends DependencyAwareClass {
     return new Promise((resolve) => {
       Timer.start(timerId);
 
-      const messageParams = {
+      const messageParameters = {
         MessageBody: JSON.stringify(messageObject),
         QueueUrl: queueUrl,
       };
 
       if (queueUrl.includes('.fifo') === true) {
-        messageParams.MessageDeduplicationId = UUID();
-        messageParams.MessageGroupId = messageGroupId !== null ? messageGroupId : UUID();
+        messageParameters.MessageDeduplicationId = UUID();
+        messageParameters.MessageGroupId = messageGroupId !== null ? messageGroupId : UUID();
       }
 
-      sqs.sendMessage(messageParams, ((err) => {
+      sqs.sendMessage(messageParameters, (error) => {
         Timer.stop(timerId);
 
-        if (err) {
-          Logger.error(err);
+        if (error) {
+          Logger.error(error);
         }
 
         resolve({
           queue,
         });
-      }));
+      });
     });
   }
 
@@ -215,24 +225,27 @@ export default class SQSService extends DependencyAwareClass {
     return new Promise((resolve, reject) => {
       Timer.start(timerId);
 
-      sqs.receiveMessage({
-        QueueUrl: queueUrl,
-        VisibilityTimeout: timeout,
-        MaxNumberOfMessages: 10,
-      }, ((err, data) => {
-        Timer.stop(timerId);
+      sqs.receiveMessage(
+        {
+          QueueUrl: queueUrl,
+          VisibilityTimeout: timeout,
+          MaxNumberOfMessages: 10,
+        },
+        (error, data) => {
+          Timer.stop(timerId);
 
-        if (err) {
-          Logger.error(err);
-          return reject(err);
+          if (error) {
+            Logger.error(error);
+            return reject(error);
+          }
+
+          if (typeof data.Messages === 'undefined') {
+            return resolve([]);
+          }
+
+          return resolve(data.Messages.map((message) => new SQSMessageModel(message)));
         }
-
-        if (typeof data.Messages === 'undefined') {
-          return resolve([]);
-        }
-
-        return resolve(data.Messages.map((message) => new SQSMessageModel(message)));
-      }));
+      );
     });
   }
 }

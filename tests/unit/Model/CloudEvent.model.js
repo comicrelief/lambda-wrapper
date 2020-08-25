@@ -1,13 +1,11 @@
 import ServerlessMochaPlugin from 'serverless-mocha-plugin';
-import CloudEventModel from "../../../src/Model/CloudEvent.model";
+import CloudEventModel from '../../../src/Model/CloudEvent.model';
 
-const expect = ServerlessMochaPlugin.chai.expect;
+const { expect } = ServerlessMochaPlugin.chai;
 
 // Test definitions.
 describe('Model/CloudEventModel', () => {
-
   describe('Ensure setting and getting of variables', () => {
-
     const model = new CloudEventModel();
 
     it('should get the cloud event version', () => {
@@ -33,14 +31,14 @@ describe('Model/CloudEventModel', () => {
     });
 
     it('should generate the current timestamp as the current time', () => {
-      expect(new CloudEventModel().getEventTime().replace(/:[^:]+$/, '')).to.eql((new Date()).toISOString().replace(/:[^:]+$/, ''));
+      expect(new CloudEventModel().getEventTime().replace(/:[^:]+$/, '')).to.eql(new Date().toISOString().replace(/:[^:]+$/, ''));
     });
 
     it('should set and get the extensions', () => {
       expect(model.getExtensions()).to.eql({});
 
       const extensions = {
-        test: "test",
+        test: 'test',
       };
       model.setExtensions(extensions);
       expect(model.getExtensions()).to.eql(extensions);
@@ -54,12 +52,10 @@ describe('Model/CloudEventModel', () => {
       expect(model.getData()).to.eql({});
 
       const data = {
-        test: "test",
+        test: 'test',
       };
       model.setData(data);
       expect(model.getData()).to.eql(data);
     });
-
   });
-
 });

@@ -1,20 +1,6 @@
 {
   "extends": [
-    "airbnb-base",
-    "plugin:flowtype/recommended"
+    "@comicrelief/eslint-config"
   ],
-  "parser": "babel-eslint",
-  "plugins": [
-    "flowtype"
-  ],
-  "rules": {
-    "no-param-reassign": "off",
-    "react/destructuring-assignment": "off",
-    "flowtype/no-types-missing-file-annotation": "off",
-    "max-len": "off",
-    "import/no-cycle": "off",
-    "no-else-return": "off",
-    "class-methods-use-this": "off",
-    "consistent-return": "off"
-  }
+  "parser": "@babel/eslint-parser"
 }

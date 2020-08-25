@@ -16,7 +16,7 @@ export default class CloudEventModel extends Model {
     this.eventType = '';
     this.source = '';
     this.eventID = UUID();
-    this.eventTime = (new Date()).toISOString();
+    this.eventTime = new Date().toISOString();
     this.extensions = {};
     this.contentType = 'application/json';
     this.data = {};

@@ -39,7 +39,7 @@ export default class DependencyInjection {
    */
   get(definition) {
     if (typeof this.dependencies[definition] === 'undefined') {
-      throw Error(`${definition} does not exist in di container`);
+      throw new TypeError(`${definition} does not exist in di container`);
     }
 
     return this.dependencies[definition];
@@ -69,7 +69,8 @@ export default class DependencyInjection {
   getConfiguration(definition = null) {
     if (definition !== null && typeof this.configuration[definition] === 'undefined') {
       return null;
-    } else if (typeof this.configuration[definition] !== 'undefined') {
+    }
+    if (typeof this.configuration[definition] !== 'undefined') {
       return this.configuration[definition];
     }
 

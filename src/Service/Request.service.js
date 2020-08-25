@@ -1,3 +1,5 @@
+/* eslint-disable class-methods-use-this */
+/* eslint-disable sonarjs/no-duplicate-string */
 /* @flow */
 import QueryString from 'querystring';
 import validate from 'validate.js/validate';
@@ -29,14 +31,14 @@ export default class RequestService extends DependencyAwareClass {
    * @param requestType
    * @return {*}
    */
-  get(param: string, ifNull = null, requestType = null) {
-    const queryParams = this.getAll(requestType);
+  get(parameter: string, ifNull = null, requestType = null) {
+    const queryParameters = this.getAll(requestType);
 
-    if (queryParams === null) {
+    if (queryParameters === null) {
       return ifNull;
     }
 
-    return typeof queryParams[param] !== 'undefined' ? queryParams[param] : ifNull;
+    return typeof queryParameters[parameter] !== 'undefined' ? queryParameters[parameter] : ifNull;
   }
 
   /**
@@ -66,17 +68,22 @@ export default class RequestService extends DependencyAwareClass {
    * @param ifNull mixed
    * @return {*}
    */
-  getPathParameter(param: string = null, ifNull = {}) {
+  getPathParameter(parameter: string = null, ifNull = {}) {
     const event = this.getContainer().getEvent();
 
     // If no parameter has been requested, return all path parameters
-    if (param === null && typeof event.pathParameters === 'object') {
+    if (parameter === null && typeof event.pathParameters === 'object') {
       return event.pathParameters;
     }
 
     // If a specifc parameter has been requested, return the parameter if it exists
-    if (typeof param === 'string' && typeof event.pathParameters === 'object' && event.pathParameters !== null && typeof event.pathParameters[param] !== 'undefined') {
-      return event.pathParameters[param];
+    if (
+      typeof parameter === 'string' &&
+      typeof event.pathParameters === 'object' &&
+      event.pathParameters !== null &&
+      typeof event.pathParameters[parameter] !== 'undefined'
+    ) {
+      return event.pathParameters[parameter];
     }
 
     return ifNull;
@@ -87,6 +94,7 @@ export default class RequestService extends DependencyAwareClass {
    * @param requestType
    * @return {{}}
    */
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   getAll(requestType = null) {
     const event = this.getContainer().getEvent();
 
@@ -95,37 +103,45 @@ export default class RequestService extends DependencyAwareClass {
     }
 
     if (event.httpMethod === 'POST' || requestType === REQUEST_TYPES.POST) {
-      let queryParams = {};
+      let queryParameters = {};
 
-      if ((typeof event.headers['Content-Type'] !== 'undefined' && event.headers['Content-Type'].indexOf('application/x-www-form-urlencoded') !== -1)
-        || (typeof event.headers['content-type'] !== 'undefined' && event.headers['content-type'].indexOf('application/x-www-form-urlencoded') !== -1)) {
-        queryParams = QueryString.parse(event.body);
+      if (
+        (typeof event.headers['Content-Type'] !== 'undefined' && event.headers['Content-Type'].includes('application/x-www-form-urlencoded')) ||
+        (typeof event.headers['content-type'] !== 'undefined' && event.headers['content-type'].includes('application/x-www-form-urlencoded'))
+      ) {
+        queryParameters = QueryString.parse(event.body);
       }
 
-      if ((typeof event.headers['Content-Type'] !== 'undefined' && event.headers['Content-Type'].indexOf('application/json') !== -1)
-        || (typeof event.headers['content-type'] !== 'undefined' && event.headers['content-type'].indexOf('application/json') !== -1)) {
+      if (
+        (typeof event.headers['Content-Type'] !== 'undefined' && event.headers['Content-Type'].includes('application/json')) ||
+        (typeof event.headers['content-type'] !== 'undefined' && event.headers['content-type'].includes('application/json'))
+      ) {
         try {
-          queryParams = JSON.parse(event.body);
-        } catch (e) {
-          queryParams = {};
+          queryParameters = JSON.parse(event.body);
+        } catch {
+          queryParameters = {};
         }
       }
 
-      if ((typeof event.headers['Content-Type'] !== 'undefined' && event.headers['Content-Type'].indexOf('text/xml') !== -1)
-        || (typeof event.headers['content-type'] !== 'undefined' && event.headers['content-type'].indexOf('text/xml') !== -1)) {
-        XML2JS.parseString(event.body, ((err, result) => {
-          if (err) {
-            queryParams = {};
+      if (
+        (typeof event.headers['Content-Type'] !== 'undefined' && event.headers['Content-Type'].includes('text/xml')) ||
+        (typeof event.headers['content-type'] !== 'undefined' && event.headers['content-type'].includes('text/xml'))
+      ) {
+        XML2JS.parseString(event.body, (error, result) => {
+          if (error) {
+            queryParameters = {};
           } else {
-            queryParams = result;
+            queryParameters = result;
           }
-        }));
+        });
       }
-      if ((typeof event.headers['Content-Type'] !== 'undefined' && event.headers['Content-Type'].indexOf('multipart/form-data') !== -1)
-        || (typeof event.headers['content-type'] !== 'undefined' && event.headers['content-type'].indexOf('multipart/form-data') !== -1)) {
-        queryParams = this.parseForm(true);
+      if (
+        (typeof event.headers['Content-Type'] !== 'undefined' && event.headers['Content-Type'].includes('multipart/form-data')) ||
+        (typeof event.headers['content-type'] !== 'undefined' && event.headers['content-type'].includes('multipart/form-data'))
+      ) {
+        queryParameters = this.parseForm(true);
       }
-      return typeof queryParams !== 'undefined' ? queryParams : {};
+      return typeof queryParameters !== 'undefined' ? queryParameters : {};
     }
 
     return null;
@@ -138,9 +154,11 @@ export default class RequestService extends DependencyAwareClass {
   getIp() {
     const event = this.getContainer().getEvent();
 
-    if (typeof event.requestContext !== 'undefined'
-      && typeof event.requestContext.identity !== 'undefined'
-      && typeof event.requestContext.identity.sourceIp !== 'undefined') {
+    if (
+      typeof event.requestContext !== 'undefined' &&
+      typeof event.requestContext.identity !== 'undefined' &&
+      typeof event.requestContext.identity.sourceIp !== 'undefined'
+    ) {
       return event.requestContext.identity.sourceIp;
     }
 
@@ -180,7 +198,7 @@ export default class RequestService extends DependencyAwareClass {
         'operating-system': os.family,
         'operating-system-version': agent.os.toVersion(),
       };
-    } catch (error) {
+    } catch {
       this.getContainer().get(DEFINITIONS.LOGGER).label('user-agent-parsing-failed');
 
       return null;
@@ -222,21 +240,20 @@ export default class RequestService extends DependencyAwareClass {
     const body = event.isBase64Encoded ? Buffer.from(event.body, 'base64').toString('binary').trim() : event.body;
 
     const result = {};
-    body
-      .split(boundary)
-      .forEach((item) => {
-        if (/filename=".+"/g.test(item)) {
-          result[item.match(/name=".+";/g)[0].slice(6, -2)] = {
-            type: 'file',
-            filename: item.match(/filename=".+"/g)[0].slice(10, -1),
-            contentType: item.match(/Content-Type:\s.+/g)[0].slice(14),
-            content: useBuffer ? Buffer.from(item.slice(item.search(/Content-Type:\s.+/g) + item.match(/Content-Type:\s.+/g)[0].length + 4, -4), 'binary')
-              : item.slice(item.search(/Content-Type:\s.+/g) + item.match(/Content-Type:\s.+/g)[0].length + 4, -4),
-          };
-        } else if (/name=".+"/g.test(item)) {
-          result[item.match(/name=".+"/g)[0].slice(6, -1)] = item.slice(item.search(/name=".+"/g) + item.match(/name=".+"/g)[0].length + 4, -4);
-        }
-      });
+    body.split(boundary).forEach((item) => {
+      if (/filename=".+"/g.test(item)) {
+        result[item.match(/name=".+";/g)[0].slice(6, -2)] = {
+          type: 'file',
+          filename: item.match(/filename=".+"/g)[0].slice(10, -1),
+          contentType: item.match(/Content-Type:\s.+/g)[0].slice(14),
+          content: useBuffer
+            ? Buffer.from(item.slice(item.search(/Content-Type:\s.+/g) + item.match(/Content-Type:\s.+/g)[0].length + 4, -4), 'binary')
+            : item.slice(item.search(/Content-Type:\s.+/g) + item.match(/Content-Type:\s.+/g)[0].length + 4, -4),
+        };
+      } else if (/name=".+"/g.test(item)) {
+        result[item.match(/name=".+"/g)[0].slice(6, -1)] = item.slice(item.search(/name=".+"/g) + item.match(/name=".+"/g)[0].length + 4, -4);
+      }
+    });
     return result;
   }
 
@@ -248,18 +265,14 @@ export default class RequestService extends DependencyAwareClass {
     const event = this.getContainer().getEvent();
     const eventRecord = event.Records && event.Records[0];
 
-    if (typeof event.Records !== 'undefined'
-      && typeof event.Records[0] !== 'undefined'
-      && typeof eventRecord.eventSource !== 'undefined') {
+    if (typeof event.Records !== 'undefined' && typeof event.Records[0] !== 'undefined' && typeof eventRecord.eventSource !== 'undefined') {
       return eventRecord;
     }
     return null;
   }
 
   getValueIgnoringKeyCase(object, key) {
-    const foundKey = Object
-      .keys(object)
-      .find((currentKey) => currentKey.toLocaleLowerCase() === key.toLowerCase());
+    const foundKey = Object.keys(object).find((currentKey) => currentKey.toLocaleLowerCase() === key.toLowerCase());
     return object[foundKey];
   }
 

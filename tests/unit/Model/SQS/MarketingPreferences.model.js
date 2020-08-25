@@ -1,12 +1,13 @@
+/* eslint-disable sonarjs/no-identical-functions */
+/* eslint-disable sonarjs/no-duplicate-string */
 import ServerlessMochaPlugin from 'serverless-mocha-plugin';
 import MarketingPreferencesModel from '../../../../src/Model/SQS/MarketingPreference.model';
 import ResponseModel from '../../../../src/Model/Response.model';
 
-const expect = ServerlessMochaPlugin.chai.expect;
+const { expect } = ServerlessMochaPlugin.chai;
 
 // Test definitions.
 describe('Model/MarketingPreferencesModel', () => {
-
   describe('Ensure setting and getting of variables', () => {
     const mockedData = {
       firstname: 'Tim',
@@ -14,7 +15,7 @@ describe('Model/MarketingPreferencesModel', () => {
       phone: '0208 254 3062',
       mobile: '07917 321 492',
       address1: '32-36',
-      address2: 'St. Smith\'s Avenue',
+      address2: "St. Smith's Avenue",
       address3: '',
       town: 'London',
       postcode: 'sw184bx',
@@ -119,7 +120,8 @@ describe('Model/MarketingPreferencesModel', () => {
     });
 
     it('should validate the model', (done) => {
-      model.validate()
+      model
+        .validate()
         .then(() => {
           expect(true).to.eql(true);
           done();
@@ -137,7 +139,8 @@ describe('Model/MarketingPreferencesModel', () => {
     const model = new MarketingPreferencesModel(mockedData);
 
     it('should validate the model and return an error response', (done) => {
-      model.validate()
+      model
+        .validate()
         .then(() => {
           expect(true).to.eql(false);
           done();
@@ -158,7 +161,7 @@ describe('Model/MarketingPreferencesModel', () => {
       lastname: 'Jones',
       mobile: '07917 321 492',
       address1: '32-36',
-      address2: 'St. Smith\'s Avenue',
+      address2: "St. Smith's Avenue",
       address3: '',
       town: 'London',
       postcode: 'sw184bx',
@@ -178,17 +181,18 @@ describe('Model/MarketingPreferencesModel', () => {
     const model = new MarketingPreferencesModel(mockedData);
 
     it('should validate the model and return an error response', (done) => {
-      model.validate()
+      model
+        .validate()
         .then(() => {
           expect(true).to.eql(false);
           done();
         })
         .catch((error) => {
-          console.log('Error: ', error);
+          console.log('Error:', error);
 
           expect(error instanceof ResponseModel).to.eql(true);
           expect(error.getCode()).to.eql(400);
-          expect(error.body.validation_errors.email[0]).to.eql('Email can\'t be blank');
+          expect(error.body.validation_errors.email[0]).to.eql("Email can't be blank");
           expect(true).to.eql(true);
           done();
         });
@@ -202,7 +206,7 @@ describe('Model/MarketingPreferencesModel', () => {
       phone: '0208 254 3062',
       mobile: '07917 321 492',
       address1: '32-36',
-      address2: 'St. Smith\'s Avenue',
+      address2: "St. Smith's Avenue",
       address3: '',
       town: 'London',
       postcode: 'sw184bx',
@@ -222,7 +226,8 @@ describe('Model/MarketingPreferencesModel', () => {
     const model = new MarketingPreferencesModel(mockedData);
 
     it('should validate the model and return an error response', (done) => {
-      model.validate()
+      model
+        .validate()
         .then(() => {
           expect(true).to.eql(false);
           done();
@@ -265,19 +270,19 @@ describe('Model/MarketingPreferencesModel', () => {
     const model = new MarketingPreferencesModel(mockedData);
 
     it('should validate the model', (done) => {
-      model.validate()
+      model
+        .validate()
         .then(() => {
           expect(true).to.eql(true);
           done();
         })
         .catch((error) => {
-          console.log('Error: ', error);
+          console.log('Error:', error);
           expect(true).to.eql(false);
           done();
         });
     });
   });
-
 
   describe('Ensure validation passes when email permission is NO', () => {
     const mockedData = {
@@ -307,13 +312,14 @@ describe('Model/MarketingPreferencesModel', () => {
     const model = new MarketingPreferencesModel(mockedData);
 
     it('should validate the model', (done) => {
-      model.validate()
+      model
+        .validate()
         .then(() => {
           expect(true).to.eql(true);
           done();
         })
         .catch((error) => {
-          console.log('Error: ', error);
+          console.log('Error:', error);
           expect(true).to.eql(false);
           done();
         });
@@ -321,14 +327,13 @@ describe('Model/MarketingPreferencesModel', () => {
   });
 
   describe('Ensure generating of timestamp when not set', () => {
-
     const mockedData = {
       firstname: 'Tim',
       lastname: 'Jones',
       phone: '0208 254 3062',
       mobile: '07917 321 492',
       address1: '32-36',
-      address2: 'St. Smith\'s Avenue',
+      address2: "St. Smith's Avenue",
       address3: '',
       town: 'London',
       postcode: 'sw184bx',
@@ -352,7 +357,8 @@ describe('Model/MarketingPreferencesModel', () => {
     });
 
     it('should validate the model', (done) => {
-      model.validate()
+      model
+        .validate()
         .then(() => {
           expect(true).to.eql(true);
           done();
@@ -364,14 +370,13 @@ describe('Model/MarketingPreferencesModel', () => {
     });
   });
 
-
   describe('Ensure validation passes when nullable fields are not present', () => {
     const mockedData = {
       firstname: 'Tim',
       lastname: 'Jones',
       phone: '0208 254 3062',
       mobile: '07917 321 492',
-      address1: '32 Smith\'s Avenue',
+      address1: "32 Smith's Avenue",
       town: 'London',
       postcode: 'sw184bx',
       country: 'United Kindgom',
@@ -385,19 +390,19 @@ describe('Model/MarketingPreferencesModel', () => {
     const model = new MarketingPreferencesModel(mockedData);
 
     it('should validate the model', (done) => {
-      model.validate()
+      model
+        .validate()
         .then(() => {
           expect(true).to.eql(true);
           done();
         })
         .catch((error) => {
-          console.log('Error: ', error);
+          console.log('Error:', error);
           expect(true).to.eql(false);
           done();
         });
     });
   });
-
 
   describe('Ensure model permission evaluates to false when no permission is set', () => {
     const mockedData = {
@@ -405,7 +410,7 @@ describe('Model/MarketingPreferencesModel', () => {
       lastname: 'Jones',
       phone: '0208 254 3062',
       mobile: '07917 321 492',
-      address1: '32 Smith\'s Avenue',
+      address1: "32 Smith's Avenue",
       town: 'London',
       postcode: 'sw184bx',
       country: 'United Kindgom',
@@ -423,12 +428,10 @@ describe('Model/MarketingPreferencesModel', () => {
     const model = new MarketingPreferencesModel(mockedData);
 
     it('should evaluate model permissions to false', (done) => {
-
       expect(model.isPermissionSet()).to.eql(false);
       done();
     });
   });
-
 
   describe('Ensure model permission evaluates to true when at least one permission is set', () => {
     const mockedData = {
@@ -436,7 +439,7 @@ describe('Model/MarketingPreferencesModel', () => {
       lastname: 'Jones',
       phone: '0208 254 3062',
       mobile: '07917 321 492',
-      address1: '32 Smith\'s Avenue',
+      address1: "32 Smith's Avenue",
       town: 'London',
       postcode: 'sw184bx',
       country: 'United Kindgom',
@@ -455,13 +458,8 @@ describe('Model/MarketingPreferencesModel', () => {
     const model = new MarketingPreferencesModel(mockedData);
 
     it('should evaluate model permissions to true', (done) => {
-
       expect(model.isPermissionSet()).to.eql(true);
       done();
     });
   });
-
-
-
-
 });
