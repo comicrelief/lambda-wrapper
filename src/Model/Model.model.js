@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this */
 import validate from 'validate.js/validate';
 
 export default class Model {

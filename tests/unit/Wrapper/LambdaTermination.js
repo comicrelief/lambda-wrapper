@@ -2,25 +2,23 @@ import ServerlessMochaPlugin from 'serverless-mocha-plugin';
 
 import LambdaTermination from '../../../src/Wrapper/LambdaTermination';
 
-
-const expect = ServerlessMochaPlugin.chai.expect;
+const { expect } = ServerlessMochaPlugin.chai;
 
 describe('Wrapper/LambdaTermination', () => {
   describe('Stores the custom fields', () => {
-    const props = {
+    const properties = {
       internal: 'INTERNAL',
       code: 401,
       body: 'BODY',
     };
 
-    const lt = new LambdaTermination(props.internal, props.code, props.body);
+    const lt = new LambdaTermination(properties.internal, properties.code, properties.body);
 
-    Object.entries(props)
-      .forEach(([key, value]) => {
-        it(`Exposes '${key}'`, () => {
-          expect(lt[key]).to.be.equal(value);
-        });
+    Object.entries(properties).forEach(([key, value]) => {
+      it(`Exposes '${key}'`, () => {
+        expect(lt[key]).to.be.equal(value);
       });
+    });
   });
 
   it('Generates an error', () => {

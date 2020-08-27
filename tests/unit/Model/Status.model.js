@@ -1,13 +1,11 @@
 import ServerlessMochaPlugin from 'serverless-mocha-plugin';
-import StatusModel, { STATUS_TYPES } from "../../../src/Model/Status.model";
+import StatusModel, { STATUS_TYPES } from '../../../src/Model/Status.model';
 
-const expect = ServerlessMochaPlugin.chai.expect;
+const { expect } = ServerlessMochaPlugin.chai;
 
 // Test definitions.
 describe('Model/StatusModel', () => {
-
   describe('Ensure setting and getting of variables', () => {
-
     const service = 'test';
     const status = STATUS_TYPES.OK;
     const statusModel = new StatusModel(service, status);
@@ -23,7 +21,5 @@ describe('Model/StatusModel', () => {
     it('should throw an error when trying to set an invalid status', () => {
       expect(() => statusModel.setStatus('invalid')).to.throw('StatusModel - invalid is not a valid status type');
     });
-
   });
-
 });

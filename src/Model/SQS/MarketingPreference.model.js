@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 import validate from 'validate.js';
 import Model from '../Model.model';
 import requestConstraints from './MarketingPreference.constraints.json';
@@ -445,14 +446,12 @@ export default class MarketingPreference extends Model {
    * @returns {boolean}
    */
   isPermissionSet() {
-    return (this.getPermissionEmail() !== null
-      && this.getPermissionEmail() !== '')
-      || (this.getPermissionPost() !== null
-        && this.getPermissionPost() !== '')
-      || (this.getPermissionPhone() !== null
-        && this.getPermissionPhone() !== '')
-      || (this.getPermissionSMS() !== null
-        && this.getPermissionSMS() !== '');
+    return (
+      (this.getPermissionEmail() !== null && this.getPermissionEmail() !== '') ||
+      (this.getPermissionPost() !== null && this.getPermissionPost() !== '') ||
+      (this.getPermissionPhone() !== null && this.getPermissionPhone() !== '') ||
+      (this.getPermissionSMS() !== null && this.getPermissionSMS() !== '')
+    );
   }
 
   /**
@@ -462,11 +461,13 @@ export default class MarketingPreference extends Model {
   validate() {
     return new Promise((resolve, reject) => {
       const requestConstraintsClone = { ...requestConstraints };
-      if ((this.getPermissionEmail() !== null
-        && this.getPermissionEmail() !== ''
-        && this.getPermissionEmail() !== '0'
-        && this.getPermissionEmail() !== 0)
-      || (this.getEmail())) {
+      if (
+        (this.getPermissionEmail() !== null &&
+          this.getPermissionEmail() !== '' &&
+          this.getPermissionEmail() !== '0' &&
+          this.getPermissionEmail() !== 0) ||
+        this.getEmail()
+      ) {
         if (this.getEmail()) {
           requestConstraintsClone.email = { email: true };
         } else {
@@ -474,12 +475,30 @@ export default class MarketingPreference extends Model {
         }
       }
       // Update constraints if fields are not empty
-      requestConstraintsClone.firstname = this.getFirstName() !== null && this.getFirstName() !== '' ? { format: { pattern: "[a-zA-Z.'-_ ]+", flags: 'i', message: 'can only contain alphabetical characters' } } : '';
-      requestConstraintsClone.lastname = this.getLastName() !== null && this.getLastName() !== '' ? { format: { pattern: "[a-zA-Z.'-_ ]+", flags: 'i', message: 'can only contain alphabetical characters' } } : '';
-      requestConstraintsClone.phone = this.getPhone() !== null && this.getPhone() !== '' ? { format: { pattern: '[0-9 ]+', flags: 'i', message: 'can only contain numerical characters' } } : '';
-      requestConstraintsClone.mobile = this.getMobile() !== null && this.getMobile() !== '' ? { format: { pattern: '[0-9 ]+', flags: 'i', message: 'can only contain numerical characters' } } : '';
-      requestConstraintsClone.address1 = this.getAddress1() !== null && this.getAddress1() !== '' ? { format: { pattern: "[a-zA-Z.'-_& ]+", flags: 'i', message: 'can only contain alphanumeric characters and . \' - _ &' } } : '';
-      requestConstraintsClone.country = this.getCountry() !== null && this.getCountry() !== '' ? { format: { pattern: "[a-zA-Z.'-_& ]+", flags: 'i', message: 'can only contain alphabetical characters and . \' - _ &' } } : '';
+      requestConstraintsClone.firstname =
+        this.getFirstName() !== null && this.getFirstName() !== ''
+          ? { format: { pattern: "[a-zA-Z.'-_ ]+", flags: 'i', message: 'can only contain alphabetical characters' } }
+          : '';
+      requestConstraintsClone.lastname =
+        this.getLastName() !== null && this.getLastName() !== ''
+          ? { format: { pattern: "[a-zA-Z.'-_ ]+", flags: 'i', message: 'can only contain alphabetical characters' } }
+          : '';
+      requestConstraintsClone.phone =
+        this.getPhone() !== null && this.getPhone() !== ''
+          ? { format: { pattern: '[0-9 ]+', flags: 'i', message: 'can only contain numerical characters' } }
+          : '';
+      requestConstraintsClone.mobile =
+        this.getMobile() !== null && this.getMobile() !== ''
+          ? { format: { pattern: '[0-9 ]+', flags: 'i', message: 'can only contain numerical characters' } }
+          : '';
+      requestConstraintsClone.address1 =
+        this.getAddress1() !== null && this.getAddress1() !== ''
+          ? { format: { pattern: "[a-zA-Z.'-_& ]+", flags: 'i', message: "can only contain alphanumeric characters and . ' - _ &" } }
+          : '';
+      requestConstraintsClone.country =
+        this.getCountry() !== null && this.getCountry() !== ''
+          ? { format: { pattern: "[a-zA-Z.'-_& ]+", flags: 'i', message: "can only contain alphabetical characters and . ' - _ &" } }
+          : '';
 
       const validation = validate(this.getEntityMappings(), requestConstraintsClone);
 

@@ -2,18 +2,16 @@ import ServerlessMochaPlugin from 'serverless-mocha-plugin';
 import DependencyInjection from '../../../src/DependencyInjection/DependencyInjection.class';
 import { DEFINITIONS } from '../../../src/Config/Dependencies';
 
-import RequestService from "../../../src/Service/Request.service";
-import LoggerService from "../../../src/Service/Logger.service";
+import RequestService from '../../../src/Service/Request.service';
+import LoggerService from '../../../src/Service/Logger.service';
 
-const expect = ServerlessMochaPlugin.chai.expect;
+const { expect } = ServerlessMochaPlugin.chai;
 
-let getEvent = require('../../mocks/aws/event.json');
-let getContext = require('../../mocks/aws/context.json');
+const getEvent = require('../../mocks/aws/event.json');
+const getContext = require('../../mocks/aws/context.json');
 
 describe('DependencyInjection/DependencyInjectionClass', () => {
-
   describe('should instantiate', () => {
-
     const configuration = {
       test: 123,
     };
@@ -30,11 +28,9 @@ describe('DependencyInjection/DependencyInjectionClass', () => {
     it('should output the configuration that was provided to it', () => {
       expect(dependencyInjection.getConfiguration()).to.eql(configuration);
     });
-
   });
 
   describe('should get dependencies', () => {
-
     const dependencyInjection = new DependencyInjection({}, getEvent, getContext);
 
     it('Should throw validation errors when an non existent model is requested', () => {
@@ -50,7 +46,5 @@ describe('DependencyInjection/DependencyInjectionClass', () => {
       expect(requestService instanceof RequestService).to.be.true;
       expect(requestService.di instanceof DependencyInjection).to.be.true;
     });
-
   });
-
 });

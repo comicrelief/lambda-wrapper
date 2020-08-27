@@ -44,7 +44,7 @@ export default class StatusModel extends Model {
    */
   setStatus(status: string) {
     if (typeof STATUS_TYPES[status] === 'undefined') {
-      throw new Error(`${StatusModel.name} - ${status} is not a valid status type`);
+      throw new TypeError(`${StatusModel.name} - ${status} is not a valid status type`);
     }
 
     this.status = status;

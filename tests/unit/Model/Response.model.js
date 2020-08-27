@@ -1,24 +1,22 @@
 import ServerlessMochaPlugin from 'serverless-mocha-plugin';
 import ResponseModel, { DEFAULT_MESSAGE, RESPONSE_HEADERS } from '../../../src/Model/Response.model';
 
-const expect = ServerlessMochaPlugin.chai.expect;
+const { expect } = ServerlessMochaPlugin.chai;
 
 describe('Model/ResponseModel', () => {
-
   it('should return the expected headers', () => {
     const response = new ResponseModel({}, 500);
     expect(response.generate().headers).to.eql(RESPONSE_HEADERS);
   });
 
   describe('ensure body set correctly', () => {
-
     it('should set the body data from the constructor', () => {
       const response = new ResponseModel({ test: 123 }, 500);
 
       const responseBody = response.generate();
 
       expect(typeof responseBody.body).to.eql('string');
-      expect(responseBody.body.indexOf("123")).to.not.eql(-1);
+      expect(responseBody.body.indexOf('123')).to.not.eql(-1);
       expect(JSON.parse(responseBody.body).data.test).to.eql(123);
     });
 
@@ -29,14 +27,12 @@ describe('Model/ResponseModel', () => {
       const responseBody = response.generate();
 
       expect(typeof responseBody.body).to.eql('string');
-      expect(responseBody.body.indexOf("234")).to.not.eql(-1);
+      expect(responseBody.body.indexOf('234')).to.not.eql(-1);
       expect(JSON.parse(responseBody.body).data.test).to.eql(234);
     });
-
   });
 
   describe('ensure status codes are set correctly', () => {
-
     it('should return the 200 status code that is supplied to it', () => {
       const response = new ResponseModel({}, 200);
       expect(response.generate().statusCode).to.eql(200);
@@ -53,11 +49,9 @@ describe('Model/ResponseModel', () => {
 
       expect(response.generate().statusCode).to.eql(300);
     });
-
   });
 
   describe('ensure messages are set correctly', () => {
-
     it('should return a message field when a message is supplied to it', () => {
       const message = 'test 123';
       const response = new ResponseModel({}, 500, message);
@@ -81,7 +75,5 @@ describe('Model/ResponseModel', () => {
 
       expect(JSON.parse(response.generate().body).message).to.eql('test');
     });
-
   });
-
 });

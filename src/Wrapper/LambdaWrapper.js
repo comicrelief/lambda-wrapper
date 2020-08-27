@@ -1,10 +1,11 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 import Epsagon from 'epsagon';
 
 import DependencyInjection from '../DependencyInjection/DependencyInjection.class';
 import { DEFINITIONS } from '../Config/Dependencies';
 import ResponseModel from '../Model/Response.model';
 
-export default ((configuration, handler) => {
+export default (configuration, handler) => {
   let instance = (event, context, callback) => {
     const di = new DependencyInjection(configuration, event, context);
     const request = di.get(DEFINITIONS.REQUEST);
@@ -19,11 +20,7 @@ export default ((configuration, handler) => {
         details: error.details || 'unknown error',
       };
 
-      const response = new ResponseModel(
-        responseDetails.body,
-        responseDetails.code,
-        responseDetails.details,
-      );
+      const response = new ResponseModel(responseDetails.body, responseDetails.code, responseDetails.details);
 
       return response.generate();
     };
@@ -63,10 +60,10 @@ export default ((configuration, handler) => {
 
   // If the Epsagon token is enabled, then wrap the instance in the Epsagon wrapper
   if (
-    typeof process.env.EPSAGON_TOKEN === 'string'
-    && process.env.EPSAGON_TOKEN !== 'undefined'
-    && typeof process.env.EPSAGON_SERVICE_NAME === 'string'
-    && process.env.EPSAGON_SERVICE_NAME !== 'undefined'
+    typeof process.env.EPSAGON_TOKEN === 'string' &&
+    process.env.EPSAGON_TOKEN !== 'undefined' &&
+    typeof process.env.EPSAGON_SERVICE_NAME === 'string' &&
+    process.env.EPSAGON_SERVICE_NAME !== 'undefined'
   ) {
     Epsagon.init({
       token: process.env.EPSAGON_TOKEN,
@@ -77,4 +74,4 @@ export default ((configuration, handler) => {
   }
 
   return instance;
-});
+};

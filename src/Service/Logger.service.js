@@ -12,27 +12,27 @@ export const logger = Winston.createLogger({
       replacer: (key, value) => {
         if (value instanceof Buffer) {
           return value.toString('base64');
-        } else if (value instanceof Error) {
+        }
+        if (value instanceof Error) {
           const error = {};
 
-          Object.getOwnPropertyNames(value).forEach(((objectKey) => {
+          Object.getOwnPropertyNames(value).forEach((objectKey) => {
             error[objectKey] = value[objectKey];
-          }));
+          });
 
           return error;
         }
 
         return value;
       },
-    }),
+    })
   ),
-  transports: [
-    new Winston.transports.Console(),
-  ],
+  transports: [new Winston.transports.Console()],
 });
 
 // Instantiate the sentry client
-const sentryIsAvailable = typeof process.env.RAVEN_DSN !== 'undefined' && (typeof process.env.RAVEN_DSN === 'string' && process.env.RAVEN_DSN !== 'undefined');
+const sentryIsAvailable =
+  typeof process.env.RAVEN_DSN !== 'undefined' && typeof process.env.RAVEN_DSN === 'string' && process.env.RAVEN_DSN !== 'undefined';
 
 if (sentryIsAvailable) {
   Sentry.init({
@@ -49,10 +49,12 @@ export default class LoggerService extends DependencyAwareClass {
   constructor(di: DependencyInjection) {
     super(di);
     this.sentry = null;
+    this.logger = logger;
+
     const container = this.getContainer();
     const event = container.getEvent();
     const context = container.getContext();
-    const isOffline = !Object.prototype.hasOwnProperty.call(context, 'invokedFunctionArn') || context.invokedFunctionArn.indexOf('offline') !== -1;
+    const isOffline = !Object.prototype.hasOwnProperty.call(context, 'invokedFunctionArn') || context.invokedFunctionArn.includes('offline');
 
     // Set sentry client context
     if (sentryIsAvailable && isOffline === false) {
@@ -87,11 +89,11 @@ export default class LoggerService extends DependencyAwareClass {
     }
 
     if (
-      typeof process.env.EPSAGON_TOKEN === 'string'
-      && process.env.EPSAGON_TOKEN !== 'undefined'
-      && typeof process.env.EPSAGON_SERVICE_NAME === 'string'
-      && process.env.EPSAGON_SERVICE_NAME !== 'undefined'
-      && error instanceof Error
+      typeof process.env.EPSAGON_TOKEN === 'string' &&
+      process.env.EPSAGON_TOKEN !== 'undefined' &&
+      typeof process.env.EPSAGON_SERVICE_NAME === 'string' &&
+      process.env.EPSAGON_SERVICE_NAME !== 'undefined' &&
+      error instanceof Error
     ) {
       Epsagon.setError(error);
     }
@@ -114,7 +116,7 @@ export default class LoggerService extends DependencyAwareClass {
    * @param message string
    */
   info(message) {
-    logger.log('info', message);
+    this.logger.log('info', message);
   }
 
   /**
@@ -124,16 +126,16 @@ export default class LoggerService extends DependencyAwareClass {
    */
   label(descriptor, silent = false) {
     if (
-      typeof process.env.EPSAGON_TOKEN === 'string'
-      && process.env.EPSAGON_TOKEN !== 'undefined'
-      && typeof process.env.EPSAGON_SERVICE_NAME === 'string'
-      && process.env.EPSAGON_SERVICE_NAME !== 'undefined'
+      typeof process.env.EPSAGON_TOKEN === 'string' &&
+      process.env.EPSAGON_TOKEN !== 'undefined' &&
+      typeof process.env.EPSAGON_SERVICE_NAME === 'string' &&
+      process.env.EPSAGON_SERVICE_NAME !== 'undefined'
     ) {
       Epsagon.label(descriptor);
     }
 
     if (silent === false) {
-      logger.log('info', `label - ${descriptor}`);
+      this.logger.log('info', `label - ${descriptor}`);
     }
   }
 
@@ -145,16 +147,16 @@ export default class LoggerService extends DependencyAwareClass {
    */
   metric(descriptor, stat, silent = false) {
     if (
-      typeof process.env.EPSAGON_TOKEN === 'string'
-      && process.env.EPSAGON_TOKEN !== 'undefined'
-      && typeof process.env.EPSAGON_SERVICE_NAME === 'string'
-      && process.env.EPSAGON_SERVICE_NAME !== 'undefined'
+      typeof process.env.EPSAGON_TOKEN === 'string' &&
+      process.env.EPSAGON_TOKEN !== 'undefined' &&
+      typeof process.env.EPSAGON_SERVICE_NAME === 'string' &&
+      process.env.EPSAGON_SERVICE_NAME !== 'undefined'
     ) {
       Epsagon.label(descriptor, stat);
     }
 
     if (silent === false) {
-      logger.log('info', `metric - ${descriptor} - ${stat}`);
+      this.logger.log('info', `metric - ${descriptor} - ${stat}`);
     }
   }
 }
