@@ -40,7 +40,7 @@
     "snyk": "^1.364.0"
   },
   "peerDependencies": {
-    "aws-sdk": "^2.743.0"
+    "aws-sdk": ">=2.743.0"
   },
   "dependencies": {
     "@sentry/node": "^5.20.0",
