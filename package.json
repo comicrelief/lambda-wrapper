@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "lint": "yarn eslint .",
-    "test": "nyc mocha \"tests/unit/**/*.js\"",
+    "test": "jest --coverage",
     "build": "babel src --out-dir dist --copy-files",
     "prepublish": "yarn snyk-protect; yarn build",
     "snyk-protect": "snyk protect"
@@ -14,15 +14,15 @@
   "license": "ISC",
   "devDependencies": {
     "@babel/cli": "^7.0.0",
-    "@babel/core": "^7.0.0",
+    "@babel/core": "^7.11.6",
     "@babel/eslint-parser": "^7.11.4",
     "@babel/node": "^7.0.0",
     "@babel/plugin-syntax-flow": "^7.0.0",
     "@babel/plugin-transform-flow-strip-types": "^7.0.0",
-    "@babel/preset-env": "^7.0.0",
+    "@babel/preset-env": "^7.11.5",
     "@comicrelief/eslint-config": "^1.0.6",
     "babel-eslint": "^10.1.0",
-    "babel-plugin-istanbul": "^6.0.0",
+    "babel-jest": "^26.3.0",
     "eslint": "^7.5.0",
     "eslint-config-airbnb-base": "^14.2.0",
     "eslint-config-prettier": "^6.11.0",
@@ -31,11 +31,10 @@
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-sonarjs": "^0.5.0",
     "eslint-plugin-unicorn": "^21.0.0",
-    "mocha": "^8.0.1",
+    "jest": "^26.4.2",
     "nyc": "^15.1.0",
     "prettier": "^2.1.0",
     "semantic-release": "^17.1.1",
-    "serverless-mocha-plugin": "^1.12.0",
     "sinon": "^9.0.2",
     "snyk": "^1.364.0"
   },
@@ -52,30 +51,6 @@
     "validate.js": "0.13.1",
     "winston": "^3.3.3",
     "xml2js": "^0.4.23"
-  },
-  "babel": {
-    "env": {
-      "test": {
-        "plugins": [
-          "istanbul"
-        ]
-      }
-    },
-    "presets": [
-      "@babel/preset-env"
-    ],
-    "plugins": [
-      "@babel/plugin-syntax-flow",
-      "@babel/plugin-transform-flow-strip-types"
-    ]
-  },
-  "nyc": {
-    "require": [
-      "@babel/register"
-    ],
-    "reporter": [
-      "text"
-    ]
   },
   "snyk": true
 }
