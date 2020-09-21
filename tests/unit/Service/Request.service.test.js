@@ -1,39 +1,40 @@
 /* eslint-disable sonarjs/no-duplicate-string */
-import ServerlessMochaPlugin from 'serverless-mocha-plugin';
 import QueryString from 'querystring';
-import DependencyInjection from '../../../src/DependencyInjection/DependencyInjection.class';
 
+import sinon from 'sinon';
+
+import DependencyInjection from '../../../src/DependencyInjection/DependencyInjection.class';
 import RequestService, { REQUEST_TYPES } from '../../../src/Service/Request.service';
 import CONFIGURATION from '../../../src/Config/Dependencies';
-
-const { expect } = ServerlessMochaPlugin.chai;
 
 const getEvent = require('../../mocks/aws/event.json');
 const getContext = require('../../mocks/aws/context.json');
 
 describe('Service/RequestService', () => {
+  afterEach(() => sinon.restore());
+
   describe('test GET request getter', () => {
     const testEvent = { ...getEvent };
     testEvent.queryStringParameters.test = 123;
 
     it('should fetch a GET parameter from an AWS event', () => {
       const request = new RequestService(new DependencyInjection(CONFIGURATION, testEvent, getContext));
-      expect(request.get('test')).to.eql(getEvent.queryStringParameters.test);
+      expect(request.get('test')).toEqual(getEvent.queryStringParameters.test);
     });
 
     it('should fetch a GET parameter from an AWS event when the request type is set', () => {
       const request = new RequestService(new DependencyInjection(CONFIGURATION, testEvent, getContext));
-      expect(request.get('test'), null, REQUEST_TYPES.GET).to.eql(getEvent.queryStringParameters.test);
+      expect(request.get('test', null, REQUEST_TYPES.GET)).toEqual(getEvent.queryStringParameters.test);
     });
 
     it('should return null from a non existent GET parameter from an AWS event', () => {
       const request = new RequestService(new DependencyInjection(CONFIGURATION, testEvent, getContext));
-      expect(request.get('fake')).to.eql(null);
+      expect(request.get('fake')).toEqual(null);
     });
 
     it('should return null from a non existent GET parameter from an AWS event when the request type is set', () => {
       const request = new RequestService(new DependencyInjection(CONFIGURATION, testEvent, getContext));
-      expect(request.get('fake', null, REQUEST_TYPES.GET)).to.eql(null);
+      expect(request.get('fake', null, REQUEST_TYPES.GET)).toEqual(null);
     });
 
     describe('.getUserBrowserAndDevice', () => {
@@ -44,7 +45,7 @@ describe('Service/RequestService', () => {
         };
         const request = new RequestService(new DependencyInjection(CONFIGURATION, event, getContext));
 
-        expect(request.getUserBrowserAndDevice()).to.eql(null);
+        expect(request.getUserBrowserAndDevice()).toEqual(null);
       });
 
       it('should return null with `headers === null`', () => {
@@ -54,12 +55,12 @@ describe('Service/RequestService', () => {
         };
         const request = new RequestService(new DependencyInjection(CONFIGURATION, event, getContext));
 
-        expect(request.getUserBrowserAndDevice()).to.eql(null);
+        expect(request.getUserBrowserAndDevice()).toEqual(null);
       });
 
       it('should return a prettified user agent', () => {
         const request = new RequestService(new DependencyInjection(CONFIGURATION, testEvent, getContext));
-        expect(request.getUserBrowserAndDevice()).to.eql({
+        expect(request.getUserBrowserAndDevice()).toEqual({
           'browser-type': 'Safari',
           'browser-version': '9.1.1',
           'device-type': 'Other',
@@ -80,22 +81,22 @@ describe('Service/RequestService', () => {
 
     it('should fetch a POST parameter from an AWS event', () => {
       const request = new RequestService(new DependencyInjection(CONFIGURATION, testEvent, getContext));
-      expect(request.get('grant_type')).to.eql(queryParameters.grant_type);
+      expect(request.get('grant_type')).toEqual(queryParameters.grant_type);
     });
 
     it('should fetch a POST parameter from an AWS event when the request type is set', () => {
       const request = new RequestService(new DependencyInjection(CONFIGURATION, testEvent, getContext));
-      expect(request.get('grant_type'), null, REQUEST_TYPES.POST).to.eql(queryParameters.grant_type);
+      expect(request.get('grant_type', null, REQUEST_TYPES.POST)).toEqual(queryParameters.grant_type);
     });
 
     it('should return null from a non existent POST parameter from an AWS event', () => {
       const request = new RequestService(new DependencyInjection(CONFIGURATION, testEvent, getContext));
-      expect(request.get('fake')).to.eql(null);
+      expect(request.get('fake')).toEqual(null);
     });
 
     it('should return null from a non existent POST parameter from an AWS event when the request type is set', () => {
       const request = new RequestService(new DependencyInjection(CONFIGURATION, testEvent, getContext), getEvent);
-      expect(request.get('fake', null, REQUEST_TYPES.POST)).to.eql(null);
+      expect(request.get('fake', null, REQUEST_TYPES.POST)).toEqual(null);
     });
   });
 
@@ -106,7 +107,7 @@ describe('Service/RequestService', () => {
 
     it('should return all get parameters as an array', () => {
       const request = new RequestService(new DependencyInjection(CONFIGURATION, testEvent, getContext));
-      expect(request.getAll()).to.eql(testEvent.queryStringParameters);
+      expect(request.getAll()).toEqual(testEvent.queryStringParameters);
     });
   });
 
@@ -120,7 +121,7 @@ describe('Service/RequestService', () => {
 
     it('should return all post parameters as an array', () => {
       const request = new RequestService(new DependencyInjection(CONFIGURATION, testEvent, getContext));
-      expect(request.getAll()).to.eql(queryParameters);
+      expect(request.getAll()).toEqual(queryParameters);
     });
   });
 
@@ -140,11 +141,11 @@ describe('Service/RequestService', () => {
         request
           .validateAgainstConstraints(constraints)
           .then(() => {
-            expect(true).to.eql(true);
+            expect(true).toEqual(true);
             done();
           })
           .catch(() => {
-            expect(true).to.eql(false);
+            expect(true).toEqual(false);
             done();
           });
       });
@@ -156,11 +157,11 @@ describe('Service/RequestService', () => {
         request
           .validateAgainstConstraints(constraints)
           .then(() => {
-            expect(true).to.eql(false);
+            expect(true).toEqual(false);
             done();
           })
           .catch(() => {
-            expect(true).to.eql(true);
+            expect(true).toEqual(true);
             done();
           });
       });
@@ -170,6 +171,12 @@ describe('Service/RequestService', () => {
       testEvent.httpMethod = 'POST';
       testEvent.headers['Content-Type'] = 'application/x-www-form-urlencoded';
 
+      beforeEach(() => {
+        // Mute Winston
+        // eslint-disable-next-line no-underscore-dangle
+        sinon.stub(console._stdout, 'write');
+      });
+
       it('should resolve if there are no validation errors', (done) => {
         testEvent.body = 'giftaid=123';
         const request = new RequestService(new DependencyInjection(CONFIGURATION, testEvent, getContext));
@@ -177,11 +184,11 @@ describe('Service/RequestService', () => {
         request
           .validateAgainstConstraints(constraints)
           .then(() => {
-            expect(true).to.eql(true);
+            expect(true).toEqual(true);
             done();
           })
           .catch(() => {
-            expect(true).to.eql(false);
+            expect(true).toEqual(false);
             done();
           });
       });
@@ -193,11 +200,11 @@ describe('Service/RequestService', () => {
         request
           .validateAgainstConstraints(constraints)
           .then(() => {
-            expect(true).to.eql(false);
+            expect(true).toEqual(false);
             done();
           })
           .catch(() => {
-            expect(true).to.eql(true);
+            expect(true).toEqual(true);
             done();
           });
       });
