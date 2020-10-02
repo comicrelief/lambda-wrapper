@@ -73,4 +73,17 @@ describe('Model/ResponseModel', () => {
       expect(JSON.parse(response.generate().body).message).toEqual('test');
     });
   });
+
+  describe('generate', () => {
+    it('static and instance method produce the same output', () => {
+      const data = { a: 1, b: { c: 2 } };
+      const code = 201;
+      const message = 'Some message';
+
+      const response1 = new ResponseModel(data, code, message).generate();
+      const response2 = ResponseModel.generate(data, code, message);
+
+      expect(response1).toEqual(response2);
+    });
+  });
 });

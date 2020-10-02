@@ -96,4 +96,23 @@ export default class ResponseModel extends Model {
       body: JSON.stringify(this.body),
     };
   }
+
+  /**
+   * Shorthand static method
+   * that generates the response immediately
+   * if no additional processing is required.
+   *
+   * Saves only 1 line of code
+   * but keeps code terse in a lot of places.
+   *
+   * @param {*} data
+   * @param {*} code
+   * @param {*} message
+   * @returns {object}
+   */
+  static generate(data = null, code = null, message = null) {
+    const response = new this(data, code, message);
+
+    return response.generate();
+  }
 }
