@@ -12,7 +12,11 @@ export default (configuration, handler) => {
     const logger = di.get(DEFINITIONS.LOGGER);
 
     const handleError = (error) => {
-      logger.error(error);
+      if (error.code && error.code >= 400 && error.code < 500) {
+        logger.info(error);
+      } else {
+        logger.error(error);
+      }
 
       const responseDetails = {
         body: error.body || {},

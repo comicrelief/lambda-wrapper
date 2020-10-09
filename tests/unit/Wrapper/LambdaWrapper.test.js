@@ -18,6 +18,14 @@ describe('Wrapper/LambdaWrapper', () => {
     DEPENDENCIES: {},
   };
 
+  beforeEach(() => {
+    // Mute Winston
+    // eslint-disable-next-line no-underscore-dangle
+    sinon.stub(console._stdout, 'write');
+  });
+
+  afterEach(() => sinon.restore());
+
   describe('should inject dependency injection into the function', () => {
     LambdaWrapper(configuration, (di, request) => {
       dependencyInjection = di;
@@ -53,17 +61,60 @@ describe('Wrapper/LambdaWrapper', () => {
   });
 
   describe('should catch exceptions and generate appropriate responses', () => {
-    it('Logs the error', () => {
-      let loggerStub;
+    it('Logs.error the error without error code', () => {
+      let infoStub;
+      let errorStub;
 
       const lambda = LambdaWrapper(configuration, (di) => {
-        loggerStub = sinon.stub(di.dependencies[DEFINITIONS.LOGGER], 'error');
-        throw new Error('Some error');
+        infoStub = sinon.stub(di.dependencies[DEFINITIONS.LOGGER], 'info');
+        errorStub = sinon.stub(di.dependencies[DEFINITIONS.LOGGER], 'error');
+        throw new Error('Undefined error');
       });
 
       lambda(getEvent, getContext);
 
-      expect(loggerStub.called).toEqual(true);
+      expect(infoStub.called).toEqual(false);
+      expect(errorStub.called).toEqual(true);
+    });
+
+    [400, 401, 403, 404, 409, 419, 421, 423, 499].forEach((errorCode) => {
+      it(`Logs.info the error with code ${errorCode}`, () => {
+        let infoStub;
+        let errorStub;
+
+        const lambda = LambdaWrapper(configuration, (di) => {
+          infoStub = sinon.stub(di.dependencies[DEFINITIONS.LOGGER], 'info');
+          errorStub = sinon.stub(di.dependencies[DEFINITIONS.LOGGER], 'error');
+          const error = new Error('4xx error');
+          error.code = errorCode;
+          throw error;
+        });
+
+        lambda(getEvent, getContext);
+
+        expect(infoStub.called).toEqual(true);
+        expect(errorStub.called).toEqual(false);
+      });
+    });
+
+    [500, 501, 502, 503].forEach((errorCode) => {
+      it(`Logs.error the error with code ${errorCode}`, () => {
+        let infoStub;
+        let errorStub;
+
+        const lambda = LambdaWrapper(configuration, (di) => {
+          infoStub = sinon.stub(di.dependencies[DEFINITIONS.LOGGER], 'info');
+          errorStub = sinon.stub(di.dependencies[DEFINITIONS.LOGGER], 'error');
+          const error = new Error('5xx error');
+          error.code = errorCode;
+          throw error;
+        });
+
+        lambda(getEvent, getContext);
+
+        expect(infoStub.called).toEqual(false);
+        expect(errorStub.called).toEqual(true);
+      });
     });
 
     it('Returns 500 exception with a common error', () => {
