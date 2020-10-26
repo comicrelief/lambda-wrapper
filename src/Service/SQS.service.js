@@ -31,15 +31,16 @@ export default class SQSService extends DependencyAwareClass {
    */
   constructor(di: DependencyInjection) {
     super(di);
-    const context = this.getContainer().getContext();
-    const queues = this.getContainer().getConfiguration('QUEUES');
+    const container = this.getContainer();
+    const context = container.getContext();
+    const queues = container.getConfiguration('QUEUES');
 
     this.queues = {};
 
     // Add the queues from configuration
     if (queues !== null && Object.keys(queues).length >= 1) {
       Object.keys(queues).forEach((queueDefinition) => {
-        if (this.getContainer().isOffline) {
+        if (container.isOffline) {
           const offlineHost =
             typeof process.env.LAMBDA_WRAPPER_OFFLINE_SQS_HOST !== 'undefined' ? process.env.LAMBDA_WRAPPER_OFFLINE_SQS_HOST : 'localhost';
 
@@ -58,9 +59,10 @@ export default class SQSService extends DependencyAwareClass {
    * @return {Promise<any>}
    */
   batchDelete(queue: string, messageModels: [SQSMessageModel]) {
+    const container = this.getContainer();
     const queueUrl = this.queues[queue];
-    const Logger = this.getContainer().get(DEFINITIONS.LOGGER);
-    const Timer = this.getContainer().get(DEFINITIONS.TIMER);
+    const Logger = container.get(DEFINITIONS.LOGGER);
+    const Timer = container.get(DEFINITIONS.TIMER);
     const timerId = `sqs-batch-delete-${UUID()} - Queue: '${queueUrl}'`;
 
     return new Promise((resolve) => {
@@ -110,8 +112,9 @@ export default class SQSService extends DependencyAwareClass {
    * @return {Promise<any>}
    */
   checkStatus() {
-    const Logger = this.getContainer().get(DEFINITIONS.LOGGER);
-    const Timer = this.getContainer().get(DEFINITIONS.TIMER);
+    const container = this.getContainer();
+    const Logger = container.get(DEFINITIONS.LOGGER);
+    const Timer = container.get(DEFINITIONS.TIMER);
     const timerId = `sqs-list-queues-${UUID()}`;
 
     return new Promise((resolve) => {
@@ -142,9 +145,10 @@ export default class SQSService extends DependencyAwareClass {
    * @return {Promise<any>}
    */
   getMessageCount(queue: string) {
+    const container = this.getContainer();
     const queueUrl = this.queues[queue];
-    const Logger = this.getContainer().get(DEFINITIONS.LOGGER);
-    const Timer = this.getContainer().get(DEFINITIONS.TIMER);
+    const Logger = container.get(DEFINITIONS.LOGGER);
+    const Timer = container.get(DEFINITIONS.TIMER);
     const timerId = `sqs-get-queue-attributes-${UUID()} - Queue: '${queueUrl}'`;
 
     return new Promise((resolve) => {
@@ -177,9 +181,10 @@ export default class SQSService extends DependencyAwareClass {
    * @return {Promise<any>}
    */
   publish(queue: string, messageObject: object, messageGroupId = null) {
+    const container = this.getContainer();
     const queueUrl = this.queues[queue];
-    const Logger = this.getContainer().get(DEFINITIONS.LOGGER);
-    const Timer = this.getContainer().get(DEFINITIONS.TIMER);
+    const Logger = container.get(DEFINITIONS.LOGGER);
+    const Timer = container.get(DEFINITIONS.TIMER);
     const timerId = `sqs-send-message-${UUID()} - Queue: '${queueUrl}'`;
 
     return new Promise((resolve) => {
@@ -216,9 +221,10 @@ export default class SQSService extends DependencyAwareClass {
    * @return {Promise<any>}
    */
   receive(queue: string, timeout: number = 15) {
+    const container = this.getContainer();
     const queueUrl = this.queues[queue];
-    const Logger = this.getContainer().get(DEFINITIONS.LOGGER);
-    const Timer = this.getContainer().get(DEFINITIONS.TIMER);
+    const Logger = container.get(DEFINITIONS.LOGGER);
+    const Timer = container.get(DEFINITIONS.TIMER);
     const timerId = `sqs-receive-message-${UUID()} - Queue: '${queueUrl}'`;
 
     return new Promise((resolve, reject) => {
