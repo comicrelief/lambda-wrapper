@@ -44,4 +44,35 @@ describe('DependencyInjection/DependencyInjectionClass', () => {
       expect(requestService.di instanceof DependencyInjection).toEqual(true);
     });
   });
+
+  describe('isOffline', () => {
+    afterEach(() => {
+      process.env.USE_SERVERLESS_OFFLINE = '';
+    });
+
+    describe('is true', () => {
+      it("when context doesn't define an invokedFunctionArn", () => {
+        const di = new DependencyInjection({}, getEvent, {});
+        expect(di.isOffline).toEqual(true);
+      });
+
+      it('When the invokedFunctionArn includes `offline`', () => {
+        const di = new DependencyInjection({}, getEvent, { invokedFunctionArn: 'my-offline-function' });
+        expect(di.isOffline).toEqual(true);
+      });
+
+      it('When process.env.USES_SERVERLESS_OFFLINE is defined', () => {
+        process.env.USE_SERVERLESS_OFFLINE = 'true';
+        const di = new DependencyInjection({}, getEvent, { invokedFunctionArn: 'my-function' });
+        expect(di.isOffline).toEqual(true);
+      });
+    });
+
+    describe('is false`', () => {
+      it("When the invokedFunctionArn doesn't contain `offline", () => {
+        const di = new DependencyInjection({}, getEvent, { invokedFunctionArn: 'my-function' });
+        expect(di.isOffline).toEqual(false);
+      });
+    });
+  });
 });
