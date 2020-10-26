@@ -46,8 +46,19 @@ describe('DependencyInjection/DependencyInjectionClass', () => {
   });
 
   describe('isOffline', () => {
+    let useServerlessOffline;
+
+    beforeAll(() => {
+      useServerlessOffline = process.env.USE_SERVERLESS_OFFLINE;
+      process.env.USE_SERVERLESS_OFFLINE = '';
+    });
+
     afterEach(() => {
       process.env.USE_SERVERLESS_OFFLINE = '';
+    });
+
+    afterAll(() => {
+      process.env.USE_SERVERLESS_OFFLINE = useServerlessOffline;
     });
 
     describe('is true', () => {
