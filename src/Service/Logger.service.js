@@ -5,31 +5,6 @@ import Epsagon from 'epsagon';
 import DependencyAwareClass from '../DependencyInjection/DependencyAware.class';
 import DependencyInjection from '../DependencyInjection/DependencyInjection.class';
 
-export const logger = Winston.createLogger({
-  level: 'info',
-  format: Winston.format.combine(
-    Winston.format.json({
-      replacer: (key, value) => {
-        if (value instanceof Buffer) {
-          return value.toString('base64');
-        }
-        if (value instanceof Error) {
-          const error = {};
-
-          Object.getOwnPropertyNames(value).forEach((objectKey) => {
-            error[objectKey] = value[objectKey];
-          });
-
-          return error;
-        }
-
-        return value;
-      },
-    })
-  ),
-  transports: [new Winston.transports.Console()],
-});
-
 // Instantiate the sentry client
 const sentryIsAvailable =
   typeof process.env.RAVEN_DSN !== 'undefined' && typeof process.env.RAVEN_DSN === 'string' && process.env.RAVEN_DSN !== 'undefined';
@@ -49,15 +24,14 @@ export default class LoggerService extends DependencyAwareClass {
   constructor(di: DependencyInjection) {
     super(di);
     this.sentry = null;
-    this.logger = logger;
+    this.winston = null;
 
     const container = this.getContainer();
     const event = container.getEvent();
     const context = container.getContext();
-    const isOffline = !Object.prototype.hasOwnProperty.call(context, 'invokedFunctionArn') || context.invokedFunctionArn.includes('offline');
 
     // Set sentry client context
-    if (sentryIsAvailable && isOffline === false) {
+    if (sentryIsAvailable && !container.isOffline) {
       Sentry.configureScope((scope) => {
         scope.setTags({
           Event: event,
@@ -76,6 +50,47 @@ export default class LoggerService extends DependencyAwareClass {
 
       this.sentry = Sentry;
     }
+  }
+
+  getLogger() {
+    const loggerFormats = [
+      Winston.format.json({
+        replacer: (key, value) => {
+          if (value instanceof Buffer) {
+            return value.toString('base64');
+          }
+          if (value instanceof Error) {
+            const error = {};
+
+            Object.getOwnPropertyNames(value).forEach((objectKey) => {
+              error[objectKey] = value[objectKey];
+            });
+
+            return error;
+          }
+
+          return value;
+        },
+      }),
+    ];
+
+    if (this.getContainer().isOffline) {
+      loggerFormats.push(Winston.format.prettyPrint());
+    }
+
+    return Winston.createLogger({
+      level: 'info',
+      format: Winston.format.combine(...loggerFormats),
+      transports: [new Winston.transports.Console()],
+    });
+  }
+
+  get logger() {
+    if (!this.winston) {
+      this.winston = this.getLogger();
+    }
+
+    return this.winston;
   }
 
   /**
@@ -98,7 +113,7 @@ export default class LoggerService extends DependencyAwareClass {
       Epsagon.setError(error);
     }
 
-    logger.log('error', message, { error });
+    this.logger.log('error', message, { error });
     this.label('error', true);
     this.metric('error', 'error', true);
   }

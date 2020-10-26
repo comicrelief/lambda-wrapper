@@ -76,4 +76,28 @@ export default class DependencyInjection {
 
     return this.configuration;
   }
+
+  /**
+   * Check whether the function
+   * is being executed in a serverless-offline context
+   *
+   * @returns {boolean}
+   */
+  get isOffline() {
+    const context = this.getContext();
+
+    if (!Object.prototype.hasOwnProperty.call(context, 'invokedFunctionArn')) {
+      return true;
+    }
+
+    if (context.invokedFunctionArn.includes('offline')) {
+      return true;
+    }
+
+    if (process.env.USE_SERVERLESS_OFFLINE) {
+      return true;
+    }
+
+    return false;
+  }
 }
