@@ -42,6 +42,36 @@ export default class RequestService extends DependencyAwareClass {
   }
 
   /**
+   * Get all HTTP headers included in the request.
+   *
+   * @returns {object} An object with a key for each header.
+   */
+  getAllHeaders() {
+    return { ...this.getContainer().getEvent().headers };
+  }
+
+  /**
+   * Get an HTTP header from the request.
+   *
+   * The header name is case-insensitive.
+   *
+   * @param {string} name The name of the header.
+   * @param {string} [whenMissing] Value to return if the header is missing.
+   *   (default: empty string)
+   *
+   * @returns {string}
+   */
+  getHeader(name: string, whenMissing: string = '') {
+    const headers = this.getAllHeaders();
+    if (!headers) {
+      return whenMissing;
+    }
+    const lowerName = name.toLowerCase();
+    const key = Object.keys(headers).find((k) => k.toLowerCase() === lowerName);
+    return (key && headers[key]) || whenMissing;
+  }
+
+  /**
    * Get authorization token
    * @return {*}
    */
