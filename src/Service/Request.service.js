@@ -76,13 +76,12 @@ export default class RequestService extends DependencyAwareClass {
    * @return {*}
    */
   getAuthorizationToken() {
-    const { headers } = this.getContainer().getEvent();
-
-    if (typeof headers.Authorization === 'undefined' && typeof headers.authorization === 'undefined') {
+    const authorization = this.getHeader('Authorization');
+    if (!authorization) {
       return null;
     }
 
-    const tokenParts = headers[typeof headers.Authorization === 'undefined' ? 'authorization' : 'Authorization'].split(' ');
+    const tokenParts = authorization.split(' ');
     const tokenValue = tokenParts[1];
 
     if (!(tokenParts[0].toLowerCase() === 'bearer' && tokenValue)) {
@@ -133,19 +132,14 @@ export default class RequestService extends DependencyAwareClass {
     }
 
     if (event.httpMethod === 'POST' || requestType === REQUEST_TYPES.POST) {
+      const contentType = this.getHeader('Content-Type');
       let queryParameters = {};
 
-      if (
-        (typeof event.headers['Content-Type'] !== 'undefined' && event.headers['Content-Type'].includes('application/x-www-form-urlencoded')) ||
-        (typeof event.headers['content-type'] !== 'undefined' && event.headers['content-type'].includes('application/x-www-form-urlencoded'))
-      ) {
+      if (contentType.includes('application/x-www-form-urlencoded')) {
         queryParameters = QueryString.parse(event.body);
       }
 
-      if (
-        (typeof event.headers['Content-Type'] !== 'undefined' && event.headers['Content-Type'].includes('application/json')) ||
-        (typeof event.headers['content-type'] !== 'undefined' && event.headers['content-type'].includes('application/json'))
-      ) {
+      if (contentType.includes('application/json')) {
         try {
           queryParameters = JSON.parse(event.body);
         } catch {
@@ -153,10 +147,7 @@ export default class RequestService extends DependencyAwareClass {
         }
       }
 
-      if (
-        (typeof event.headers['Content-Type'] !== 'undefined' && event.headers['Content-Type'].includes('text/xml')) ||
-        (typeof event.headers['content-type'] !== 'undefined' && event.headers['content-type'].includes('text/xml'))
-      ) {
+      if (contentType.includes('text/xml')) {
         XML2JS.parseString(event.body, (error, result) => {
           if (error) {
             queryParameters = {};
@@ -165,12 +156,11 @@ export default class RequestService extends DependencyAwareClass {
           }
         });
       }
-      if (
-        (typeof event.headers['Content-Type'] !== 'undefined' && event.headers['Content-Type'].includes('multipart/form-data')) ||
-        (typeof event.headers['content-type'] !== 'undefined' && event.headers['content-type'].includes('multipart/form-data'))
-      ) {
+
+      if (contentType.includes('multipart/form-data')) {
         queryParameters = this.parseForm(true);
       }
+
       return typeof queryParameters !== 'undefined' ? queryParameters : {};
     }
 
@@ -200,19 +190,7 @@ export default class RequestService extends DependencyAwareClass {
    * @return {*}
    */
   getUserBrowserAndDevice() {
-    const { headers } = this.getContainer().getEvent();
-    let userAgent = null;
-
-    if (typeof headers !== 'object' || headers === null) {
-      return null;
-    }
-
-    Object.keys(headers).forEach((header) => {
-      if (header.toUpperCase() === 'USER-AGENT') {
-        userAgent = headers[header];
-      }
-    });
-
+    const userAgent = this.getHeader('user-agent', null);
     if (userAgent === null) {
       return null;
     }
