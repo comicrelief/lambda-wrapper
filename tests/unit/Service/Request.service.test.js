@@ -210,4 +210,36 @@ describe('Service/RequestService', () => {
       });
     });
   });
+
+  describe('getAllHeaders()', () => {
+    const event = { ...getEvent };
+    const di = new DependencyInjection(CONFIGURATION, event, getContext);
+    const request = new RequestService(di);
+
+    it('should return all headers from the event', () => {
+      expect(request.getAllHeaders()).toStrictEqual(getEvent.headers);
+    });
+  });
+
+  describe('getHeader()', () => {
+    const event = { ...getEvent };
+    const di = new DependencyInjection(CONFIGURATION, event, getContext);
+    const request = new RequestService(di);
+
+    it('should return the specified header', () => {
+      expect(request.getHeader('Accept')).toEqual(event.headers.Accept);
+    });
+
+    it("should return '' by default if header is missing", () => {
+      expect(request.getHeader('Authorization')).toEqual('');
+    });
+
+    it("should return `whenMissing` if header is missing", () => {
+      expect(request.getHeader('Authorization', 'none')).toEqual('none');
+    });
+
+    it('should not be case-sensitive', () => {
+      expect(request.getHeader('accept')).toEqual(event.headers.Accept);
+    });
+  });
 });
