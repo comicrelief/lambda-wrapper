@@ -19,4 +19,13 @@ export default class DependencyAwareClass {
   getContainer() {
     return this.di;
   }
+
+  /**
+   * Shortcut for `this.getContainer().definitions`
+   *
+   * @returns {object}
+   */
+  get definitions() {
+    return this.getContainer().definitions;
+  }
 }

@@ -100,4 +100,16 @@ export default class DependencyInjection {
 
     return false;
   }
+
+  /**
+   * Returns the definitions
+   * associated to this DependencyInjection
+   * so that services can refer to them
+   * without causing circular imports.
+   *
+   * @returns {object}
+   */
+  get definitions() {
+    return this.configuration.DEFINITIONS;
+  }
 }

@@ -86,4 +86,18 @@ describe('DependencyInjection/DependencyInjectionClass', () => {
       });
     });
   });
+
+  describe('definitions', () => {
+    describe('Returns the provided definitions', () => {
+      [
+        [{}, undefined],
+        [{ DEFINITIONS: 1 }, 1],
+      ].forEach(([configuration, expected]) => {
+        it(`With configuration: ${configuration}`, () => {
+          const di = new DependencyInjection(configuration);
+          expect(di.definitions).toEqual(expected);
+        });
+      });
+    });
+  });
 });
