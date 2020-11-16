@@ -19,11 +19,11 @@ describe('DependencyInjection/DependencyAwareClass', () => {
       [
         [{}, undefined],
         [{ DEFINITIONS: 1 }, 1],
-      ].forEach((testCase) => {
-        it(`With configuration: ${testCase[0]}`, () => {
-          const di = new DependencyInjection(testCase[0]);
+      ].forEach(([configuration, expected]) => {
+        it(`With configuration: ${configuration}`, () => {
+          const di = new DependencyInjection(configuration);
           const service = new DependencyAware(di);
-          expect(service.definitions).toEqual(testCase[1]);
+          expect(service.definitions).toEqual(expected);
         });
       });
     });
