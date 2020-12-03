@@ -5,7 +5,7 @@ import DependencyInjection from '../DependencyInjection/DependencyInjection.clas
 import { DEFINITIONS } from '../Config/Dependencies';
 import ResponseModel from '../Model/Response.model';
 
-export default (configuration, handler) => {
+export default (configuration, handler, throwError = false) => {
   let instance = (event, context, callback) => {
     const di = new DependencyInjection(configuration, event, context);
     const request = di.get(DEFINITIONS.REQUEST);
@@ -52,12 +52,15 @@ export default (configuration, handler) => {
     try {
       let outcome = handler.call(instance, di, request, callback);
 
-      if (outcome instanceof Promise) {
+      if (outcome instanceof Promise && !throwError) {
         outcome = outcome.catch(handleError);
       }
 
       return outcome;
     } catch (error) {
+      if (throwError) {
+        throw error;
+      }
       return handleError(error);
     }
   };
