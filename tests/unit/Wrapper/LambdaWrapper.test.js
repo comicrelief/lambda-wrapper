@@ -180,12 +180,10 @@ describe('Wrapper/LambdaWrapper', () => {
       });
 
       it('Catches async errors', () => {
-        const lambda = LambdaWrapper(configuration, (di) => {
-          return new Promise(() => {
-            sinon.stub(di.dependencies[DEFINITIONS.LOGGER], 'error');
-            throw new LambdaTermination('internal', 403, 'external');
-          });
-        });
+        const lambda = LambdaWrapper(configuration, (di) => new Promise(() => {
+          sinon.stub(di.dependencies[DEFINITIONS.LOGGER], 'error');
+          throw new LambdaTermination('internal', 403, 'external');
+        }));
 
         return lambda(getEvent, getContext).then((response) => {
           const body = JSON.parse(response.body);

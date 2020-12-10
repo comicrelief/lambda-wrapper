@@ -1,6 +1,0 @@
-{
-  "extends": [
-    "@comicrelief/eslint-config"
-  ],
-  "parser": "@babel/eslint-parser"
-}

@@ -8,9 +8,7 @@ const getEvent = require('../../mocks/aws/event.json');
 
 const getContext = { invokedFunctionArn: 'my-function' };
 
-const getLogger = (event = getEvent, context = getContext) => {
-  return new LoggerService(new DependencyInjection(CONFIGURATION, event, context));
-};
+const getLogger = (event = getEvent, context = getContext) => new LoggerService(new DependencyInjection(CONFIGURATION, event, context));
 
 describe('Service/LoggerService', () => {
   const context = { invokedFunctionArn: 'my-function' };

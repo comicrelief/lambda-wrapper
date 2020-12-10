@@ -234,7 +234,7 @@ describe('Service/RequestService', () => {
       expect(request.getHeader('Authorization')).toEqual('');
     });
 
-    it("should return `whenMissing` if header is missing", () => {
+    it('should return `whenMissing` if header is missing', () => {
       expect(request.getHeader('Authorization', 'none')).toEqual('none');
     });
 

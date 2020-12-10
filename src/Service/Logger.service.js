@@ -6,8 +6,7 @@ import DependencyAwareClass from '../DependencyInjection/DependencyAware.class';
 import DependencyInjection from '../DependencyInjection/DependencyInjection.class';
 
 // Instantiate the sentry client
-const sentryIsAvailable =
-  typeof process.env.RAVEN_DSN !== 'undefined' && typeof process.env.RAVEN_DSN === 'string' && process.env.RAVEN_DSN !== 'undefined';
+const sentryIsAvailable = typeof process.env.RAVEN_DSN !== 'undefined' && typeof process.env.RAVEN_DSN === 'string' && process.env.RAVEN_DSN !== 'undefined';
 
 if (sentryIsAvailable) {
   Sentry.init({
@@ -52,6 +51,16 @@ export default class LoggerService extends DependencyAwareClass {
     }
   }
 
+  /**
+   * Returns a Winston logger object
+   * configured for our lambdas.
+   *
+   * Note:
+   *
+   * If the lambda is executed
+   * in a `serverless-offline` context
+   * the log output to console will be pretty printed.
+   */
   getLogger() {
     const loggerFormats = [
       Winston.format.json({
@@ -85,6 +94,13 @@ export default class LoggerService extends DependencyAwareClass {
     });
   }
 
+  /**
+   * Returns the logger.
+   *
+   * Uses a cached `Winston` object
+   * if it has been already generated,
+   * otherwise it generates one.
+   */
   get logger() {
     if (!this.winston) {
       this.winston = this.getLogger();
@@ -95,6 +111,7 @@ export default class LoggerService extends DependencyAwareClass {
 
   /**
    * Log Error Message
+   *
    * @param error object
    * @param message string
    */
@@ -104,11 +121,11 @@ export default class LoggerService extends DependencyAwareClass {
     }
 
     if (
-      typeof process.env.EPSAGON_TOKEN === 'string' &&
-      process.env.EPSAGON_TOKEN !== 'undefined' &&
-      typeof process.env.EPSAGON_SERVICE_NAME === 'string' &&
-      process.env.EPSAGON_SERVICE_NAME !== 'undefined' &&
-      error instanceof Error
+      typeof process.env.EPSAGON_TOKEN === 'string'
+      && process.env.EPSAGON_TOKEN !== 'undefined'
+      && typeof process.env.EPSAGON_SERVICE_NAME === 'string'
+      && process.env.EPSAGON_SERVICE_NAME !== 'undefined'
+      && error instanceof Error
     ) {
       Epsagon.setError(error);
     }
@@ -120,7 +137,8 @@ export default class LoggerService extends DependencyAwareClass {
 
   /**
    * Get sentry client
-   * @return {null|*}
+   *
+   * @returns {null|*}
    */
   getSentry() {
     return this.sentry;
@@ -128,6 +146,7 @@ export default class LoggerService extends DependencyAwareClass {
 
   /**
    * Log Information Message
+   *
    * @param message string
    */
   info(message) {
@@ -136,15 +155,16 @@ export default class LoggerService extends DependencyAwareClass {
 
   /**
    * Add a label
+   *
    * @param descriptor string
    * @param silent     boolean
    */
   label(descriptor, silent = false) {
     if (
-      typeof process.env.EPSAGON_TOKEN === 'string' &&
-      process.env.EPSAGON_TOKEN !== 'undefined' &&
-      typeof process.env.EPSAGON_SERVICE_NAME === 'string' &&
-      process.env.EPSAGON_SERVICE_NAME !== 'undefined'
+      typeof process.env.EPSAGON_TOKEN === 'string'
+      && process.env.EPSAGON_TOKEN !== 'undefined'
+      && typeof process.env.EPSAGON_SERVICE_NAME === 'string'
+      && process.env.EPSAGON_SERVICE_NAME !== 'undefined'
     ) {
       Epsagon.label(descriptor);
     }
@@ -156,16 +176,17 @@ export default class LoggerService extends DependencyAwareClass {
 
   /**
    * Add a metric
+   *
    * @param descriptor string
    * @param stat       integer | string
    * @param silent     boolean
    */
   metric(descriptor, stat, silent = false) {
     if (
-      typeof process.env.EPSAGON_TOKEN === 'string' &&
-      process.env.EPSAGON_TOKEN !== 'undefined' &&
-      typeof process.env.EPSAGON_SERVICE_NAME === 'string' &&
-      process.env.EPSAGON_SERVICE_NAME !== 'undefined'
+      typeof process.env.EPSAGON_TOKEN === 'string'
+      && process.env.EPSAGON_TOKEN !== 'undefined'
+      && typeof process.env.EPSAGON_SERVICE_NAME === 'string'
+      && process.env.EPSAGON_SERVICE_NAME !== 'undefined'
     ) {
       Epsagon.label(descriptor, stat);
     }
