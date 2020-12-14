@@ -1,5 +1,20 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Wrapper/LambdaWrapper handleError Axios Errors Trims down the axios error 1`] = `
+Object {
+  "config": Object {
+    "method": "get",
+    "url": "http://localhost:9999",
+  },
+  "response": Object {
+    "data": Object {
+      "data": 1,
+    },
+    "status": 417,
+  },
+}
+`;
+
 exports[`Wrapper/LambdaWrapper handleError Generates a response object 1`] = `
 Object {
   "body": "{\\"data\\":{},\\"message\\":\\"unknown error\\"}",

@@ -25,10 +25,29 @@ import ResponseModel from '../Model/Response.model';
 export const handleError = (di, error) => {
   const logger = di.get(DEFINITIONS.LOGGER);
 
+  let errorBody = error;
+
+  if (errorBody.isAxiosError) {
+    try {
+      errorBody = {
+        config: error.config,
+        response: {
+          status: error.response.status,
+          data: error.response.data,
+        },
+      };
+    } catch {
+    // if the axios error is incomplete
+    // for any reason, we don't want
+    // error handling to fail
+      errorBody = error;
+    }
+  }
+
   if (error.raiseOnEpsagon || !error.code || error.code >= 500) {
-    logger.error(error);
+    logger.error(errorBody);
   } else {
-    logger.info(error);
+    logger.info(errorBody);
   }
 
   const responseDetails = {
