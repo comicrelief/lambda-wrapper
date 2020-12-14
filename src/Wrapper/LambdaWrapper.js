@@ -30,28 +30,21 @@ export const handleError = (di, error) => {
   // While handling an error, lambda wrapper should
   // recognise axios errors and trim down the information
   if (errorBody.isAxiosError) {
-    try {
-      // only keep error.config, error.response.status, error.response.data
-      errorBody = {
-        config: error.config,
-        message: error.message,
-      };
+    // only keep error.config, error.response.status, error.response.data
+    errorBody = {
+      config: error.config,
+      message: error.message,
+    };
 
-      // It's pretty common for axios errors
-      // to not have.response e.g.when there's
-      // a network error or timeout.
-      // These errors will have .request but not .response.
-      if (error.response) {
-        errorBody.response = {
-          status: error.response.status,
-          data: error.response.data,
-        };
-      }
-    } catch {
-      // if the axios error is incomplete
-      // for any reason, we don't want
-      // error handling to fail
-      errorBody = error;
+    // It's pretty common for axios errors
+    // to not have.response e.g.when there's
+    // a network error or timeout.
+    // These errors will have .request but not .response.
+    if (error.response) {
+      errorBody.response = {
+        status: error.response.status,
+        data: error.response.data,
+      };
     }
   }
 

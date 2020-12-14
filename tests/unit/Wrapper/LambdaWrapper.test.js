@@ -60,52 +60,46 @@ describe('Wrapper/LambdaWrapper', () => {
     });
 
     describe('Axios Errors', () => {
-      it('Trims down the axios error', () => {
-        const di = getMockedDi();
-        const logger = di.get(DEFINITIONS.LOGGER);
+      const axiosResponses = {
+        UNDEFINED: undefined,
+        EMPTY: {},
+        HTTP_417: {
+          status: 417,
+          data: { data: 1 },
+          extra: 2,
+        },
+      };
 
-        const error = {
-          isAxiosError: true,
-          raiseOnEpsagon: true,
-          config: {
-            url: 'http://localhost:9999',
-            method: 'get',
-          },
-          extra: 1,
-          response: {
-            status: 417,
-            data: { data: 1 },
-            extra: 2,
+      Object.entries(axiosResponses).forEach(([key, axiosResponse]) => {
+        it(`Trims down the axios error: ${key}`, () => {
+          const di = getMockedDi();
+          const logger = di.get(DEFINITIONS.LOGGER);
+
+          const error = {
+            isAxiosError: true,
+            raiseOnEpsagon: true,
+            config: {
+              url: 'http://localhost:9999',
+              method: 'get',
+            },
+            extra: 1,
+            response: axiosResponse,
+            message: 'some-message',
+          };
+
+          handleError(di, error);
+
+          const loggerCall = logger.error.mock.calls[0][0];
+
+          expect(loggerCall).toMatchSnapshot();
+          expect('extra' in loggerCall).toEqual(false);
+
+          if (axiosResponse) {
+            expect('extra' in loggerCall.response).toEqual(false);
           }
-        };
-
-        const response = handleError(di, error);
-
-        const loggerCall = logger.error.mock.calls[0][0];
-
-        expect(loggerCall).toMatchSnapshot();
-        expect('extra' in loggerCall).toEqual(false);
-        expect('extra' in loggerCall.response).toEqual(false);
-      });
-
-      it('Handles an invalid axios error', () => {
-        const di = getMockedDi();
-        const logger = di.get(DEFINITIONS.LOGGER);
-
-        const error = {
-          isAxiosError: true,
-          raiseOnEpsagon: true,
-          extra: 1,
-        };
-
-        const response = handleError(di, error);
-
-        const loggerCall = logger.error.mock.calls[0][0];
-
-        expect(loggerCall).toEqual(error);
+        });
       });
     });
-
   });
 
   describe('LambdaWrapper', () => {
