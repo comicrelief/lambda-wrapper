@@ -27,16 +27,11 @@ export const handleError = (di, error) => {
 
   let errorBody = error;
 
+  // While handling an error, lambda wrapper should
+  // recognise axios errors and trim down the information
   if (errorBody.isAxiosError) {
     try {
-      // Axios errors are really verbose and
-      // local development terminals get spammed,
-      // especially if more than one test fail
-      // because of HTTP errors.
-      // While handling an error, lambda wrapper should
-      // recognise axios errors and trim down
-      // the information to the request config,
-      // response.status and response.data
+      // only keep error.config, error.response.status, error.response.data
       errorBody = {
         config: error.config,
         response: {
