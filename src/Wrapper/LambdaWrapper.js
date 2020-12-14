@@ -37,9 +37,9 @@ export const handleError = (di, error) => {
         },
       };
     } catch {
-    // if the axios error is incomplete
-    // for any reason, we don't want
-    // error handling to fail
+      // if the axios error is incomplete
+      // for any reason, we don't want
+      // error handling to fail
       errorBody = error;
     }
   }
