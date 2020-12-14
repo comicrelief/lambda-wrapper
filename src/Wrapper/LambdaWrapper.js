@@ -5,29 +5,48 @@ import DependencyInjection from '../DependencyInjection/DependencyInjection.clas
 import { DEFINITIONS } from '../Config/Dependencies';
 import ResponseModel from '../Model/Response.model';
 
+/**
+ * Gracefully handles an error
+ * logging in Epsagon and generating
+ * a response reflecting the `code`
+ * of the error, if defined.
+ *
+ * Note about Epsagon:
+ * Epsagon generates alerts for logs on level ERROR.
+ * This means that logger.error will produce an alert.
+ * To avoid not meaningful notifications, most likely
+ * coming from tests, we log INFO unless either:
+ * 1. `error.raiseOnEpsagon` is defined & truthy
+ * 2. `error.code` is defined and `error.code >= 500`.
+ *
+ * @param {DependencyInjection} di
+ * @param {Error} error
+ */
+export const handleError = (di, error) => {
+  const logger = di.get(DEFINITIONS.LOGGER);
+
+  if (error.raiseOnEpsagon || !error.code || error.code >= 500) {
+    logger.error(error);
+  } else {
+    logger.info(error);
+  }
+
+  const responseDetails = {
+    body: error.body || {},
+    code: error.code || 500,
+    details: error.details || 'unknown error',
+  };
+
+  const response = new ResponseModel(responseDetails.body, responseDetails.code, responseDetails.details);
+
+  return response.generate();
+};
+
 export default (configuration, handler, throwError = false) => {
   let instance = (event, context, callback) => {
     const di = new DependencyInjection(configuration, event, context);
     const request = di.get(DEFINITIONS.REQUEST);
     const logger = di.get(DEFINITIONS.LOGGER);
-
-    const handleError = (error) => {
-      if (error.code && error.code >= 400 && error.code < 500) {
-        logger.info(error);
-      } else {
-        logger.error(error);
-      }
-
-      const responseDetails = {
-        body: error.body || {},
-        code: error.code || 500,
-        details: error.details || 'unknown error',
-      };
-
-      const response = new ResponseModel(responseDetails.body, responseDetails.code, responseDetails.details);
-
-      return response.generate();
-    };
 
     context.callbackWaitsForEmptyEventLoop = false;
 
@@ -53,7 +72,7 @@ export default (configuration, handler, throwError = false) => {
       let outcome = handler.call(instance, di, request, callback);
 
       if (outcome instanceof Promise && !throwError) {
-        outcome = outcome.catch(handleError);
+        outcome = outcome.catch((error) => handleError(di, error));
       }
 
       return outcome;
@@ -61,7 +80,7 @@ export default (configuration, handler, throwError = false) => {
       if (throwError) {
         throw error;
       }
-      return handleError(error);
+      return handleError(di, error);
     }
   };
 

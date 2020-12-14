@@ -1,0 +1,169 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Wrapper/LambdaWrapper handleError Generates a response object 1`] = `
+Object {
+  "body": "{\\"data\\":{},\\"message\\":\\"unknown error\\"}",
+  "headers": Object {
+    "Access-Control-Allow-Credentials": true,
+    "Access-Control-Allow-Origin": "*",
+    "Content-Type": "application/json",
+  },
+  "statusCode": 400,
+}
+`;
+
+exports[`Wrapper/LambdaWrapper handleError Generates a response object 2`] = `
+Object {
+  "body": "{\\"data\\":{\\"data\\":1},\\"message\\":\\"unknown error\\"}",
+  "headers": Object {
+    "Access-Control-Allow-Credentials": true,
+    "Access-Control-Allow-Origin": "*",
+    "Content-Type": "application/json",
+  },
+  "statusCode": 400,
+}
+`;
+
+exports[`Wrapper/LambdaWrapper handleError Generates a response object 3`] = `
+Object {
+  "body": "{\\"data\\":{},\\"message\\":\\"unknown error\\"}",
+  "headers": Object {
+    "Access-Control-Allow-Credentials": true,
+    "Access-Control-Allow-Origin": "*",
+    "Content-Type": "application/json",
+  },
+  "statusCode": 400,
+}
+`;
+
+exports[`Wrapper/LambdaWrapper handleError Generates a response object 4`] = `
+Object {
+  "body": "{\\"data\\":{\\"data\\":1},\\"message\\":\\"unknown error\\"}",
+  "headers": Object {
+    "Access-Control-Allow-Credentials": true,
+    "Access-Control-Allow-Origin": "*",
+    "Content-Type": "application/json",
+  },
+  "statusCode": 400,
+}
+`;
+
+exports[`Wrapper/LambdaWrapper handleError Generates a response object 5`] = `
+Object {
+  "body": "{\\"data\\":{},\\"message\\":\\"unknown error\\"}",
+  "headers": Object {
+    "Access-Control-Allow-Credentials": true,
+    "Access-Control-Allow-Origin": "*",
+    "Content-Type": "application/json",
+  },
+  "statusCode": 400,
+}
+`;
+
+exports[`Wrapper/LambdaWrapper handleError Generates a response object 6`] = `
+Object {
+  "body": "{\\"data\\":{\\"data\\":1},\\"message\\":\\"unknown error\\"}",
+  "headers": Object {
+    "Access-Control-Allow-Credentials": true,
+    "Access-Control-Allow-Origin": "*",
+    "Content-Type": "application/json",
+  },
+  "statusCode": 400,
+}
+`;
+
+exports[`Wrapper/LambdaWrapper handleError Generates a response object 7`] = `
+Object {
+  "body": "{\\"data\\":{},\\"message\\":\\"unknown error\\"}",
+  "headers": Object {
+    "Access-Control-Allow-Credentials": true,
+    "Access-Control-Allow-Origin": "*",
+    "Content-Type": "application/json",
+  },
+  "statusCode": 500,
+}
+`;
+
+exports[`Wrapper/LambdaWrapper handleError Generates a response object 8`] = `
+Object {
+  "body": "{\\"data\\":{\\"data\\":1},\\"message\\":\\"unknown error\\"}",
+  "headers": Object {
+    "Access-Control-Allow-Credentials": true,
+    "Access-Control-Allow-Origin": "*",
+    "Content-Type": "application/json",
+  },
+  "statusCode": 500,
+}
+`;
+
+exports[`Wrapper/LambdaWrapper handleError Generates a response object 9`] = `
+Object {
+  "body": "{\\"data\\":{},\\"message\\":\\"unknown error\\"}",
+  "headers": Object {
+    "Access-Control-Allow-Credentials": true,
+    "Access-Control-Allow-Origin": "*",
+    "Content-Type": "application/json",
+  },
+  "statusCode": 500,
+}
+`;
+
+exports[`Wrapper/LambdaWrapper handleError Generates a response object 10`] = `
+Object {
+  "body": "{\\"data\\":{\\"data\\":1},\\"message\\":\\"unknown error\\"}",
+  "headers": Object {
+    "Access-Control-Allow-Credentials": true,
+    "Access-Control-Allow-Origin": "*",
+    "Content-Type": "application/json",
+  },
+  "statusCode": 500,
+}
+`;
+
+exports[`Wrapper/LambdaWrapper handleError Generates a response object 11`] = `
+Object {
+  "body": "{\\"data\\":{},\\"message\\":\\"unknown error\\"}",
+  "headers": Object {
+    "Access-Control-Allow-Credentials": true,
+    "Access-Control-Allow-Origin": "*",
+    "Content-Type": "application/json",
+  },
+  "statusCode": 500,
+}
+`;
+
+exports[`Wrapper/LambdaWrapper handleError Generates a response object 12`] = `
+Object {
+  "body": "{\\"data\\":{\\"data\\":1},\\"message\\":\\"unknown error\\"}",
+  "headers": Object {
+    "Access-Control-Allow-Credentials": true,
+    "Access-Control-Allow-Origin": "*",
+    "Content-Type": "application/json",
+  },
+  "statusCode": 500,
+}
+`;
+
+exports[`Wrapper/LambdaWrapper handleError Generates a response object 13`] = `
+Object {
+  "body": "{\\"data\\":{},\\"message\\":\\"unknown error\\"}",
+  "headers": Object {
+    "Access-Control-Allow-Credentials": true,
+    "Access-Control-Allow-Origin": "*",
+    "Content-Type": "application/json",
+  },
+  "statusCode": 500,
+}
+`;
+
+exports[`Wrapper/LambdaWrapper handleError Generates a response object 14`] = `
+Object {
+  "body": "{\\"data\\":{\\"data\\":1},\\"message\\":\\"unknown error\\"}",
+  "headers": Object {
+    "Access-Control-Allow-Credentials": true,
+    "Access-Control-Allow-Origin": "*",
+    "Content-Type": "application/json",
+  },
+  "statusCode": 500,
+}
+`;
