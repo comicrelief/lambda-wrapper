@@ -25,10 +25,33 @@ import ResponseModel from '../Model/Response.model';
 export const handleError = (di, error) => {
   const logger = di.get(DEFINITIONS.LOGGER);
 
+  let errorBody = error;
+
+  // While handling an error, lambda wrapper should
+  // recognise axios errors and trim down the information
+  if (errorBody.isAxiosError) {
+    // only keep error.config, error.response.status, error.response.data
+    errorBody = {
+      config: error.config,
+      message: error.message,
+    };
+
+    // It's pretty common for axios errors
+    // to not have.response e.g.when there's
+    // a network error or timeout.
+    // These errors will have .request but not .response.
+    if (error.response) {
+      errorBody.response = {
+        status: error.response.status,
+        data: error.response.data,
+      };
+    }
+  }
+
   if (error.raiseOnEpsagon || !error.code || error.code >= 500) {
-    logger.error(error);
+    logger.error(errorBody);
   } else {
-    logger.info(error);
+    logger.info(errorBody);
   }
 
   const responseDetails = {
