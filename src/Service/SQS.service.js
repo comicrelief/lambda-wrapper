@@ -27,6 +27,7 @@ const sqs = new AWS.SQS({
 export default class SQSService extends DependencyAwareClass {
   /**
    * SQSService constructor
+   *
    * @param di DependencyInjection
    */
   constructor(di: DependencyInjection) {
@@ -41,8 +42,7 @@ export default class SQSService extends DependencyAwareClass {
     if (queues !== null && Object.keys(queues).length >= 1) {
       Object.keys(queues).forEach((queueDefinition) => {
         if (container.isOffline) {
-          const offlineHost =
-            typeof process.env.LAMBDA_WRAPPER_OFFLINE_SQS_HOST !== 'undefined' ? process.env.LAMBDA_WRAPPER_OFFLINE_SQS_HOST : 'localhost';
+          const offlineHost = typeof process.env.LAMBDA_WRAPPER_OFFLINE_SQS_HOST !== 'undefined' ? process.env.LAMBDA_WRAPPER_OFFLINE_SQS_HOST : 'localhost';
 
           this.queues[queueDefinition] = `http://${offlineHost}:4576/queue/${queues[queueDefinition]}`;
         } else {
@@ -54,9 +54,10 @@ export default class SQSService extends DependencyAwareClass {
 
   /**
    * Batch delete messages
+   *
    * @param queue strung
    * @param messageModels [SQSMessageModel]
-   * @return {Promise<any>}
+   * @returns {Promise<any>}
    */
   batchDelete(queue: string, messageModels: [SQSMessageModel]) {
     const container = this.getContainer();
@@ -100,16 +101,17 @@ export default class SQSService extends DependencyAwareClass {
               }
 
               resolve();
-            }
+            },
           );
-        }
+        },
       );
     });
   }
 
   /**
    * Check SQS status
-   * @return {Promise<any>}
+   *
+   * @returns {Promise<any>}
    */
   checkStatus() {
     const container = this.getContainer();
@@ -141,8 +143,9 @@ export default class SQSService extends DependencyAwareClass {
 
   /**
    * Get number of messages in a queue
+   *
    * @param queue
-   * @return {Promise<any>}
+   * @returns {Promise<any>}
    */
   getMessageCount(queue: string) {
     const container = this.getContainer();
@@ -168,17 +171,18 @@ export default class SQSService extends DependencyAwareClass {
           }
 
           resolve(Number.parseInt(data.Attributes.ApproximateNumberOfMessages, 10));
-        }
+        },
       );
     });
   }
 
   /**
    * Publish to message queue
+   *
    * @param queue          string
    * @param messageObject  object
    * @param messageGroupId string
-   * @return {Promise<any>}
+   * @returns {Promise<any>}
    */
   publish(queue: string, messageObject: object, messageGroupId = null) {
     const container = this.getContainer();
@@ -216,9 +220,10 @@ export default class SQSService extends DependencyAwareClass {
 
   /**
    * Receive from message queue
+   *
    * @param queue string
    * @param timeout number
-   * @return {Promise<any>}
+   * @returns {Promise<any>}
    */
   receive(queue: string, timeout: number = 15) {
     const container = this.getContainer();
@@ -249,7 +254,7 @@ export default class SQSService extends DependencyAwareClass {
           }
 
           return resolve(data.Messages.map((message) => new SQSMessageModel(message)));
-        }
+        },
       );
     });
   }

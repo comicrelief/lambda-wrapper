@@ -42,6 +42,17 @@ export const handleError = (di, error) => {
   return response.generate();
 };
 
+/**
+ * Lambda Wrapper.
+ *
+ * Wraps a lambda handler, generating a new function
+ * that has access to the dependency injection
+ * for the service and handles logging and exceptions.
+ *
+ * @param configuration
+ * @param handler
+ * @param throwError
+ */
 export default (configuration, handler, throwError = false) => {
   let instance = (event, context, callback) => {
     const di = new DependencyInjection(configuration, event, context);
@@ -86,10 +97,10 @@ export default (configuration, handler, throwError = false) => {
 
   // If the Epsagon token is enabled, then wrap the instance in the Epsagon wrapper
   if (
-    typeof process.env.EPSAGON_TOKEN === 'string' &&
-    process.env.EPSAGON_TOKEN !== 'undefined' &&
-    typeof process.env.EPSAGON_SERVICE_NAME === 'string' &&
-    process.env.EPSAGON_SERVICE_NAME !== 'undefined'
+    typeof process.env.EPSAGON_TOKEN === 'string'
+    && process.env.EPSAGON_TOKEN !== 'undefined'
+    && typeof process.env.EPSAGON_SERVICE_NAME === 'string'
+    && process.env.EPSAGON_SERVICE_NAME !== 'undefined'
   ) {
     Epsagon.init({
       token: process.env.EPSAGON_TOKEN,

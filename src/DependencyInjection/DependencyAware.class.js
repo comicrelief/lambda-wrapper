@@ -6,6 +6,7 @@ import DependencyInjection from './DependencyInjection.class';
 export default class DependencyAwareClass {
   /**
    * DependencyAwareClass constructor
+   *
    * @param {DependencyInjection} di
    */
   constructor(di: DependencyInjection) {
@@ -14,6 +15,7 @@ export default class DependencyAwareClass {
 
   /**
    * Get Dependency Injection Container
+   *
    * @returns {DependencyInjection}
    */
   getContainer() {

@@ -26,10 +26,10 @@ export const ERROR_TYPES = {
 export default class RequestService extends DependencyAwareClass {
   /**
    * Get a parameter from the request.
-   * @param param
+   *
+   * @param parameter
    * @param ifNull
    * @param requestType
-   * @return {*}
    */
   get(parameter: string, ifNull = null, requestType = null) {
     const queryParameters = this.getAll(requestType);
@@ -73,7 +73,8 @@ export default class RequestService extends DependencyAwareClass {
 
   /**
    * Get authorization token
-   * @return {*}
+   *
+   * @returns {*}
    */
   getAuthorizationToken() {
     const authorization = this.getHeader('Authorization');
@@ -93,9 +94,9 @@ export default class RequestService extends DependencyAwareClass {
 
   /**
    * Get a path parameter
-   * @param param  string|null
+   *
+   * @param parameter
    * @param ifNull mixed
-   * @return {*}
    */
   getPathParameter(parameter: string = null, ifNull = {}) {
     const event = this.getContainer().getEvent();
@@ -107,10 +108,10 @@ export default class RequestService extends DependencyAwareClass {
 
     // If a specifc parameter has been requested, return the parameter if it exists
     if (
-      typeof parameter === 'string' &&
-      typeof event.pathParameters === 'object' &&
-      event.pathParameters !== null &&
-      typeof event.pathParameters[parameter] !== 'undefined'
+      typeof parameter === 'string'
+      && typeof event.pathParameters === 'object'
+      && event.pathParameters !== null
+      && typeof event.pathParameters[parameter] !== 'undefined'
     ) {
       return event.pathParameters[parameter];
     }
@@ -120,8 +121,9 @@ export default class RequestService extends DependencyAwareClass {
 
   /**
    * Get all request parameters
+   *
    * @param requestType
-   * @return {{}}
+   * @returns {{}}
    */
   // eslint-disable-next-line sonarjs/cognitive-complexity
   getAll(requestType = null) {
@@ -169,15 +171,16 @@ export default class RequestService extends DependencyAwareClass {
 
   /**
    * Fetch the request IP address
-   * @return {*}
+   *
+   * @returns {*}
    */
   getIp() {
     const event = this.getContainer().getEvent();
 
     if (
-      typeof event.requestContext !== 'undefined' &&
-      typeof event.requestContext.identity !== 'undefined' &&
-      typeof event.requestContext.identity.sourceIp !== 'undefined'
+      typeof event.requestContext !== 'undefined'
+      && typeof event.requestContext.identity !== 'undefined'
+      && typeof event.requestContext.identity.sourceIp !== 'undefined'
     ) {
       return event.requestContext.identity.sourceIp;
     }
@@ -187,7 +190,8 @@ export default class RequestService extends DependencyAwareClass {
 
   /**
    * Get user agent
-   * @return {*}
+   *
+   * @returns {*}
    */
   getUserBrowserAndDevice() {
     const userAgent = this.getHeader('user-agent', null);
@@ -215,8 +219,9 @@ export default class RequestService extends DependencyAwareClass {
 
   /**
    * Test a request against validation constraints
+   *
    * @param constraints
-   * @return {Promise<any>}
+   * @returns {Promise<any>}
    */
   validateAgainstConstraints(constraints: object) {
     const Logger = this.getContainer().get(DEFINITIONS.LOGGER);
@@ -238,8 +243,9 @@ export default class RequestService extends DependencyAwareClass {
 
   /**
    * Fetch the request multipart form
+   *
    * @param useBuffer
-   * @return {*}
+   * @returns {*}
    */
   parseForm(useBuffer: boolean) {
     const event = this.getContainer().getEvent();
@@ -267,7 +273,8 @@ export default class RequestService extends DependencyAwareClass {
 
   /**
    * Fetch the request AWS event Records
-   * @return {*}
+   *
+   * @returns {*}
    */
   getAWSRecords() {
     const event = this.getContainer().getEvent();
@@ -279,11 +286,24 @@ export default class RequestService extends DependencyAwareClass {
     return null;
   }
 
+  /**
+   * Gets a value independently from
+   * the case of the key
+   *
+   * @param object
+   * @param key
+   */
   getValueIgnoringKeyCase(object, key) {
     const foundKey = Object.keys(object).find((currentKey) => currentKey.toLocaleLowerCase() === key.toLowerCase());
     return object[foundKey];
   }
 
+  /**
+   * Returns the content type
+   * assoiated with the request
+   *
+   * @param event
+   */
   getBoundary(event) {
     return this.getValueIgnoringKeyCase(event.headers, 'Content-Type').split('=')[1];
   }

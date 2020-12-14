@@ -1,8 +1,12 @@
 import Model from '../Model.model';
 
+/**
+ * Message Model
+ */
 export default class Message extends Model {
   /**
    * Message constructor
+   *
    * @param message
    */
   constructor(message) {
@@ -18,7 +22,8 @@ export default class Message extends Model {
 
   /**
    * Get Message ID
-   * @return {*}
+   *
+   * @returns {*}
    */
   getMessageId() {
     return this.messageId;
@@ -26,7 +31,8 @@ export default class Message extends Model {
 
   /**
    * Get Receipt Handle
-   * @return {*}
+   *
+   * @returns {*}
    */
   getReceiptHandle() {
     return this.receiptHandle;
@@ -34,7 +40,8 @@ export default class Message extends Model {
 
   /**
    * Get Body
-   * @return {any | *}
+   *
+   * @returns {any | *}
    */
   getBody() {
     return this.body;
@@ -42,6 +49,7 @@ export default class Message extends Model {
 
   /**
    * Set for deletion status
+   *
    * @param forDeletion
    */
   setForDeletion(forDeletion: boolean) {
@@ -50,7 +58,8 @@ export default class Message extends Model {
 
   /**
    * Whether message is for deletion
-   * @return {boolean|*}
+   *
+   * @returns {boolean|*}
    */
   isForDeletion() {
     return this.forDeletion;
@@ -58,7 +67,8 @@ export default class Message extends Model {
 
   /**
    * Get all of the message metadata
-   * @return {{}}
+   *
+   * @returns {{}}
    */
   getMetaData() {
     return this.metadata;
@@ -66,6 +76,7 @@ export default class Message extends Model {
 
   /**
    * Set message metadata value
+   *
    * @param key
    * @param value
    */

@@ -6,6 +6,7 @@ import { DEFINITIONS, DEPENDENCIES } from '../Config/Dependencies';
 export default class DependencyInjection {
   /**
    * DependencyInjection constructor
+   *
    * @param configuration
    * @param event
    * @param context
@@ -34,8 +35,9 @@ export default class DependencyInjection {
 
   /**
    * Get Dependency
+   *
    * @param definition
-   * @return {*}
+   * @returns {*}
    */
   get(definition) {
     if (typeof this.dependencies[definition] === 'undefined') {
@@ -47,7 +49,8 @@ export default class DependencyInjection {
 
   /**
    * Get Event
-   * @return {*}
+   *
+   * @returns {*}
    */
   getEvent() {
     return this.event;
@@ -55,7 +58,8 @@ export default class DependencyInjection {
 
   /**
    * Get Context
-   * @return {*}
+   *
+   * @returns {*}
    */
   getContext() {
     return this.context;
@@ -63,8 +67,9 @@ export default class DependencyInjection {
 
   /**
    * Get Configuration
+   *
    * @param definition string
-   * @return {*}
+   * @returns {*}
    */
   getConfiguration(definition = null) {
     if (definition !== null && typeof this.configuration[definition] === 'undefined') {
