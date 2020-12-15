@@ -13,6 +13,16 @@ const getLogger = (event = getEvent, context = getContext) => new LoggerService(
 describe('Service/LoggerService', () => {
   const context = { invokedFunctionArn: 'my-function' };
 
+  const axiosResponses = {
+    UNDEFINED: undefined,
+    EMPTY: {},
+    HTTP_417: {
+      status: 417,
+      data: { data: 1 },
+      extra: 2,
+    },
+  };
+
   afterEach(() => jest.clearAllMocks());
 
   describe('constructor', () => {
@@ -53,6 +63,74 @@ describe('Service/LoggerService', () => {
       expect(logger.logger).toEqual(winston);
 
       expect(Winston.createLogger).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('error', () => {
+    Object.entries(axiosResponses).forEach(([key, axiosResponse]) => {
+      it(`Trims down the axios error: ${key}`, () => {
+        const logger = getLogger();
+        const log = jest.fn();
+
+        jest.spyOn(logger, 'logger', 'get').mockReturnValue({ log });
+
+        const error = {
+          isAxiosError: true,
+          raiseOnEpsagon: true,
+          config: {
+            url: 'http://localhost:9999',
+            method: 'get',
+          },
+          extra: 1,
+          response: axiosResponse,
+          message: 'some-message',
+        };
+
+        logger.error(error);
+
+        const loggerCall = log.mock.calls[0][2].error;
+
+        expect(loggerCall).toMatchSnapshot();
+        expect('extra' in loggerCall).toEqual(false);
+
+        if (axiosResponse) {
+          expect('extra' in loggerCall.response).toEqual(false);
+        }
+      });
+    });
+  });
+
+  describe('info', () => {
+    Object.entries(axiosResponses).forEach(([key, axiosResponse]) => {
+      it(`Trims down the axios error: ${key}`, () => {
+        const logger = getLogger();
+        const log = jest.fn();
+
+        jest.spyOn(logger, 'logger', 'get').mockReturnValue({ log });
+
+        const error = {
+          isAxiosError: true,
+          raiseOnEpsagon: true,
+          config: {
+            url: 'http://localhost:9999',
+            method: 'get',
+          },
+          extra: 1,
+          response: axiosResponse,
+          message: 'some-message',
+        };
+
+        logger.info(error);
+
+        const loggerCall = log.mock.calls[0][1];
+
+        expect(loggerCall).toMatchSnapshot();
+        expect('extra' in loggerCall).toEqual(false);
+
+        if (axiosResponse) {
+          expect('extra' in loggerCall.response).toEqual(false);
+        }
+      });
     });
   });
 });

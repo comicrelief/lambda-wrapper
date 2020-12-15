@@ -110,6 +110,54 @@ export default class LoggerService extends DependencyAwareClass {
   }
 
   /**
+   * While handling an error, lambda wrapper should
+   * recognise axios errors and trim down the information.
+   *
+   * Keep the following keys:
+   * - message.config
+   * - message.message
+   * - message.response?.status
+   * - message.response?.data
+   *
+   * @param {object} error
+   */
+  static processAxiosError(error) {
+    const processed = {
+      config: error.config,
+      message: error.message,
+    };
+
+    // It's pretty common for axios errors
+    // to not have.response e.g.when there's
+    // a network error or timeout.
+    // These errors will have .request but not .response.
+    if (error.response) {
+      processed.response = {
+        status: error.response.status,
+        data: error.response.data,
+      };
+    }
+
+    return processed;
+  }
+
+  /**
+   * Transform the original message
+   * before it is passed to the winston logger
+   *
+   * @param {string|object} message
+   */
+  processMessage(message = '') {
+    let processed = message;
+
+    if (processed && processed.isAxiosError) {
+      processed = this.constructor.processAxiosError(processed);
+    }
+
+    return processed;
+  }
+
+  /**
    * Log Error Message
    *
    * @param error object
@@ -130,7 +178,7 @@ export default class LoggerService extends DependencyAwareClass {
       Epsagon.setError(error);
     }
 
-    this.logger.log('error', message, { error });
+    this.logger.log('error', message, { error: this.processMessage(error) });
     this.label('error', true);
     this.metric('error', 'error', true);
   }
@@ -150,7 +198,7 @@ export default class LoggerService extends DependencyAwareClass {
    * @param message string
    */
   info(message) {
-    this.logger.log('info', message);
+    this.logger.log('info', this.processMessage(message));
   }
 
   /**
