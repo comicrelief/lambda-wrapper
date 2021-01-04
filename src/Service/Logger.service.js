@@ -16,6 +16,12 @@ if (sentryIsAvailable) {
   });
 }
 
+export const LOGGING_LEVELS = {
+  dev: 'info',
+  staging: 'info',
+  production: 'error',
+};
+
 /**
  * LoggerService class
  */
@@ -199,6 +205,20 @@ export default class LoggerService extends DependencyAwareClass {
    */
   info(message) {
     this.logger.log('info', this.processMessage(message));
+  }
+
+  /**
+   * Logs an error, using logger.error
+   * or logger.info based on the logging levels
+   * that are based on the process.env.DEPLOY_ENV
+   *
+   * @param error
+   * @param message
+   */
+  warning(error, message = '') {
+    const loggerFunction = LOGGING_LEVELS[process.env.DEPLOY_ENV] || 'error';
+
+    return this[loggerFunction](error, message);
   }
 
   /**

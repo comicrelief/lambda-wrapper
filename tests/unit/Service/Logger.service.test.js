@@ -1,7 +1,7 @@
 import Winston from 'winston';
 
 import DependencyInjection from '../../../src/DependencyInjection/DependencyInjection.class';
-import LoggerService from '../../../src/Service/Logger.service';
+import LoggerService, { LOGGING_LEVELS } from '../../../src/Service/Logger.service';
 import CONFIGURATION from '../../../src/Config/Dependencies';
 
 const getEvent = require('../../mocks/aws/event.json');
@@ -130,6 +130,44 @@ describe('Service/LoggerService', () => {
         if (axiosResponse) {
           expect('extra' in loggerCall.response).toEqual(false);
         }
+      });
+    });
+  });
+
+  describe('warning', () => {
+    let DEPLOY_ENV;
+
+    beforeAll(() => {
+      DEPLOY_ENV = process.env.DEPLOY_ENV;
+    });
+
+    afterAll(() => {
+      process.env.DEPLOY_ENV = DEPLOY_ENV;
+    });
+
+    Object.entries(LOGGING_LEVELS).forEach(([deployEnv, func]) => {
+      it(`uses 'this.logger.${func}' in ${deployEnv}`, () => {
+        process.env.DEPLOY_ENV = deployEnv;
+        const logger = getLogger();
+
+        jest.spyOn(logger, func).mockImplementation(() => {});
+
+        logger.warning({}, '');
+
+        expect(logger[func]).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    ['', undefined, 'INVALID_VALUE'].forEach((deployEnv) => {
+      it(`Defaults to this.logger.error if process.env.DEPLOY_ENV is ${deployEnv}`, () => {
+        process.env.DEPLOY_ENV = deployEnv;
+        const logger = getLogger();
+
+        jest.spyOn(logger, 'error').mockImplementation(() => {});
+
+        logger.warning({}, '');
+
+        expect(logger.error).toHaveBeenCalledTimes(1);
       });
     });
   });
