@@ -213,12 +213,11 @@ export default class LoggerService extends DependencyAwareClass {
    * that are based on the process.env.DEPLOY_ENV
    *
    * @param error
-   * @param message
    */
-  warning(error, message = '') {
+  warning(error) {
     const loggerFunction = LOGGING_LEVELS[process.env.DEPLOY_ENV] || 'error';
 
-    return this[loggerFunction](error, message);
+    return this[loggerFunction](error);
   }
 
   /**
