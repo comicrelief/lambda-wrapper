@@ -152,7 +152,7 @@ describe('Service/LoggerService', () => {
 
         jest.spyOn(logger, func).mockImplementation(() => {});
 
-        logger.warning({}, '');
+        logger.warning({});
 
         expect(logger[func]).toHaveBeenCalledTimes(1);
       });
@@ -165,7 +165,7 @@ describe('Service/LoggerService', () => {
 
         jest.spyOn(logger, 'error').mockImplementation(() => {});
 
-        logger.warning({}, '');
+        logger.warning({});
 
         expect(logger.error).toHaveBeenCalledTimes(1);
       });
