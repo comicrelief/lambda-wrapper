@@ -212,6 +212,10 @@ export default class LoggerService extends DependencyAwareClass {
    * or logger.info based on the logging levels
    * that are based on the process.env.DEPLOY_ENV
    *
+   * Please note that LoggerService.error and LoggerService.info
+   * have different signatures. The function uses the shared argument
+   * instead of introducing ambiguity.
+   *
    * @param error
    */
   warning(error) {
