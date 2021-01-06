@@ -133,4 +133,38 @@ describe('Service/LoggerService', () => {
       });
     });
   });
+
+  describe('warning', () => {
+    let LOGGER_SOFT_WARNING;
+
+    beforeAll(() => {
+      LOGGER_SOFT_WARNING = process.env.LOGGER_SOFT_WARNING;
+    });
+
+    afterAll(() => {
+      process.env.LOGGER_SOFT_WARNING = LOGGER_SOFT_WARNING;
+    });
+
+    [
+      ['', 'error'],
+      ['some-value', 'error'],
+      [false, 'error'],
+      ['false', 'error'],
+      ['0', 'error'],
+      ['1', 'info'],
+      [true, 'info'],
+      ['true', 'info'],
+    ].forEach(([loggerSoftWarning, func]) => {
+      it(`uses 'this.logger.${func}' in ${loggerSoftWarning}`, () => {
+        process.env.LOGGER_SOFT_WARNING = loggerSoftWarning;
+        const logger = getLogger();
+
+        jest.spyOn(logger, func).mockImplementation(() => {});
+
+        logger.warning({});
+
+        expect(logger[func]).toHaveBeenCalledTimes(1);
+      });
+    });
+  });
 });

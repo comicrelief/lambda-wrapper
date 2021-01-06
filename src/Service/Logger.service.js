@@ -202,6 +202,27 @@ export default class LoggerService extends DependencyAwareClass {
   }
 
   /**
+   * Logs an error, using `LoggerService.error`
+   * or `LoggerService.info` based on
+   * `process.env.LOGGER_SOFT_WARNING`.
+   *
+   * Please note that `LoggerService.error` and `LoggerService.info`
+   * have different signatures. The function uses the shared argument
+   * instead of introducing ambiguity.
+   *
+   * @param error
+   */
+  warning(error) {
+    const softWarningValues = ['true', '1'];
+
+    if (softWarningValues.includes(process.env.LOGGER_SOFT_WARNING)) {
+      return this.info(error);
+    }
+
+    return this.error(error);
+  }
+
+  /**
    * Add a label
    *
    * @param descriptor string
