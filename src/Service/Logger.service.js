@@ -213,7 +213,9 @@ export default class LoggerService extends DependencyAwareClass {
    * @param error
    */
   warning(error) {
-    if (process.env.LOGGER_SOFT_WARNING) {
+    const softWarningValues = ['true', '1'];
+
+    if (softWarningValues.includes(process.env.LOGGER_SOFT_WARNING)) {
       return this.info(error);
     }
 

@@ -147,7 +147,12 @@ describe('Service/LoggerService', () => {
 
     [
       ['', 'error'],
+      ['some-value', 'error'],
+      [false, 'error'],
+      ['false', 'error'],
+      ['0', 'error'],
       ['1', 'info'],
+      [true, 'info'],
       ['true', 'info'],
     ].forEach(([loggerSoftWarning, func]) => {
       it(`uses 'this.logger.${func}' in ${loggerSoftWarning}`, () => {
