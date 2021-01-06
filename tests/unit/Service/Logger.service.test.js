@@ -1,7 +1,7 @@
 import Winston from 'winston';
 
 import DependencyInjection from '../../../src/DependencyInjection/DependencyInjection.class';
-import LoggerService, { LOGGING_LEVELS } from '../../../src/Service/Logger.service';
+import LoggerService from '../../../src/Service/Logger.service';
 import CONFIGURATION from '../../../src/Config/Dependencies';
 
 const getEvent = require('../../mocks/aws/event.json');
