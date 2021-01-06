@@ -135,19 +135,23 @@ describe('Service/LoggerService', () => {
   });
 
   describe('warning', () => {
-    let DEPLOY_ENV;
+    let LOGGER_SOFT_WARNING;
 
     beforeAll(() => {
-      DEPLOY_ENV = process.env.DEPLOY_ENV;
+      LOGGER_SOFT_WARNING = process.env.LOGGER_SOFT_WARNING;
     });
 
     afterAll(() => {
-      process.env.DEPLOY_ENV = DEPLOY_ENV;
+      process.env.LOGGER_SOFT_WARNING = LOGGER_SOFT_WARNING;
     });
 
-    Object.entries(LOGGING_LEVELS).forEach(([deployEnv, func]) => {
-      it(`uses 'this.logger.${func}' in ${deployEnv}`, () => {
-        process.env.DEPLOY_ENV = deployEnv;
+    [
+      ['', 'error'],
+      ['1', 'info'],
+      ['true', 'info'],
+    ].forEach(([loggerSoftWarning, func]) => {
+      it(`uses 'this.logger.${func}' in ${loggerSoftWarning}`, () => {
+        process.env.LOGGER_SOFT_WARNING = loggerSoftWarning;
         const logger = getLogger();
 
         jest.spyOn(logger, func).mockImplementation(() => {});
@@ -155,19 +159,6 @@ describe('Service/LoggerService', () => {
         logger.warning({});
 
         expect(logger[func]).toHaveBeenCalledTimes(1);
-      });
-    });
-
-    ['', undefined, 'INVALID_VALUE'].forEach((deployEnv) => {
-      it(`Defaults to this.logger.error if process.env.DEPLOY_ENV is ${deployEnv}`, () => {
-        process.env.DEPLOY_ENV = deployEnv;
-        const logger = getLogger();
-
-        jest.spyOn(logger, 'error').mockImplementation(() => {});
-
-        logger.warning({});
-
-        expect(logger.error).toHaveBeenCalledTimes(1);
       });
     });
   });

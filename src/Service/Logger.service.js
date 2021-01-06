@@ -16,12 +16,6 @@ if (sentryIsAvailable) {
   });
 }
 
-export const LOGGING_LEVELS = {
-  dev: 'info',
-  staging: 'info',
-  production: 'error',
-};
-
 /**
  * LoggerService class
  */
@@ -208,20 +202,22 @@ export default class LoggerService extends DependencyAwareClass {
   }
 
   /**
-   * Logs an error, using logger.error
-   * or logger.info based on the logging levels
-   * that are based on the process.env.DEPLOY_ENV
+   * Logs an error, using `LoggerService.error`
+   * or `LoggerService.info` based on
+   * `process.env.LOGGER_SOFT_WARNING`.
    *
-   * Please note that LoggerService.error and LoggerService.info
+   * Please note that `LoggerService.error` and `LoggerService.info`
    * have different signatures. The function uses the shared argument
    * instead of introducing ambiguity.
    *
    * @param error
    */
   warning(error) {
-    const loggerFunction = LOGGING_LEVELS[process.env.DEPLOY_ENV] || 'error';
+    if (process.env.LOGGER_SOFT_WARNING) {
+      return this.info(error);
+    }
 
-    return this[loggerFunction](error);
+    return this.error(error);
   }
 
   /**
