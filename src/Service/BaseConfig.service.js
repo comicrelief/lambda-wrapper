@@ -2,27 +2,35 @@ import { S3 } from 'aws-sdk';
 
 import DependencyAwareClass from '../DependencyInjection/DependencyAware.class';
 
+/**
+ * Error.code for S3 404 errors
+ */
 export const S3_NO_SUCH_KEY_ERROR_CODE = 'NoSuchKey';
 
+/**
+ * Represents the service states
+ */
 export const ServiceStates = {
   OK: 'OK',
   TEMPORARY_PAUSED: 'TEMPORARY_PAUSED',
-  UNDEFINITELY_PAUSED: 'UNDEFINITELY_PAUSED',
+  INDEFINITELY_PAUSED: 'UNDEFINITELY_PAUSED',
 };
 
 /**
  * BaseConfigService class
  *
- * This class is to be extended by the implementing service
+ * This class is to be extended by the implementing services
  * so that `defaultConfig` and possibly `s3Config` can be
  * overriden / extended.
  */
 export default class BaseConfigService extends DependencyAwareClass {
   /**
    * Returns the basic config.
-   * This getter is used to set the config
+   * This getter is used to set the default config
    * should the service not find any
    * on the configured S3 Bucket.
+   *
+   * See `getOrCreate` and `patch` methods.
    */
   static get defaultConfig() {
     return {
@@ -85,7 +93,7 @@ export default class BaseConfigService extends DependencyAwareClass {
 
     if (!body) {
       // Empty strings are not valid configurations
-      throw new Error('Configuration file is empty.');
+      throw new Error('Configuration file is empty');
     }
 
     try {
