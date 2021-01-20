@@ -2,7 +2,7 @@
 
 exports[`Service/BaseConfigService get propagates the 404 1`] = `"404"`;
 
-exports[`Service/BaseConfigService get refuses empty configurations 1`] = `"Configuration file is empty."`;
+exports[`Service/BaseConfigService get refuses empty configurations 1`] = `"Configuration file is empty"`;
 
 exports[`Service/BaseConfigService get refuses invalid configurations 1`] = `"Invalid configuration file"`;
 
