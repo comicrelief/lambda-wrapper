@@ -264,4 +264,21 @@ export default class LoggerService extends DependencyAwareClass {
       this.logger.log('info', `metric - ${descriptor} - ${stat}`);
     }
   }
+
+  /**
+   * Logs an object so that it can be inspected
+   *
+   * @param action - What are we doing with the object, i.e. 'Processing'
+   * @param object - The object to be stored in logs
+   * @param level - 'error', 'warning' or 'info'
+   */
+  object(action, object, level = 'info') {
+    if (!(['error', 'warning', 'info'].includes(level))) {
+      throw new Error('Unrecognised log level');
+    }
+
+    const payload = JSON.stringify(object, null, 4);
+
+    return this[level](`${action}: '${payload}'`);
+  }
 }

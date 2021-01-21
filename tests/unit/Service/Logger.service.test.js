@@ -167,4 +167,26 @@ describe('Service/LoggerService', () => {
       });
     });
   });
+
+  describe('object', () => {
+    ['error', 'warning', 'info'].forEach((level) => {
+      [
+        null,
+        'a string',
+        { a: 1 },
+        { a: { b: null }, c: 'a string' },
+      ].forEach((object) => {
+        it(`Logs a '${JSON.stringify(object)}' with level: '${level}'`, () => {
+          const logger = getLogger();
+          let message;
+
+          jest.spyOn(logger, level).mockImplementation((arg) => { message = arg; });
+
+          logger.object('My action', object, level);
+          expect(logger[level]).toHaveBeenCalledTimes(1);
+          expect(message).toMatchSnapshot();
+        });
+      });
+    });
+  });
 });
