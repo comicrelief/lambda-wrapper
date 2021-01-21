@@ -79,3 +79,60 @@ Object {
   "message": "some-message",
 }
 `;
+
+exports[`Service/LoggerService object Logs a '"a string"' with level: 'error' 1`] = `"My action: '\\"a string\\"'"`;
+
+exports[`Service/LoggerService object Logs a '"a string"' with level: 'info' 1`] = `"My action: '\\"a string\\"'"`;
+
+exports[`Service/LoggerService object Logs a '"a string"' with level: 'warning' 1`] = `"My action: '\\"a string\\"'"`;
+
+exports[`Service/LoggerService object Logs a '{"a":{"b":null},"c":"a string"}' with level: 'error' 1`] = `
+"My action: '{
+    \\"a\\": {
+        \\"b\\": null
+    },
+    \\"c\\": \\"a string\\"
+}'"
+`;
+
+exports[`Service/LoggerService object Logs a '{"a":{"b":null},"c":"a string"}' with level: 'info' 1`] = `
+"My action: '{
+    \\"a\\": {
+        \\"b\\": null
+    },
+    \\"c\\": \\"a string\\"
+}'"
+`;
+
+exports[`Service/LoggerService object Logs a '{"a":{"b":null},"c":"a string"}' with level: 'warning' 1`] = `
+"My action: '{
+    \\"a\\": {
+        \\"b\\": null
+    },
+    \\"c\\": \\"a string\\"
+}'"
+`;
+
+exports[`Service/LoggerService object Logs a '{"a":1}' with level: 'error' 1`] = `
+"My action: '{
+    \\"a\\": 1
+}'"
+`;
+
+exports[`Service/LoggerService object Logs a '{"a":1}' with level: 'info' 1`] = `
+"My action: '{
+    \\"a\\": 1
+}'"
+`;
+
+exports[`Service/LoggerService object Logs a '{"a":1}' with level: 'warning' 1`] = `
+"My action: '{
+    \\"a\\": 1
+}'"
+`;
+
+exports[`Service/LoggerService object Logs a 'null' with level: 'error' 1`] = `"My action: 'null'"`;
+
+exports[`Service/LoggerService object Logs a 'null' with level: 'info' 1`] = `"My action: 'null'"`;
+
+exports[`Service/LoggerService object Logs a 'null' with level: 'warning' 1`] = `"My action: 'null'"`;
