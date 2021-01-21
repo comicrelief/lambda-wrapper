@@ -1,14 +1,14 @@
 import sinon from 'sinon';
 
 import { DEFINITIONS } from '../../../src/Config/Dependencies';
-import RequestService, { REQUEST_TYPES } from '../../../src/Service/Request.service';
 import DependencyInjection from '../../../src/DependencyInjection/DependencyInjection.class';
-import LambdaWrapper, { handleError } from '../../../src/Wrapper/LambdaWrapper';
+import RequestService, { REQUEST_TYPES } from '../../../src/Service/Request.service';
 import LambdaTermination from '../../../src/Wrapper/LambdaTermination';
+import LambdaWrapper, { handleError } from '../../../src/Wrapper/LambdaWrapper';
 import { getMockedDi } from '../../lib/mocks';
 
-const getEvent = require('../../mocks/aws/event.json');
 const getContext = require('../../mocks/aws/context.json');
+const getEvent = require('../../mocks/aws/event.json');
 
 describe('Wrapper/LambdaWrapper', () => {
   let dependencyInjection = {};

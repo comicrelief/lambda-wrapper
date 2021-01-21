@@ -1,15 +1,14 @@
 /* @flow */
 import Alai from 'alai';
-import AWS from 'aws-sdk';
 import each from 'async/each';
+import AWS from 'aws-sdk';
 import { v4 as UUID } from 'uuid';
 
+import { DEFINITIONS } from '../Config/Dependencies';
 import DependencyAwareClass from '../DependencyInjection/DependencyAware.class';
 import DependencyInjection from '../DependencyInjection/DependencyInjection.class';
-import StatusModel, { STATUS_TYPES } from '../Model/Status.model';
 import SQSMessageModel from '../Model/SQS/Message.model';
-
-import { DEFINITIONS } from '../Config/Dependencies';
+import StatusModel, { STATUS_TYPES } from '../Model/Status.model';
 
 // Set a timeout on S3 in case of outage
 AWS.Config.httpOptions = {

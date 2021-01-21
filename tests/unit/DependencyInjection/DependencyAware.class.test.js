@@ -1,8 +1,10 @@
 import DependencyInjection from '../../../src/DependencyInjection/DependencyInjection.class';
+// The import order is relevant here to avoid circular imports
+// eslint-disable-next-line import/order
 import DependencyAware from '../../../src/DependencyInjection/DependencyAware.class';
 
-const getEvent = require('../../mocks/aws/event.json');
 const getContext = require('../../mocks/aws/context.json');
+const getEvent = require('../../mocks/aws/event.json');
 
 describe('DependencyInjection/DependencyAwareClass', () => {
   describe('getContainer', () => {

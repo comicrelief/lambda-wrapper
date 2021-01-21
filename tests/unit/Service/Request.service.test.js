@@ -3,12 +3,12 @@ import QueryString from 'querystring';
 
 import sinon from 'sinon';
 
+import CONFIGURATION from '../../../src/Config/Dependencies';
 import DependencyInjection from '../../../src/DependencyInjection/DependencyInjection.class';
 import RequestService, { REQUEST_TYPES } from '../../../src/Service/Request.service';
-import CONFIGURATION from '../../../src/Config/Dependencies';
 
-const getEvent = require('../../mocks/aws/event.json');
 const getContext = require('../../mocks/aws/context.json');
+const getEvent = require('../../mocks/aws/event.json');
 
 describe('Service/RequestService', () => {
   afterEach(() => sinon.restore());
