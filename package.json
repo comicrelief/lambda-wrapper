@@ -7,8 +7,7 @@
     "lint": "yarn eslint .",
     "test": "jest --coverage",
     "build": "babel src --out-dir dist --copy-files",
-    "prepublish": "yarn snyk-protect; yarn build",
-    "snyk-protect": "snyk protect"
+    "prepublish": "yarn build"
   },
   "author": "Adam Clark",
   "license": "ISC",
@@ -37,8 +36,7 @@
     "nyc": "^15.1.0",
     "prettier": "^2.1.0",
     "semantic-release": "^17.1.1",
-    "sinon": "^9.0.2",
-    "snyk": "^1.364.0"
+    "sinon": "^9.0.2"
   },
   "peerDependencies": {
     "aws-sdk": ">=2.743.0"
@@ -53,6 +51,5 @@
     "validate.js": "0.13.1",
     "winston": "^3.3.3",
     "xml2js": "^0.4.23"
-  },
-  "snyk": true
+  }
 }
