@@ -1,8 +1,6 @@
 /* eslint-disable sonarjs/no-duplicate-string */
 import QueryString from 'querystring';
 
-import sinon from 'sinon';
-
 import CONFIGURATION from '../../../src/Config/Dependencies';
 import DependencyInjection from '../../../src/DependencyInjection/DependencyInjection.class';
 import RequestService, { HTTP_METHODS_WITHOUT_PAYLOADS, HTTP_METHODS_WITH_PAYLOADS } from '../../../src/Service/Request.service';
@@ -16,7 +14,7 @@ const getEvent = (overrides = {}) => JSON.parse(JSON.stringify(({
 })));
 
 describe('Service/RequestService', () => {
-  afterEach(() => sinon.restore());
+  afterEach(() => jest.resetAllMocks());
 
   HTTP_METHODS_WITHOUT_PAYLOADS.forEach((httpMethod) => {
     describe(`HTTP ${httpMethod}`, () => {

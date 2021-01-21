@@ -1,6 +1,7 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable sonarjs/no-duplicate-string */
 /* @flow */
+
 import QueryString from 'querystring';
 
 import useragent from 'useragent';
