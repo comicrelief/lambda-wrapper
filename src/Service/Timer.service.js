@@ -1,6 +1,6 @@
+import { DEFINITIONS } from '../Config/Dependencies';
 import DependencyAwareClass from '../DependencyInjection/DependencyAware.class';
 import DependencyInjection from '../DependencyInjection/DependencyInjection.class';
-import { DEFINITIONS } from '../Config/Dependencies';
 
 /**
  * TimerService class

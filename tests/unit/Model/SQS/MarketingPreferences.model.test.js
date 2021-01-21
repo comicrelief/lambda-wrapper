@@ -1,7 +1,7 @@
 /* eslint-disable sonarjs/no-identical-functions */
 /* eslint-disable sonarjs/no-duplicate-string */
-import MarketingPreferencesModel from '../../../../src/Model/SQS/MarketingPreference.model';
 import ResponseModel from '../../../../src/Model/Response.model';
+import MarketingPreferencesModel from '../../../../src/Model/SQS/MarketingPreference.model';
 
 // Test definitions.
 describe('Model/MarketingPreferencesModel', () => {

@@ -1,8 +1,8 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import Epsagon from 'epsagon';
 
-import DependencyInjection from '../DependencyInjection/DependencyInjection.class';
 import { DEFINITIONS } from '../Config/Dependencies';
+import DependencyInjection from '../DependencyInjection/DependencyInjection.class';
 import ResponseModel from '../Model/Response.model';
 
 /**

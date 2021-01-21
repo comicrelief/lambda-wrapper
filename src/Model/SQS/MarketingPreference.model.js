@@ -1,8 +1,9 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import validate from 'validate.js';
+
 import Model from '../Model.model';
-import requestConstraints from './MarketingPreference.constraints.json';
 import ResponseModel from '../Response.model';
+import requestConstraints from './MarketingPreference.constraints.json';
 
 // Define action specific error types
 export const ERROR_TYPES = {

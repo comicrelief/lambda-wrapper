@@ -1,4 +1,5 @@
 import { S3 } from 'aws-sdk';
+
 import DependencyInjection from '../../../src/DependencyInjection/DependencyInjection.class';
 import BaseConfigService, { S3_NO_SUCH_KEY_ERROR_CODE } from '../../../src/Service/BaseConfig.service';
 

@@ -1006,10 +1006,10 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@comicrelief/eslint-config@^1.2.1":
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/@comicrelief/eslint-config/-/eslint-config-1.2.1.tgz#97ac8b7a4ad3c729d663b2fefdc6fdc3889a7584"
-  integrity sha512-Pk7JjeyP0o72URKVTcSx9TAayrOedr445vdIAciifE6SnXZsCAu3gmipSHBq677MzQarKW+GIufU705x2RNdAg==
+"@comicrelief/eslint-config@^1.3.0":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@comicrelief/eslint-config/-/eslint-config-1.3.0.tgz#d22cc8d915e7bdade37a174fa20b835bd93e146b"
+  integrity sha512-50JbY2qvwPD2R0vr+PQyCCb+nhNXG7kJL1Q+raeBvgT0LRjc/qQolab1F+Ei67H/poXSU7p/JUCqX256CJUJXw==
   dependencies:
     "@babel/eslint-parser" ">=7.11.3"
     "@typescript-eslint/parser" "^4.7.0"

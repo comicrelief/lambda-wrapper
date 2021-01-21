@@ -1,11 +1,10 @@
-import DependencyInjection from '../../../src/DependencyInjection/DependencyInjection.class';
 import { DEFINITIONS } from '../../../src/Config/Dependencies';
-
-import RequestService from '../../../src/Service/Request.service';
+import DependencyInjection from '../../../src/DependencyInjection/DependencyInjection.class';
 import LoggerService from '../../../src/Service/Logger.service';
+import RequestService from '../../../src/Service/Request.service';
 
-const getEvent = require('../../mocks/aws/event.json');
 const getContext = require('../../mocks/aws/context.json');
+const getEvent = require('../../mocks/aws/event.json');
 
 describe('DependencyInjection/DependencyInjectionClass', () => {
   describe('should instantiate', () => {
