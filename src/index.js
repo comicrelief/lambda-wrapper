@@ -12,6 +12,7 @@ export { default as SQSMessageModel } from './Model/SQS/Message.model';
 export { default as MarketingPreferenceModel } from './Model/SQS/MarketingPreference.model';
 
 // Service
+export { default as BaseConfigService } from './Service/BaseConfig.service';
 export { default as LoggerService } from './Service/Logger.service';
 export { default as RequestService } from './Service/Request.service';
 export { default as SQSService } from './Service/SQS.service';
