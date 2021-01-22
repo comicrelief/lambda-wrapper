@@ -42,7 +42,7 @@
     "aws-sdk": ">=2.743.0"
   },
   "dependencies": {
-    "@sentry/node": "^5.20.0",
+    "@sentry/node": "^6.0.1",
     "alai": "1.0.3",
     "async": "^3.2.0",
     "epsagon": "^1.77.1",
