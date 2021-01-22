@@ -80,7 +80,7 @@ describe('Service/RequestService', () => {
           event.queryStringParameters.giftaid = 123;
           const request = new RequestService(new DependencyInjection(CONFIGURATION, event, getContext));
 
-          await expect(request.validateAgainstConstraints(constraints)).resolves.toEqual(true);
+          await expect(request.validateAgainstConstraints(constraints)).resolves.toEqual(undefined);
         });
 
         it('should return a response containing validation errors if the data provided is incorrect', async () => {
@@ -190,7 +190,7 @@ describe('Service/RequestService', () => {
           const event = getPayloadEvent({ body: 'giftaid=123' });
           const request = new RequestService(new DependencyInjection(CONFIGURATION, event, getContext));
 
-          await expect(request.validateAgainstConstraints(constraints)).resolves.toEqual(true);
+          await expect(request.validateAgainstConstraints(constraints)).resolves.toEqual(undefined);
         });
 
         it('should return a response containing validation errors if the data provided is incorrect', async () => {

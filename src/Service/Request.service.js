@@ -245,7 +245,7 @@ export default class RequestService extends DependencyAwareClass {
       const validation = validate(this.getAll(), constraints);
 
       if (typeof validation === 'undefined') {
-        resolve(true);
+        resolve();
       } else {
         Logger.label('request-validation-failed');
         const validationErrorResponse = ERROR_TYPES.VALIDATION_ERROR;
