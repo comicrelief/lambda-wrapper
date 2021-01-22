@@ -88,7 +88,7 @@ describe('Service/RequestService', () => {
           event.queryStringParameters.giftaid = 'abc';
           const request = new RequestService(new DependencyInjection(CONFIGURATION, event, getContext));
 
-          await expect(request.validateAgainstConstraints(constraints)).rejects.toThrowErrorMatchingSnapshot();
+          await expect(request.validateAgainstConstraints(constraints)).rejects.toMatchSnapshot();
         });
       });
 
@@ -197,7 +197,7 @@ describe('Service/RequestService', () => {
           const event = getPayloadEvent({ body: 'giftaid=abc' });
           const request = new RequestService(new DependencyInjection(CONFIGURATION, event, getContext));
 
-          await expect(request.validateAgainstConstraints(constraints)).rejects.toThrowErrorMatchingSnapshot();
+          await expect(request.validateAgainstConstraints(constraints)).rejects.toMatchSnapshot();
         });
       });
     });
