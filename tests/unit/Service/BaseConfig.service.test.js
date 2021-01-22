@@ -17,12 +17,13 @@ const createAsyncMock = (returnValue) => {
  * @param {*} param0
  * @returns {BaseConfigService}
  */
-const getService = ({ getObject = null, putObject = null } = {}) => {
+const getService = ({ getObject = null, putObject = null, deleteObject = null } = {}) => {
   const di = new DependencyInjection({});
   const service = new BaseConfigService(di);
   const client = {
     getObject: createAsyncMock(getObject),
     putObject: createAsyncMock(putObject),
+    deleteObject: createAsyncMock(deleteObject),
   };
 
   jest.spyOn(service, 'client', 'get').mockReturnValue(client);
@@ -65,6 +66,15 @@ const BaseConfigUnitTests = (serviceGenerator: (...args) => BaseConfigService) =
 
       expect('Bucket' in s3config).toEqual(true);
       expect('Key' in s3config).toEqual(true);
+    });
+  });
+
+  describe('delete', () => {
+    it('calls client.deleteObject', async () => {
+      const service = serviceGenerator();
+      await service.delete();
+
+      expect(service.client.deleteObject).toHaveBeenCalledTimes(1);
     });
   });
 
