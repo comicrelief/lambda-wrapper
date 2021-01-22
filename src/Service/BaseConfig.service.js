@@ -71,6 +71,14 @@ export default class BaseConfigService extends DependencyAwareClass {
   }
 
   /**
+   * Deletes the configuration stored on S3.
+   * Helpful in feature tests.
+   */
+  async delete() {
+    return this.client.deleteObject(this.constructor.s3config).promise();
+  }
+
+  /**
    * Puts the given configuration on S3
    *
    * @param config
@@ -79,7 +87,8 @@ export default class BaseConfigService extends DependencyAwareClass {
     await this.client.putObject({
       ...this.constructor.s3config,
       Body: JSON.stringify(config),
-    });
+    })
+      .promise();
 
     return config;
   }
