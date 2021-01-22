@@ -12,26 +12,26 @@ import DependencyAwareClass from '../DependencyInjection/DependencyAware.class';
 import ResponseModel from '../Model/Response.model';
 
 export const REQUEST_TYPES = {
-  GET: 'GET',
-  OPTIONS: 'OPTIONS',
-  HEAD: 'HEAD',
   DELETE: 'DELETE',
-  POST: 'POST',
+  GET: 'GET',
+  HEAD: 'HEAD',
+  OPTIONS: 'OPTIONS',
   PATCH: 'PATCH',
+  POST: 'POST',
   PUT: 'PUT',
 };
 
-export const HTTP_METHODS_WITH_PAYLOADS = [
-  REQUEST_TYPES.POST,
-  REQUEST_TYPES.PUT,
-  REQUEST_TYPES.PATCH,
+export const HTTP_METHODS_WITHOUT_PAYLOADS = [
+  REQUEST_TYPES.DELETE,
+  REQUEST_TYPES.GET,
+  REQUEST_TYPES.HEAD,
+  REQUEST_TYPES.OPTIONS,
 ];
 
-export const HTTP_METHODS_WITHOUT_PAYLOADS = [
-  REQUEST_TYPES.GET,
-  REQUEST_TYPES.OPTIONS,
-  REQUEST_TYPES.HEAD,
-  REQUEST_TYPES.DELETE,
+export const HTTP_METHODS_WITH_PAYLOADS = [
+  REQUEST_TYPES.PATCH,
+  REQUEST_TYPES.POST,
+  REQUEST_TYPES.PUT,
 ];
 
 // Define action specific error types
