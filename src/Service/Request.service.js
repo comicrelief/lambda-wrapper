@@ -12,9 +12,27 @@ import DependencyAwareClass from '../DependencyInjection/DependencyAware.class';
 import ResponseModel from '../Model/Response.model';
 
 export const REQUEST_TYPES = {
+  DELETE: 'DELETE',
   GET: 'GET',
+  HEAD: 'HEAD',
+  OPTIONS: 'OPTIONS',
+  PATCH: 'PATCH',
   POST: 'POST',
+  PUT: 'PUT',
 };
+
+export const HTTP_METHODS_WITHOUT_PAYLOADS = [
+  REQUEST_TYPES.DELETE,
+  REQUEST_TYPES.GET,
+  REQUEST_TYPES.HEAD,
+  REQUEST_TYPES.OPTIONS,
+];
+
+export const HTTP_METHODS_WITH_PAYLOADS = [
+  REQUEST_TYPES.PATCH,
+  REQUEST_TYPES.POST,
+  REQUEST_TYPES.PUT,
+];
 
 // Define action specific error types
 export const ERROR_TYPES = {
@@ -130,11 +148,11 @@ export default class RequestService extends DependencyAwareClass {
   getAll(requestType = null) {
     const event = this.getContainer().getEvent();
 
-    if (event.httpMethod === 'GET' || requestType === REQUEST_TYPES.GET) {
+    if (HTTP_METHODS_WITHOUT_PAYLOADS.includes(event.httpMethod) || HTTP_METHODS_WITHOUT_PAYLOADS.includes(requestType)) {
       return typeof event.queryStringParameters !== 'undefined' ? event.queryStringParameters : {};
     }
 
-    if (event.httpMethod === 'POST' || requestType === REQUEST_TYPES.POST) {
+    if (HTTP_METHODS_WITH_PAYLOADS.includes(event.httpMethod) || HTTP_METHODS_WITH_PAYLOADS.includes(requestType)) {
       const contentType = this.getHeader('Content-Type');
       let queryParameters = {};
 
@@ -152,11 +170,7 @@ export default class RequestService extends DependencyAwareClass {
 
       if (contentType.includes('text/xml')) {
         XML2JS.parseString(event.body, (error, result) => {
-          if (error) {
-            queryParameters = {};
-          } else {
-            queryParameters = result;
-          }
+          queryParameters = error ? {} : result;
         });
       }
 

@@ -5,224 +5,216 @@ import sinon from 'sinon';
 
 import CONFIGURATION from '../../../src/Config/Dependencies';
 import DependencyInjection from '../../../src/DependencyInjection/DependencyInjection.class';
-import RequestService, { REQUEST_TYPES } from '../../../src/Service/Request.service';
+import RequestService, { HTTP_METHODS_WITHOUT_PAYLOADS, HTTP_METHODS_WITH_PAYLOADS } from '../../../src/Service/Request.service';
 
 const getContext = require('../../mocks/aws/context.json');
-const getEvent = require('../../mocks/aws/event.json');
+const baseEvent = require('../../mocks/aws/event.json');
+
+const getEvent = (overrides = {}) => JSON.parse(JSON.stringify(({
+  ...baseEvent,
+  ...overrides,
+})));
 
 describe('Service/RequestService', () => {
   afterEach(() => sinon.restore());
 
-  describe('test GET request getter', () => {
-    const testEvent = { ...getEvent };
-    testEvent.queryStringParameters.test = 123;
+  HTTP_METHODS_WITHOUT_PAYLOADS.forEach((httpMethod) => {
+    describe(`HTTP ${httpMethod}`, () => {
+      describe('.getAll', () => {
+        it('should return all get parameters as an array', () => {
+          const event = getEvent({ httpMethod });
+          event.queryStringParameters.test = 123;
+          const request = new RequestService(new DependencyInjection(CONFIGURATION, event, getContext));
 
-    it('should fetch a GET parameter from an AWS event', () => {
-      const request = new RequestService(new DependencyInjection(CONFIGURATION, testEvent, getContext));
-      expect(request.get('test')).toEqual(getEvent.queryStringParameters.test);
-    });
-
-    it('should fetch a GET parameter from an AWS event when the request type is set', () => {
-      const request = new RequestService(new DependencyInjection(CONFIGURATION, testEvent, getContext));
-      expect(request.get('test', null, REQUEST_TYPES.GET)).toEqual(getEvent.queryStringParameters.test);
-    });
-
-    it('should return null from a non existent GET parameter from an AWS event', () => {
-      const request = new RequestService(new DependencyInjection(CONFIGURATION, testEvent, getContext));
-      expect(request.get('fake')).toEqual(null);
-    });
-
-    it('should return null from a non existent GET parameter from an AWS event when the request type is set', () => {
-      const request = new RequestService(new DependencyInjection(CONFIGURATION, testEvent, getContext));
-      expect(request.get('fake', null, REQUEST_TYPES.GET)).toEqual(null);
-    });
-
-    describe('.getUserBrowserAndDevice', () => {
-      it('should return null with `headers === undefined`', () => {
-        const event = {
-          ...testEvent,
-          headers: undefined,
-        };
-        const request = new RequestService(new DependencyInjection(CONFIGURATION, event, getContext));
-
-        expect(request.getUserBrowserAndDevice()).toEqual(null);
+          expect(request.getAll()).toEqual(event.queryStringParameters);
+        });
       });
 
-      it('should return null with `headers === null`', () => {
-        const event = {
-          ...testEvent,
-          headers: null,
-        };
-        const request = new RequestService(new DependencyInjection(CONFIGURATION, event, getContext));
+      describe('.get', () => {
+        it('should fetch a query parameter from an AWS event', () => {
+          const event = getEvent({ httpMethod });
+          event.queryStringParameters.test = 123;
+          const request = new RequestService(new DependencyInjection(CONFIGURATION, event, getContext));
 
-        expect(request.getUserBrowserAndDevice()).toEqual(null);
+          expect(request.get('test')).toEqual(event.queryStringParameters.test);
+        });
+
+        it('should fetch a query parameter from an AWS event when the request type is set', () => {
+          const event = getEvent({ httpMethod });
+          event.queryStringParameters.test = 123;
+          const request = new RequestService(new DependencyInjection(CONFIGURATION, event, getContext));
+
+          expect(request.get('test', null, httpMethod)).toEqual(event.queryStringParameters.test);
+        });
+
+        it(`should return null from a non existent ${httpMethod} parameter from an AWS event`, () => {
+          const event = getEvent({ httpMethod });
+          const request = new RequestService(new DependencyInjection(CONFIGURATION, event, getContext));
+
+          expect(request.get('fake')).toEqual(null);
+        });
+
+        it(`should return null from a non existent ${httpMethod} parameter from an AWS event when the request type is set`, () => {
+          const event = getEvent({ httpMethod });
+          const request = new RequestService(new DependencyInjection(CONFIGURATION, event, getContext));
+
+          expect(request.get('fake', null, httpMethod)).toEqual(null);
+        });
       });
 
-      it('should return a prettified user agent', () => {
-        const request = new RequestService(new DependencyInjection(CONFIGURATION, testEvent, getContext));
-        expect(request.getUserBrowserAndDevice()).toEqual({
-          'browser-type': 'Safari',
-          'browser-version': '9.1.1',
-          'device-type': 'Other',
-          'operating-system': 'Mac OS X',
-          'operating-system-version': '10.11.5',
+      describe('.validateAgainstConstraints', () => {
+        const constraints = {
+          giftaid: {
+            numericality: true,
+          },
+        };
+
+        beforeEach(() => {
+          // Mute Winston
+          // eslint-disable-next-line no-underscore-dangle
+          jest.spyOn(console._stdout, 'write').mockImplementation(() => {});
+        });
+
+        it('should resolve if there are no validation errors', async () => {
+          const event = getEvent({ httpMethod });
+          event.queryStringParameters.giftaid = 123;
+          const request = new RequestService(new DependencyInjection(CONFIGURATION, event, getContext));
+
+          await expect(request.validateAgainstConstraints(constraints)).resolves.toEqual(undefined);
+        });
+
+        it('should return a response containing validation errors if the data provided is incorrect', async () => {
+          const event = getEvent({ httpMethod });
+          event.queryStringParameters.giftaid = 'abc';
+          const request = new RequestService(new DependencyInjection(CONFIGURATION, event, getContext));
+
+          await expect(request.validateAgainstConstraints(constraints)).rejects.toMatchSnapshot();
+        });
+      });
+
+      describe('.getUserBrowserAndDevice', () => {
+        it('should return null with `headers === undefined`', () => {
+          const event = getEvent({ httpMethod, headers: undefined });
+          const request = new RequestService(new DependencyInjection(CONFIGURATION, event, getContext));
+
+          expect(request.getUserBrowserAndDevice()).toEqual(null);
+        });
+
+        it('should return null with `headers === null`', () => {
+          const event = getEvent({ httpMethod, headers: null });
+          const request = new RequestService(new DependencyInjection(CONFIGURATION, event, getContext));
+
+          expect(request.getUserBrowserAndDevice()).toEqual(null);
+        });
+
+        it('should return a prettified user agent', () => {
+          const event = getEvent({ httpMethod });
+          const request = new RequestService(new DependencyInjection(CONFIGURATION, event, getContext));
+          expect(request.getUserBrowserAndDevice()).toEqual({
+            'browser-type': 'Safari',
+            'browser-version': '9.1.1',
+            'device-type': 'Other',
+            'operating-system': 'Mac OS X',
+            'operating-system-version': '10.11.5',
+          });
         });
       });
     });
   });
 
-  describe('test POST request getter', () => {
-    const testEvent = { ...getEvent };
-    testEvent.httpMethod = 'POST';
-    testEvent.headers['Content-Type'] = 'application/x-www-form-urlencoded';
-    testEvent.body = 'grant_type=client_credentials&response_type=token&token_format=opaque';
+  HTTP_METHODS_WITH_PAYLOADS.forEach((httpMethod) => {
+    const getPayloadEvent = (overrides = {}) => {
+      const event = getEvent({ httpMethod });
+      event.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+      event.body = 'grant_type=client_credentials&response_type=token&token_format=opaque';
 
-    const queryParameters = QueryString.parse(testEvent.body);
-
-    it('should fetch a POST parameter from an AWS event', () => {
-      const request = new RequestService(new DependencyInjection(CONFIGURATION, testEvent, getContext));
-      expect(request.get('grant_type')).toEqual(queryParameters.grant_type);
-    });
-
-    it('should fetch a POST parameter from an AWS event when the request type is set', () => {
-      const request = new RequestService(new DependencyInjection(CONFIGURATION, testEvent, getContext));
-      expect(request.get('grant_type', null, REQUEST_TYPES.POST)).toEqual(queryParameters.grant_type);
-    });
-
-    it('should return null from a non existent POST parameter from an AWS event', () => {
-      const request = new RequestService(new DependencyInjection(CONFIGURATION, testEvent, getContext));
-      expect(request.get('fake')).toEqual(null);
-    });
-
-    it('should return null from a non existent POST parameter from an AWS event when the request type is set', () => {
-      const request = new RequestService(new DependencyInjection(CONFIGURATION, testEvent, getContext), getEvent);
-      expect(request.get('fake', null, REQUEST_TYPES.POST)).toEqual(null);
-    });
-  });
-
-  describe('test GET request get all getter', () => {
-    const testEvent = { ...getEvent };
-    testEvent.queryStringParameters.test = 123;
-    testEvent.queryStringParameters.testTwo = 123;
-
-    it('should return all get parameters as an array', () => {
-      const request = new RequestService(new DependencyInjection(CONFIGURATION, testEvent, getContext));
-      expect(request.getAll()).toEqual(testEvent.queryStringParameters);
-    });
-  });
-
-  describe('test POST request get all getter', () => {
-    const testEvent = { ...getEvent };
-    testEvent.httpMethod = 'POST';
-    testEvent.headers['Content-Type'] = 'application/x-www-form-urlencoded';
-    testEvent.body = 'grant_type=client_credentials&response_type=token&token_format=opaque';
-
-    const queryParameters = QueryString.parse(testEvent.body);
-
-    it('should return all post parameters as an array', () => {
-      const request = new RequestService(new DependencyInjection(CONFIGURATION, testEvent, getContext));
-      expect(request.getAll()).toEqual(queryParameters);
-    });
-  });
-
-  describe('test request validation', () => {
-    const testEvent = { ...getEvent };
-    const constraints = {
-      giftaid: {
-        numericality: true,
-      },
+      return { ...event, ...overrides };
     };
 
-    describe('test validation against GET request', () => {
-      it('should resolve if there are no validation errors', (done) => {
-        testEvent.queryStringParameters.giftaid = 123;
-        const request = new RequestService(new DependencyInjection(CONFIGURATION, testEvent, getContext));
+    const queryParameters = QueryString.parse(getPayloadEvent().body);
 
-        request
-          .validateAgainstConstraints(constraints)
-          .then(() => {
-            expect(true).toEqual(true);
-            done();
-          })
-          .catch(() => {
-            expect(true).toEqual(false);
-            done();
-          });
+    describe(`HTTP ${httpMethod}`, () => {
+      describe('.getAll', () => {
+        it('should return all post parameters as an array', () => {
+          const event = getPayloadEvent();
+          const request = new RequestService(new DependencyInjection(CONFIGURATION, event, getContext));
+
+          expect(request.getAll()).toEqual(queryParameters);
+        });
       });
 
-      it('should return a response containing validation errors if the data provided is incorrect', (done) => {
-        testEvent.queryStringParameters.giftaid = 'abc';
-        const request = new RequestService(new DependencyInjection(CONFIGURATION, testEvent, getContext));
+      describe('.get', () => {
+        it('should fetch a request body parameter from an AWS event', () => {
+          const event = getPayloadEvent();
+          const request = new RequestService(new DependencyInjection(CONFIGURATION, event, getContext));
 
-        request
-          .validateAgainstConstraints(constraints)
-          .then(() => {
-            expect(true).toEqual(false);
-            done();
-          })
-          .catch(() => {
-            expect(true).toEqual(true);
-            done();
-          });
-      });
-    });
+          expect(request.get('grant_type')).toEqual(queryParameters.grant_type);
+        });
 
-    describe('test validation against POST request', () => {
-      testEvent.httpMethod = 'POST';
-      testEvent.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+        it('should fetch a request body parameter from an AWS event when the request type is set', () => {
+          const event = getPayloadEvent();
+          const request = new RequestService(new DependencyInjection(CONFIGURATION, event, getContext));
 
-      beforeEach(() => {
-        // Mute Winston
-        // eslint-disable-next-line no-underscore-dangle
-        sinon.stub(console._stdout, 'write');
-      });
+          expect(request.get('grant_type', null, httpMethod)).toEqual(queryParameters.grant_type);
+        });
 
-      it('should resolve if there are no validation errors', (done) => {
-        testEvent.body = 'giftaid=123';
-        const request = new RequestService(new DependencyInjection(CONFIGURATION, testEvent, getContext));
+        it('should return null from a non existent request body parameter from an AWS event', () => {
+          const event = getPayloadEvent();
+          const request = new RequestService(new DependencyInjection(CONFIGURATION, event, getContext));
 
-        request
-          .validateAgainstConstraints(constraints)
-          .then(() => {
-            expect(true).toEqual(true);
-            done();
-          })
-          .catch(() => {
-            expect(true).toEqual(false);
-            done();
-          });
+          expect(request.get('fake')).toEqual(null);
+        });
+
+        it('should return null from a non existent request body parameter from an AWS event when the request type is set', () => {
+          const event = getPayloadEvent();
+          const request = new RequestService(new DependencyInjection(CONFIGURATION, event, getContext), getEvent);
+
+          expect(request.get('fake', null, httpMethod)).toEqual(null);
+        });
       });
 
-      it('should return a response containing validation errors if the data provided is incorrect', (done) => {
-        testEvent.body = 'giftaid=abc';
-        const request = new RequestService(new DependencyInjection(CONFIGURATION, testEvent, getContext));
+      describe('.validateAgainstConstraints', () => {
+        const constraints = {
+          giftaid: {
+            numericality: true,
+          },
+        };
 
-        request
-          .validateAgainstConstraints(constraints)
-          .then(() => {
-            expect(true).toEqual(false);
-            done();
-          })
-          .catch(() => {
-            expect(true).toEqual(true);
-            done();
-          });
+        beforeEach(() => {
+          // Mute Winston
+          // eslint-disable-next-line no-underscore-dangle
+          jest.spyOn(console._stdout, 'write').mockImplementation(() => {});
+        });
+
+        it('should resolve if there are no validation errors', async () => {
+          const event = getPayloadEvent({ body: 'giftaid=123' });
+          const request = new RequestService(new DependencyInjection(CONFIGURATION, event, getContext));
+
+          await expect(request.validateAgainstConstraints(constraints)).resolves.toEqual(undefined);
+        });
+
+        it('should return a response containing validation errors if the data provided is incorrect', async () => {
+          const event = getPayloadEvent({ body: 'giftaid=abc' });
+          const request = new RequestService(new DependencyInjection(CONFIGURATION, event, getContext));
+
+          await expect(request.validateAgainstConstraints(constraints)).rejects.toMatchSnapshot();
+        });
       });
     });
   });
 
   describe('getAllHeaders()', () => {
-    const event = { ...getEvent };
+    const event = getEvent();
     const di = new DependencyInjection(CONFIGURATION, event, getContext);
     const request = new RequestService(di);
 
     it('should return all headers from the event', () => {
-      expect(request.getAllHeaders()).toStrictEqual(getEvent.headers);
+      expect(request.getAllHeaders()).toStrictEqual(event.headers);
     });
   });
 
   describe('getHeader()', () => {
-    const event = { ...getEvent };
+    const event = getEvent();
     const di = new DependencyInjection(CONFIGURATION, event, getContext);
     const request = new RequestService(di);
 
