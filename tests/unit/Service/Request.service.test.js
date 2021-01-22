@@ -144,28 +144,28 @@ describe('Service/RequestService', () => {
       });
 
       describe('.get', () => {
-        it(`should fetch a ${httpMethod} parameter from an AWS event`, () => {
+        it('should fetch a request body parameter from an AWS event', () => {
           const event = getPayloadEvent();
           const request = new RequestService(new DependencyInjection(CONFIGURATION, event, getContext));
 
           expect(request.get('grant_type')).toEqual(queryParameters.grant_type);
         });
 
-        it(`should fetch a ${httpMethod} parameter from an AWS event when the request type is set`, () => {
+        it('should fetch a request body parameter from an AWS event when the request type is set', () => {
           const event = getPayloadEvent();
           const request = new RequestService(new DependencyInjection(CONFIGURATION, event, getContext));
 
           expect(request.get('grant_type', null, httpMethod)).toEqual(queryParameters.grant_type);
         });
 
-        it(`should return null from a non existent ${httpMethod} parameter from an AWS event`, () => {
+        it('should return null from a non existent request body parameter from an AWS event', () => {
           const event = getPayloadEvent();
           const request = new RequestService(new DependencyInjection(CONFIGURATION, event, getContext));
 
           expect(request.get('fake')).toEqual(null);
         });
 
-        it(`should return null from a non existent ${httpMethod} parameter from an AWS event when the request type is set`, () => {
+        it('should return null from a non existent request body parameter from an AWS event when the request type is set', () => {
           const event = getPayloadEvent();
           const request = new RequestService(new DependencyInjection(CONFIGURATION, event, getContext), getEvent);
 
