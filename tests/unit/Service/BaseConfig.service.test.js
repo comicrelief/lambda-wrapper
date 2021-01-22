@@ -76,14 +76,6 @@ const BaseConfigUnitTests = (serviceGenerator: (...args) => BaseConfigService) =
 
       expect(service.client.deleteObject).toHaveBeenCalledTimes(1);
     });
-
-    it('returns the provided config unchanged', async () => {
-      const expected = Symbol('put');
-      const service = serviceGenerator();
-      const config = await service.put(expected);
-
-      expect(config).toEqual(expected);
-    });
   });
 
   describe('put', () => {
