@@ -38,7 +38,7 @@ export default class SQSService extends DependencyAwareClass {
     this.queues = {};
 
     // Add the queues from configuration
-    if (queues !== null && Object.keys(queues).length >= 1) {
+    if (queues !== null && Object.keys(queues).length > 0) {
       Object.keys(queues).forEach((queueDefinition) => {
         if (container.isOffline) {
           const offlineHost = typeof process.env.LAMBDA_WRAPPER_OFFLINE_SQS_HOST !== 'undefined' ? process.env.LAMBDA_WRAPPER_OFFLINE_SQS_HOST : 'localhost';
