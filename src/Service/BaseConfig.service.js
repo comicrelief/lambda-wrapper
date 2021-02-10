@@ -1,7 +1,7 @@
 import { S3 } from 'aws-sdk';
 
 import DependencyAwareClass from '../DependencyInjection/DependencyAware.class';
-
+import LambdaTermination from '../Wrapper/LambdaTermination';
 /**
  * Error.code for S3 404 errors
  */
@@ -14,6 +14,15 @@ export const ServiceStates = {
   OK: 'OK',
   TEMPORARY_PAUSED: 'TEMPORARY_PAUSED',
   INDEFINITELY_PAUSED: 'UNDEFINITELY_PAUSED',
+};
+
+/**
+ * Maps service states to HTTP codes
+ */
+export const ServiceStatesHttpCodes = {
+  [ServiceStates.OK]: 200,
+  [ServiceStates.TEMPORARY_PAUSED]: 409,
+  [ServiceStates.INDEFINITELY_PAUSED]: 409,
 };
 
 /**
@@ -158,5 +167,38 @@ export default class BaseConfigService extends DependencyAwareClass {
       ...base,
       ...partialConfig,
     });
+  }
+
+  /**
+   * Performs a health check
+   * given the currentConfig.
+   *
+   * If currentConfig is not supplied
+   * it uses `getOrCreate` to fetch it.
+   *
+   * @param currentConfig
+   */
+  async healthCheck(currentConfig = null) {
+    const config = currentConfig || await this.getOrCreate();
+
+    return ServiceStatesHttpCodes[config.state] || 500;
+  }
+
+  /**
+   * Ensures that the application is healthy
+   * or throws a LambdaTermination
+   *
+   * @param currentConfig
+   */
+  async ensureHealthy(currentConfig = null) {
+    const statusCode = await this.healthCheck(currentConfig);
+
+    if (statusCode < 400) {
+      return statusCode;
+    }
+
+    const message = 'Application is not healthy.';
+
+    throw new LambdaTermination(message, statusCode, message, message);
   }
 }

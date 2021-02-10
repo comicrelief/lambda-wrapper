@@ -1,7 +1,7 @@
 import { S3 } from 'aws-sdk';
 
 import DependencyInjection from '../../../src/DependencyInjection/DependencyInjection.class';
-import BaseConfigService, { S3_NO_SUCH_KEY_ERROR_CODE } from '../../../src/Service/BaseConfig.service';
+import BaseConfigService, { S3_NO_SUCH_KEY_ERROR_CODE, ServiceStates, ServiceStatesHttpCodes } from '../../../src/Service/BaseConfig.service';
 
 const createAsyncMock = (returnValue) => {
   const mockedValue = returnValue instanceof Error
@@ -180,6 +180,74 @@ const BaseConfigUnitTests = (serviceGenerator: (...args) => BaseConfigService) =
       const service = serviceGenerator({ getObject: error });
 
       await expect(service.patch({ b: 1 })).rejects.toThrowErrorMatchingSnapshot();
+    });
+  });
+
+  describe('healthCheck', () => {
+    Object.values(ServiceStates).forEach((state) => {
+      describe(state, () => {
+        it('Returns the expected HTTP code with the given config', async () => {
+          const config = { state };
+          const service = serviceGenerator();
+          const statusCode = await service.healthCheck(config);
+          const expected = ServiceStatesHttpCodes[state];
+
+          expect(statusCode).toEqual(expected);
+        });
+
+        it('Returns the expected HTTP code with the existing config', async () => {
+          const config = { state };
+          const service = serviceGenerator({ getObject: { Body: JSON.stringify(config) } });
+          const statusCode = await service.healthCheck();
+          const expected = ServiceStatesHttpCodes[state];
+
+          expect(statusCode).toEqual(expected);
+        });
+      });
+    });
+
+    describe('Unknown state', () => {
+      it('Returns 500 with the given config', async () => {
+        const config = { state: 'Unknown' };
+        const service = serviceGenerator();
+        const statusCode = await service.healthCheck(config);
+        const expected = 500;
+
+        expect(statusCode).toEqual(expected);
+      });
+
+      it('Returns 500 with the existing config', async () => {
+        const config = { state: 'Unknown' };
+        const service = serviceGenerator({ getObject: { Body: JSON.stringify(config) } });
+        const statusCode = await service.healthCheck();
+        const expected = 500;
+
+        expect(statusCode).toEqual(expected);
+      });
+    });
+  });
+
+  describe('ensureHealthy', () => {
+    [200, 201, 202, 204, 300, 301, 399].forEach((statusCode) => {
+      describe(statusCode, () => {
+        it('is healthy', async () => {
+          const service = serviceGenerator();
+          jest.spyOn(service, 'healthCheck').mockImplementation(() => Promise.resolve(statusCode));
+
+          await expect(service.ensureHealthy()).resolves.toEqual(statusCode);
+        });
+      });
+    });
+
+    [400, 401, 403, 404, 409, 499, 500, 501, 502, 503, 504, 'Dante Alighieri'].forEach((statusCode) => {
+      describe(statusCode, () => {
+        it('throws a LambdaTermination', async () => {
+          const service = serviceGenerator();
+          jest.spyOn(service, 'healthCheck').mockImplementation(() => Promise.resolve(statusCode));
+
+          await expect(service.ensureHealthy()).rejects.toThrowErrorMatchingSnapshot();
+        });
+      });
     });
   });
 };
