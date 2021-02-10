@@ -12,8 +12,8 @@ export const S3_NO_SUCH_KEY_ERROR_CODE = 'NoSuchKey';
  */
 export const ServiceStates = {
   OK: 'OK',
-  TEMPORARY_PAUSED: 'TEMPORARY_PAUSED',
-  INDEFINITELY_PAUSED: 'UNDEFINITELY_PAUSED',
+  TEMPORARILY_PAUSED: 'TEMPORARILY_PAUSED',
+  INDEFINITELY_PAUSED: 'INDEFINITELY_PAUSED',
 };
 
 /**
@@ -21,7 +21,7 @@ export const ServiceStates = {
  */
 export const ServiceStatesHttpCodes = {
   [ServiceStates.OK]: 200,
-  [ServiceStates.TEMPORARY_PAUSED]: 409,
+  [ServiceStates.TEMPORARILY_PAUSED]: 409,
   [ServiceStates.INDEFINITELY_PAUSED]: 409,
 };
 
