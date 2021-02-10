@@ -170,7 +170,7 @@ export default class BaseConfigService extends DependencyAwareClass {
   }
 
   /**
-   * Performs an health check
+   * Performs a health check
    * given the currentConfig.
    *
    * If currentConfig is not supplied
