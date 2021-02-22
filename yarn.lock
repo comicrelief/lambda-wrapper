@@ -1051,9 +1051,9 @@
     minimist "^1.2.0"
 
 "@comicrelief/eslint-config@^1.3.0":
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/@comicrelief/eslint-config/-/eslint-config-1.3.0.tgz#d22cc8d915e7bdade37a174fa20b835bd93e146b"
-  integrity sha512-50JbY2qvwPD2R0vr+PQyCCb+nhNXG7kJL1Q+raeBvgT0LRjc/qQolab1F+Ei67H/poXSU7p/JUCqX256CJUJXw==
+  version "1.3.1"
+  resolved "https://registry.yarnpkg.com/@comicrelief/eslint-config/-/eslint-config-1.3.1.tgz#ed4eb1b58946447e626fd019769c0d0cbae0d165"
+  integrity sha512-zurcHMIIx2zE0kCPdPwIcmaRbwFxcT4fnxyKwA30rj7YRE7jwiLGJyk4mUja6TUw04ygeUKtxHrsJY7eM371Fg==
   dependencies:
     "@babel/eslint-parser" ">=7.11.3"
     "@typescript-eslint/parser" "^4.7.0"
