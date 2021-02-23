@@ -151,11 +151,13 @@ export default class RequestService extends DependencyAwareClass {
 
     if (HTTP_METHODS_WITHOUT_PAYLOADS.includes(event.httpMethod) || HTTP_METHODS_WITHOUT_PAYLOADS.includes(requestType)) {
       // get simple parameters
-      const params = Object.assign({}, event.queryStringParameters);
+      const params = { ...event.queryStringParameters };
       // add array parameters as arrays
-      Object.keys(params).filter(key => key.endsWith('[]')).forEach((key) => {
-        params[key] = event.multiValueQueryStringParameters[key];
-      });
+      Object.keys(params)
+        .filter((key) => key.endsWith('[]'))
+        .forEach((key) => {
+          params[key] = event.multiValueQueryStringParameters[key];
+        });
       return params;
     }
 
