@@ -6,6 +6,20 @@ import DependencyInjection from '../DependencyInjection/DependencyInjection.clas
 import ResponseModel from '../Model/Response.model';
 
 /**
+ * Processes the outcome once we have one
+ *
+ * @param di
+ * @param outcome
+ */
+export const handleSuccess = (di, outcome) => {
+  const logger = di.get(DEFINITIONS.LOGGER);
+
+  logger.metric('lambda.statusCode', outcome.statusCode || 200);
+
+  return outcome;
+};
+
+/**
  * Gracefully handles an error
  * logging in Epsagon and generating
  * a response reflecting the `code`
@@ -16,19 +30,35 @@ import ResponseModel from '../Model/Response.model';
  * This means that logger.error will produce an alert.
  * To avoid not meaningful notifications, most likely
  * coming from tests, we log INFO unless either:
+ *
  * 1. `error.raiseOnEpsagon` is defined & truthy
  * 2. `error.code` is defined and `error.code >= 500`.
  *
  * @param {DependencyInjection} di
  * @param {Error} error
+ * @param {boolean} [throwError=false]
  */
-export const handleError = (di, error) => {
+export const handleError = (di, error, throwError = false) => {
   const logger = di.get(DEFINITIONS.LOGGER);
+
+  logger.metric('lambda.statusCode', error.code || 500);
 
   if (error.raiseOnEpsagon || !error.code || error.code >= 500) {
     logger.error(error);
   } else {
     logger.info(error);
+  }
+
+  if (throwError) {
+    if (error instanceof Error) {
+      return error;
+    }
+
+    // We want to be absolutely sure
+    // that we are returning an error
+    // as Lambda sync handlers will only fail
+    // if the object is instanceof Error
+    return new Error(error);
   }
 
   const responseDetails = {
@@ -37,9 +67,7 @@ export const handleError = (di, error) => {
     details: error.details || 'unknown error',
   };
 
-  const response = new ResponseModel(responseDetails.body, responseDetails.code, responseDetails.details);
-
-  return response.generate();
+  return ResponseModel.generate(responseDetails.body, responseDetails.code, responseDetails.details);
 };
 
 /**
@@ -79,20 +107,33 @@ export default (configuration, handler, throwError = false) => {
       });
     }
 
+    let outcome;
+
     try {
-      let outcome = handler.call(instance, di, request, callback);
+      outcome = handler.call(instance, di, request, callback);
 
-      if (outcome instanceof Promise && !throwError) {
-        outcome = outcome.catch((error) => handleError(di, error));
+      if (outcome instanceof Promise) {
+        outcome = outcome
+          .then((value) => handleSuccess(di, value))
+          .catch((error) => {
+            const handled = handleError(di, error, throwError);
+
+            if (throwError) {
+              // AWS Lambda with async handler is looking for a rejection
+              // and not an error object directly
+              // and will treat resolved errors as successful
+              // as it will cast the error to JSON, i.e. `{}`
+              return Promise.reject(handled);
+            }
+
+            return handled;
+          });
       }
-
-      return outcome;
     } catch (error) {
-      if (throwError) {
-        throw error;
-      }
-      return handleError(di, error);
+      outcome = handleError(di, error, throwError);
     }
+
+    return outcome;
   };
 
   // If the Epsagon token is enabled, then wrap the instance in the Epsagon wrapper
