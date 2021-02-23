@@ -19,12 +19,14 @@ describe('Service/RequestService', () => {
   HTTP_METHODS_WITHOUT_PAYLOADS.forEach((httpMethod) => {
     describe(`HTTP ${httpMethod}`, () => {
       describe('.getAll', () => {
-        it('should return all get parameters as an array', () => {
+        it('should return all get parameters as an object', () => {
           const event = getEvent({ httpMethod });
           event.queryStringParameters.test = 123;
           const request = new RequestService(new DependencyInjection(CONFIGURATION, event, getContext));
 
-          expect(request.getAll()).toEqual(event.queryStringParameters);
+          const params = request.getAll();
+          expect(params.test).toEqual(123);
+          expect(params['array[]']).toEqual(['one', 'two', 'three']);
         });
       });
 
@@ -57,6 +59,13 @@ describe('Service/RequestService', () => {
           const request = new RequestService(new DependencyInjection(CONFIGURATION, event, getContext));
 
           expect(request.get('fake', null, httpMethod)).toEqual(null);
+        });
+
+        it('should return an array-type query parameter if its name ends []', () => {
+          const event = getEvent({ httpMethod });
+          const request = new RequestService(new DependencyInjection(CONFIGURATION, event, getContext));
+
+          expect(request.get('array[]')).toEqual(['one', 'two', 'three']);
         });
       });
 
