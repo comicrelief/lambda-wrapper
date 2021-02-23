@@ -1,5 +1,57 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Wrapper/LambdaWrapper LambdaWrapper executes the wrapped function when it is async 1`] = `
+Object {
+  "body": "{\\"data\\":{\\"x\\":\\"success\\"},\\"message\\":\\"ok\\"}",
+  "headers": Object {
+    "Access-Control-Allow-Credentials": true,
+    "Access-Control-Allow-Origin": "*",
+    "Content-Type": "application/json",
+  },
+  "statusCode": 200,
+}
+`;
+
+exports[`Wrapper/LambdaWrapper LambdaWrapper executes the wrapped function when it is sync 1`] = `
+Object {
+  "body": "{\\"data\\":{\\"x\\":\\"success\\"},\\"message\\":\\"ok\\"}",
+  "headers": Object {
+    "Access-Control-Allow-Credentials": true,
+    "Access-Control-Allow-Origin": "*",
+    "Content-Type": "application/json",
+  },
+  "statusCode": 200,
+}
+`;
+
+exports[`Wrapper/LambdaWrapper LambdaWrapper should catch exceptions and generate appropriate responses catches async errors rejects the promise with throwError === true 1`] = `"ASYNC_THROWING"`;
+
+exports[`Wrapper/LambdaWrapper LambdaWrapper should catch exceptions and generate appropriate responses catches async errors resolves an error http response with throwError === false 1`] = `
+Object {
+  "body": "{\\"data\\":\\"external\\",\\"message\\":\\"unknown error\\"}",
+  "headers": Object {
+    "Access-Control-Allow-Credentials": true,
+    "Access-Control-Allow-Origin": "*",
+    "Content-Type": "application/json",
+  },
+  "statusCode": 403,
+}
+`;
+
+exports[`Wrapper/LambdaWrapper LambdaWrapper should catch exceptions and generate appropriate responses catches sync errors returns a raw error with throwError === true 1`] = `[Error: SYNC_THROWING]`;
+
+exports[`Wrapper/LambdaWrapper LambdaWrapper should catch exceptions and generate appropriate responses catches sync errors returns an error http response with throwError === false 1`] = `
+Object {
+  "body": "{\\"data\\":\\"external\\",\\"message\\":\\"unknown error\\"}",
+  "headers": Object {
+    "Access-Control-Allow-Credentials": true,
+    "Access-Control-Allow-Origin": "*",
+    "Content-Type": "application/json",
+  },
+  "statusCode": 403,
+}
+`;
+
 exports[`Wrapper/LambdaWrapper handleError Generates a response object 1`] = `
 Object {
   "body": "{\\"data\\":{},\\"message\\":\\"unknown error\\"}",

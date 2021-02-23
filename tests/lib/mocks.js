@@ -13,8 +13,9 @@ import { DEFINITIONS } from '../../src/Config/Dependencies';
 export const getMockedLogger = (overrides = {}, di = null) => {
   const logger = {
     di,
-    error: jest.fn().mockImplementation(() => overrides.error || null),
-    info: jest.fn().mockImplementation(() => overrides.info || null),
+    error: jest.fn(() => overrides.error || null),
+    info: jest.fn(() => overrides.info || null),
+    metric: jest.fn(() => overrides.metric || null),
   };
 
   logger.getContainer = () => logger.di;
