@@ -1,0 +1,138 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Service/LoggerService error Trims down the axios error: EMPTY 1`] = `
+Object {
+  "config": Object {
+    "method": "get",
+    "url": "http://localhost:9999",
+  },
+  "message": "some-message",
+  "response": Object {
+    "data": undefined,
+    "status": undefined,
+  },
+}
+`;
+
+exports[`Service/LoggerService error Trims down the axios error: HTTP_417 1`] = `
+Object {
+  "config": Object {
+    "method": "get",
+    "url": "http://localhost:9999",
+  },
+  "message": "some-message",
+  "response": Object {
+    "data": Object {
+      "data": 1,
+    },
+    "status": 417,
+  },
+}
+`;
+
+exports[`Service/LoggerService error Trims down the axios error: UNDEFINED 1`] = `
+Object {
+  "config": Object {
+    "method": "get",
+    "url": "http://localhost:9999",
+  },
+  "message": "some-message",
+}
+`;
+
+exports[`Service/LoggerService info Trims down the axios error: EMPTY 1`] = `
+Object {
+  "config": Object {
+    "method": "get",
+    "url": "http://localhost:9999",
+  },
+  "message": "some-message",
+  "response": Object {
+    "data": undefined,
+    "status": undefined,
+  },
+}
+`;
+
+exports[`Service/LoggerService info Trims down the axios error: HTTP_417 1`] = `
+Object {
+  "config": Object {
+    "method": "get",
+    "url": "http://localhost:9999",
+  },
+  "message": "some-message",
+  "response": Object {
+    "data": Object {
+      "data": 1,
+    },
+    "status": 417,
+  },
+}
+`;
+
+exports[`Service/LoggerService info Trims down the axios error: UNDEFINED 1`] = `
+Object {
+  "config": Object {
+    "method": "get",
+    "url": "http://localhost:9999",
+  },
+  "message": "some-message",
+}
+`;
+
+exports[`Service/LoggerService object Logs a '"a string"' with level: 'error' 1`] = `"My action: '\\"a string\\"'"`;
+
+exports[`Service/LoggerService object Logs a '"a string"' with level: 'info' 1`] = `"My action: '\\"a string\\"'"`;
+
+exports[`Service/LoggerService object Logs a '"a string"' with level: 'warning' 1`] = `"My action: '\\"a string\\"'"`;
+
+exports[`Service/LoggerService object Logs a '{"a":{"b":null},"c":"a string"}' with level: 'error' 1`] = `
+"My action: '{
+    \\"a\\": {
+        \\"b\\": null
+    },
+    \\"c\\": \\"a string\\"
+}'"
+`;
+
+exports[`Service/LoggerService object Logs a '{"a":{"b":null},"c":"a string"}' with level: 'info' 1`] = `
+"My action: '{
+    \\"a\\": {
+        \\"b\\": null
+    },
+    \\"c\\": \\"a string\\"
+}'"
+`;
+
+exports[`Service/LoggerService object Logs a '{"a":{"b":null},"c":"a string"}' with level: 'warning' 1`] = `
+"My action: '{
+    \\"a\\": {
+        \\"b\\": null
+    },
+    \\"c\\": \\"a string\\"
+}'"
+`;
+
+exports[`Service/LoggerService object Logs a '{"a":1}' with level: 'error' 1`] = `
+"My action: '{
+    \\"a\\": 1
+}'"
+`;
+
+exports[`Service/LoggerService object Logs a '{"a":1}' with level: 'info' 1`] = `
+"My action: '{
+    \\"a\\": 1
+}'"
+`;
+
+exports[`Service/LoggerService object Logs a '{"a":1}' with level: 'warning' 1`] = `
+"My action: '{
+    \\"a\\": 1
+}'"
+`;
+
+exports[`Service/LoggerService object Logs a 'null' with level: 'error' 1`] = `"My action: 'null'"`;
+
+exports[`Service/LoggerService object Logs a 'null' with level: 'info' 1`] = `"My action: 'null'"`;
+
+exports[`Service/LoggerService object Logs a 'null' with level: 'warning' 1`] = `"My action: 'null'"`;

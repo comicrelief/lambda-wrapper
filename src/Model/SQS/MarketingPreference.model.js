@@ -1,16 +1,22 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 import validate from 'validate.js';
+
 import Model from '../Model.model';
-import requestConstraints from './MarketingPreference.constraints.json';
 import ResponseModel from '../Response.model';
+import requestConstraints from './MarketingPreference.constraints.json';
 
 // Define action specific error types
 export const ERROR_TYPES = {
   VALIDATION_ERROR: new ResponseModel({}, 400, 'required fields are missing'),
 };
 
+/**
+ * Marketing Preference
+ */
 export default class MarketingPreference extends Model {
   /**
    * Message constructor
+   *
    * @param data object
    */
   constructor(data = {}) {
@@ -68,7 +74,8 @@ export default class MarketingPreference extends Model {
 
   /**
    * Get First Name
-   * @return {string|*}
+   *
+   * @returns {string|*}
    */
   getFirstName() {
     return this.firstname;
@@ -76,6 +83,7 @@ export default class MarketingPreference extends Model {
 
   /**
    * Set First Name
+   *
    * @param value string
    */
   setFirstName(value: string) {
@@ -84,7 +92,8 @@ export default class MarketingPreference extends Model {
 
   /**
    * Get Last Name
-   * @return {string|*}
+   *
+   * @returns {string|*}
    */
   getLastName() {
     return this.lastname;
@@ -92,6 +101,7 @@ export default class MarketingPreference extends Model {
 
   /**
    * Set Last Name
+   *
    * @param value string
    */
   setLastName(value: string) {
@@ -100,7 +110,8 @@ export default class MarketingPreference extends Model {
 
   /**
    * Get phone
-   * @return {string|*}
+   *
+   * @returns {string|*}
    */
   getPhone() {
     return this.phone;
@@ -108,6 +119,7 @@ export default class MarketingPreference extends Model {
 
   /**
    * Set phone
+   *
    * @param value string
    */
   setPhone(value: string) {
@@ -116,7 +128,8 @@ export default class MarketingPreference extends Model {
 
   /**
    * Get Mobile
-   * @return {string|*}
+   *
+   * @returns {string|*}
    */
   getMobile() {
     return this.mobile;
@@ -124,6 +137,7 @@ export default class MarketingPreference extends Model {
 
   /**
    * Set Mobile
+   *
    * @param value string
    */
   setMobile(value: string) {
@@ -132,7 +146,8 @@ export default class MarketingPreference extends Model {
 
   /**
    * Get Address Line 1
-   * @return {string|*}
+   *
+   * @returns {string|*}
    */
   getAddress1() {
     return this.address1;
@@ -140,6 +155,7 @@ export default class MarketingPreference extends Model {
 
   /**
    * Set Address Line 1
+   *
    * @param value string
    */
   setAddress1(value: string) {
@@ -148,7 +164,8 @@ export default class MarketingPreference extends Model {
 
   /**
    * Get Address Line 2
-   * @return {string|*}
+   *
+   * @returns {string|*}
    */
   getAddress2() {
     return this.address2;
@@ -156,6 +173,7 @@ export default class MarketingPreference extends Model {
 
   /**
    * Set Address Line 2
+   *
    * @param value string
    */
   setAddress2(value: string) {
@@ -164,7 +182,8 @@ export default class MarketingPreference extends Model {
 
   /**
    * Get Address Line 3
-   * @return {string|*}
+   *
+   * @returns {string|*}
    */
   getAddress3() {
     return this.address3;
@@ -172,6 +191,7 @@ export default class MarketingPreference extends Model {
 
   /**
    * Set Address Line 3
+   *
    * @param value string
    */
   setAddress3(value: string) {
@@ -180,7 +200,8 @@ export default class MarketingPreference extends Model {
 
   /**
    * Get Town
-   * @return {string|*}
+   *
+   * @returns {string|*}
    */
   getTown() {
     return this.town;
@@ -188,6 +209,7 @@ export default class MarketingPreference extends Model {
 
   /**
    * Set Town
+   *
    * @param value string
    */
   setTown(value: string) {
@@ -196,7 +218,8 @@ export default class MarketingPreference extends Model {
 
   /**
    * Get Postcode
-   * @return {string|*}
+   *
+   * @returns {string|*}
    */
   getPostcode() {
     return this.postcode;
@@ -204,6 +227,7 @@ export default class MarketingPreference extends Model {
 
   /**
    * Set Postcode
+   *
    * @param value string
    */
   setPostcode(value: string) {
@@ -212,7 +236,8 @@ export default class MarketingPreference extends Model {
 
   /**
    * Get Country
-   * @return {string|*}
+   *
+   * @returns {string|*}
    */
   getCountry() {
     return this.country;
@@ -220,6 +245,7 @@ export default class MarketingPreference extends Model {
 
   /**
    * Set Country
+   *
    * @param value string
    */
   setCountry(value: string) {
@@ -228,7 +254,8 @@ export default class MarketingPreference extends Model {
 
   /**
    * Get Campaign
-   * @return {string|*}
+   *
+   * @returns {string|*}
    */
   getCampaign() {
     return this.campaign;
@@ -236,6 +263,7 @@ export default class MarketingPreference extends Model {
 
   /**
    * Set Campaign
+   *
    * @param value string
    */
   setCampaign(value: string) {
@@ -244,7 +272,8 @@ export default class MarketingPreference extends Model {
 
   /**
    * Get Transaction Id
-   * @return {string|*}
+   *
+   * @returns {string|*}
    */
   getTransactionId() {
     return this.transactionId;
@@ -252,6 +281,7 @@ export default class MarketingPreference extends Model {
 
   /**
    * Set Transaction Id
+   *
    * @param value string
    */
   setTransactionId(value: string) {
@@ -260,7 +290,8 @@ export default class MarketingPreference extends Model {
 
   /**
    * Get Transaction Source
-   * @return {string|*}
+   *
+   * @returns {string|*}
    */
   getTransSource() {
     return this.transSource;
@@ -268,6 +299,7 @@ export default class MarketingPreference extends Model {
 
   /**
    * Set Transaction Source
+   *
    * @param value string
    */
   setTransSource(value: string) {
@@ -276,7 +308,8 @@ export default class MarketingPreference extends Model {
 
   /**
    * Get Transaction Source URL
-   * @return {string|*}
+   *
+   * @returns {string|*}
    */
   getTransSourceUrl() {
     return this.transSourceUrl;
@@ -284,6 +317,7 @@ export default class MarketingPreference extends Model {
 
   /**
    * Set Transaction Source URL
+   *
    * @param value string
    */
   setTransSourceUrl(value: string) {
@@ -292,7 +326,8 @@ export default class MarketingPreference extends Model {
 
   /**
    * Get Transaction Type
-   * @return {string|*}
+   *
+   * @returns {string|*}
    */
   getTransType() {
     return this.transType;
@@ -300,6 +335,7 @@ export default class MarketingPreference extends Model {
 
   /**
    * Set Transaction Type
+   *
    * @param value string
    */
   setTransType(value: string) {
@@ -308,7 +344,8 @@ export default class MarketingPreference extends Model {
 
   /**
    * Get Email
-   * @return {string|*}
+   *
+   * @returns {string|*}
    */
   getEmail() {
     return this.email;
@@ -316,6 +353,7 @@ export default class MarketingPreference extends Model {
 
   /**
    * Set Email
+   *
    * @param value string
    */
   setEmail(value: string) {
@@ -324,7 +362,8 @@ export default class MarketingPreference extends Model {
 
   /**
    * Get Email Permission
-   * @return {string|*}
+   *
+   * @returns {string|*}
    */
   getPermissionEmail() {
     return this.permissionEmail;
@@ -332,6 +371,7 @@ export default class MarketingPreference extends Model {
 
   /**
    * Set Email Permission
+   *
    * @param value string
    */
   setPermissionEmail(value: string) {
@@ -340,7 +380,8 @@ export default class MarketingPreference extends Model {
 
   /**
    * Get Post Permission
-   * @return {string|*}
+   *
+   * @returns {string|*}
    */
   getPermissionPost() {
     return this.permissionPost;
@@ -348,6 +389,7 @@ export default class MarketingPreference extends Model {
 
   /**
    * Set Post Permission
+   *
    * @param value string
    */
   setPermissionPost(value: string) {
@@ -356,7 +398,8 @@ export default class MarketingPreference extends Model {
 
   /**
    * Get Phone Permission
-   * @return {string|*}
+   *
+   * @returns {string|*}
    */
   getPermissionPhone() {
     return this.permissionPhone;
@@ -364,6 +407,7 @@ export default class MarketingPreference extends Model {
 
   /**
    * Set Phone Permission
+   *
    * @param value string
    */
   setPermissionPhone(value: string) {
@@ -372,7 +416,8 @@ export default class MarketingPreference extends Model {
 
   /**
    * Get SMS Permission
-   * @return {string|*}
+   *
+   * @returns {string|*}
    */
   getPermissionSMS() {
     return this.permissionSMS;
@@ -380,6 +425,7 @@ export default class MarketingPreference extends Model {
 
   /**
    * Set SMS Permission
+   *
    * @param value string
    */
   setPermissionSMS(value: string) {
@@ -388,7 +434,8 @@ export default class MarketingPreference extends Model {
 
   /**
    * Get Timestamp
-   * @return {string|*}
+   *
+   * @returns {string|*}
    */
   getTimestamp() {
     return this.timestamp;
@@ -396,6 +443,7 @@ export default class MarketingPreference extends Model {
 
   /**
    * Set Timestamp
+   *
    * @param value string
    */
   setTimestamp(value: string) {
@@ -404,7 +452,6 @@ export default class MarketingPreference extends Model {
 
   /**
    * Generate Timestamp
-   * @return {string|*}
    */
   generateTimestamp() {
     this.timestamp = Math.floor(Date.now() / 1000);
@@ -412,7 +459,8 @@ export default class MarketingPreference extends Model {
 
   /**
    * Get Base entity mappings
-   * @return {object}
+   *
+   * @returns {object}
    */
   getEntityMappings() {
     return {
@@ -442,31 +490,33 @@ export default class MarketingPreference extends Model {
 
   /**
    * Check if any permission is set
+   *
    * @returns {boolean}
    */
   isPermissionSet() {
-    return (this.getPermissionEmail() !== null
-      && this.getPermissionEmail() !== '')
-      || (this.getPermissionPost() !== null
-        && this.getPermissionPost() !== '')
-      || (this.getPermissionPhone() !== null
-        && this.getPermissionPhone() !== '')
-      || (this.getPermissionSMS() !== null
-        && this.getPermissionSMS() !== '');
+    return (
+      (this.getPermissionEmail() !== null && this.getPermissionEmail() !== '')
+      || (this.getPermissionPost() !== null && this.getPermissionPost() !== '')
+      || (this.getPermissionPhone() !== null && this.getPermissionPhone() !== '')
+      || (this.getPermissionSMS() !== null && this.getPermissionSMS() !== '')
+    );
   }
 
   /**
    * Validate the model
-   * @return {Promise<any>}
+   *
+   * @returns {Promise<any>}
    */
   validate() {
     return new Promise((resolve, reject) => {
-      const requestConstraintsClone = Object.assign({}, requestConstraints);
-      if ((this.getPermissionEmail() !== null
-        && this.getPermissionEmail() !== ''
-        && this.getPermissionEmail() !== '0'
-        && this.getPermissionEmail() !== 0)
-      || (this.getEmail())) {
+      const requestConstraintsClone = { ...requestConstraints };
+      if (
+        (this.getPermissionEmail() !== null
+          && this.getPermissionEmail() !== ''
+          && this.getPermissionEmail() !== '0'
+          && this.getPermissionEmail() !== 0)
+        || this.getEmail()
+      ) {
         if (this.getEmail()) {
           requestConstraintsClone.email = { email: true };
         } else {
@@ -474,12 +524,24 @@ export default class MarketingPreference extends Model {
         }
       }
       // Update constraints if fields are not empty
-      requestConstraintsClone.firstname = this.getFirstName() !== null && this.getFirstName() !== '' ? { format: { pattern: "[a-zA-Z.'-_ ]+", flags: 'i', message: 'can only contain alphabetical characters' } } : '';
-      requestConstraintsClone.lastname = this.getLastName() !== null && this.getLastName() !== '' ? { format: { pattern: "[a-zA-Z.'-_ ]+", flags: 'i', message: 'can only contain alphabetical characters' } } : '';
-      requestConstraintsClone.phone = this.getPhone() !== null && this.getPhone() !== '' ? { format: { pattern: '[0-9 ]+', flags: 'i', message: 'can only contain numerical characters' } } : '';
-      requestConstraintsClone.mobile = this.getMobile() !== null && this.getMobile() !== '' ? { format: { pattern: '[0-9 ]+', flags: 'i', message: 'can only contain numerical characters' } } : '';
-      requestConstraintsClone.address1 = this.getAddress1() !== null && this.getAddress1() !== '' ? { format: { pattern: "[a-zA-Z.'-_& ]+", flags: 'i', message: 'can only contain alphanumeric characters and . \' - _ &' } } : '';
-      requestConstraintsClone.country = this.getCountry() !== null && this.getCountry() !== '' ? { format: { pattern: "[a-zA-Z.'-_& ]+", flags: 'i', message: 'can only contain alphabetical characters and . \' - _ &' } } : '';
+      requestConstraintsClone.firstname = this.getFirstName() !== null && this.getFirstName() !== ''
+        ? { format: { pattern: "[a-zA-Z.'-_ ]+", flags: 'i', message: 'can only contain alphabetical characters' } }
+        : '';
+      requestConstraintsClone.lastname = this.getLastName() !== null && this.getLastName() !== ''
+        ? { format: { pattern: "[a-zA-Z.'-_ ]+", flags: 'i', message: 'can only contain alphabetical characters' } }
+        : '';
+      requestConstraintsClone.phone = this.getPhone() !== null && this.getPhone() !== ''
+        ? { format: { pattern: '[0-9 ]+', flags: 'i', message: 'can only contain numerical characters' } }
+        : '';
+      requestConstraintsClone.mobile = this.getMobile() !== null && this.getMobile() !== ''
+        ? { format: { pattern: '[0-9 ]+', flags: 'i', message: 'can only contain numerical characters' } }
+        : '';
+      requestConstraintsClone.address1 = this.getAddress1() !== null && this.getAddress1() !== ''
+        ? { format: { pattern: "[a-zA-Z.'-_& ]+", flags: 'i', message: "can only contain alphanumeric characters and . ' - _ &" } }
+        : '';
+      requestConstraintsClone.country = this.getCountry() !== null && this.getCountry() !== ''
+        ? { format: { pattern: "[a-zA-Z.'-_& ]+", flags: 'i', message: "can only contain alphabetical characters and . ' - _ &" } }
+        : '';
 
       const validation = validate(this.getEntityMappings(), requestConstraintsClone);
 

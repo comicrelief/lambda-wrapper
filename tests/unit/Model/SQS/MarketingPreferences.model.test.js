@@ -1,12 +1,10 @@
-import ServerlessMochaPlugin from 'serverless-mocha-plugin';
-import MarketingPreferencesModel from '../../../../src/Model/SQS/MarketingPreference.model';
+/* eslint-disable sonarjs/no-identical-functions */
+/* eslint-disable sonarjs/no-duplicate-string */
 import ResponseModel from '../../../../src/Model/Response.model';
-
-const expect = ServerlessMochaPlugin.chai.expect;
+import MarketingPreferencesModel from '../../../../src/Model/SQS/MarketingPreference.model';
 
 // Test definitions.
 describe('Model/MarketingPreferencesModel', () => {
-
   describe('Ensure setting and getting of variables', () => {
     const mockedData = {
       firstname: 'Tim',
@@ -14,7 +12,7 @@ describe('Model/MarketingPreferencesModel', () => {
       phone: '0208 254 3062',
       mobile: '07917 321 492',
       address1: '32-36',
-      address2: 'St. Smith\'s Avenue',
+      address2: "St. Smith's Avenue",
       address3: '',
       town: 'London',
       postcode: 'sw184bx',
@@ -35,97 +33,98 @@ describe('Model/MarketingPreferencesModel', () => {
     const model = new MarketingPreferencesModel(mockedData);
 
     it('should set and get the firstname', () => {
-      expect(model.getFirstName()).to.eql(mockedData.firstname);
+      expect(model.getFirstName()).toEqual(mockedData.firstname);
     });
 
     it('should set and get the lastname', () => {
-      expect(model.getLastName()).to.eql(mockedData.lastname);
+      expect(model.getLastName()).toEqual(mockedData.lastname);
     });
 
     it('should set and get the phone', () => {
-      expect(model.getPhone()).to.eql(mockedData.phone);
+      expect(model.getPhone()).toEqual(mockedData.phone);
     });
 
     it('should set and get the mobile', () => {
-      expect(model.getMobile()).to.eql(mockedData.mobile);
+      expect(model.getMobile()).toEqual(mockedData.mobile);
     });
 
     it('should set and get the address1', () => {
-      expect(model.getAddress1()).to.eql(mockedData.address1);
+      expect(model.getAddress1()).toEqual(mockedData.address1);
     });
 
     it('should set and get the address2', () => {
-      expect(model.getAddress2()).to.eql(mockedData.address2);
+      expect(model.getAddress2()).toEqual(mockedData.address2);
     });
 
     it('should set and get the address3', () => {
-      expect(model.getAddress3()).to.eql(null);
+      expect(model.getAddress3()).toEqual(null);
     });
 
     it('should set and get the town', () => {
-      expect(model.getTown()).to.eql(mockedData.town);
+      expect(model.getTown()).toEqual(mockedData.town);
     });
 
     it('should set and get the postcode', () => {
-      expect(model.getPostcode()).to.eql(mockedData.postcode);
+      expect(model.getPostcode()).toEqual(mockedData.postcode);
     });
 
     it('should set and get the country', () => {
-      expect(model.getCountry()).to.eql(mockedData.country);
+      expect(model.getCountry()).toEqual(mockedData.country);
     });
 
     it('should set and get the campaign', () => {
-      expect(model.getCampaign()).to.eql(mockedData.campaign);
+      expect(model.getCampaign()).toEqual(mockedData.campaign);
     });
 
     it('should set and get the transaction id', () => {
-      expect(model.getTransactionId()).to.eql(mockedData.transactionId);
+      expect(model.getTransactionId()).toEqual(mockedData.transactionId);
     });
 
     it('should set and get the transSource', () => {
-      expect(model.getTransSource()).to.eql(mockedData.transSource);
+      expect(model.getTransSource()).toEqual(mockedData.transSource);
     });
 
     it('should set and get the transSourceUrl', () => {
-      expect(model.getTransSourceUrl()).to.eql(mockedData.transSourceUrl);
+      expect(model.getTransSourceUrl()).toEqual(mockedData.transSourceUrl);
     });
 
     it('should set and get the transType', () => {
-      expect(model.getTransType()).to.eql(mockedData.transType);
+      expect(model.getTransType()).toEqual(mockedData.transType);
     });
 
     it('should set and get the email', () => {
-      expect(model.getEmail()).to.eql(mockedData.email);
+      expect(model.getEmail()).toEqual(mockedData.email);
     });
 
     it('should set and get the permissionEmail', () => {
-      expect(model.getPermissionEmail()).to.eql(mockedData.permissionEmail);
+      expect(model.getPermissionEmail()).toEqual(mockedData.permissionEmail);
     });
 
     it('should set and get the permissionPost', () => {
-      expect(model.getPermissionPost()).to.eql(mockedData.permissionPost);
+      expect(model.getPermissionPost()).toEqual(mockedData.permissionPost);
     });
 
     it('should set and get the permissionPhone', () => {
-      expect(model.getPermissionPhone()).to.eql(mockedData.permissionPhone);
+      expect(model.getPermissionPhone()).toEqual(mockedData.permissionPhone);
     });
 
     it('should set and get the permissionSMS', () => {
-      expect(model.getPermissionSMS()).to.eql(mockedData.permissionSMS);
+      expect(model.getPermissionSMS()).toEqual(mockedData.permissionSMS);
     });
 
     it('should set and get the Timestamp', () => {
-      expect(model.getTimestamp()).to.eql(mockedData.timestamp);
+      expect(model.getTimestamp()).toEqual(mockedData.timestamp);
     });
 
     it('should validate the model', (done) => {
-      model.validate()
+      model
+        .validate()
         .then(() => {
-          expect(true).to.eql(true);
+          expect(true).toEqual(true);
           done();
         })
         .catch(() => {
-          expect(true).to.eql(false);
+          expect(true).toEqual(false);
           done();
         });
     });
@@ -137,16 +136,17 @@ describe('Model/MarketingPreferencesModel', () => {
     const model = new MarketingPreferencesModel(mockedData);
 
     it('should validate the model and return an error response', (done) => {
-      model.validate()
+      model
+        .validate()
         .then(() => {
-          expect(true).to.eql(false);
+          expect(true).toEqual(false);
           done();
         })
         .catch((error) => {
-          expect(error instanceof ResponseModel).to.eql(true);
-          expect(error.getCode()).to.eql(400);
-          expect(error.body.message).to.eql('required fields are missing');
-          expect(true).to.eql(true);
+          expect(error instanceof ResponseModel).toEqual(true);
+          expect(error.getCode()).toEqual(400);
+          expect(error.body.message).toEqual('required fields are missing');
+          expect(true).toEqual(true);
           done();
         });
     });
@@ -158,7 +158,7 @@ describe('Model/MarketingPreferencesModel', () => {
       lastname: 'Jones',
       mobile: '07917 321 492',
       address1: '32-36',
-      address2: 'St. Smith\'s Avenue',
+      address2: "St. Smith's Avenue",
       address3: '',
       town: 'London',
       postcode: 'sw184bx',
@@ -178,18 +178,17 @@ describe('Model/MarketingPreferencesModel', () => {
     const model = new MarketingPreferencesModel(mockedData);
 
     it('should validate the model and return an error response', (done) => {
-      model.validate()
+      model
+        .validate()
         .then(() => {
-          expect(true).to.eql(false);
+          expect(true).toEqual(false);
           done();
         })
         .catch((error) => {
-          console.log('Error: ', error);
-
-          expect(error instanceof ResponseModel).to.eql(true);
-          expect(error.getCode()).to.eql(400);
-          expect(error.body.validation_errors.email[0]).to.eql('Email can\'t be blank');
-          expect(true).to.eql(true);
+          expect(error instanceof ResponseModel).toEqual(true);
+          expect(error.getCode()).toEqual(400);
+          expect(error.body.validation_errors.email[0]).toEqual("Email can't be blank");
+          expect(true).toEqual(true);
           done();
         });
     });
@@ -202,7 +201,7 @@ describe('Model/MarketingPreferencesModel', () => {
       phone: '0208 254 3062',
       mobile: '07917 321 492',
       address1: '32-36',
-      address2: 'St. Smith\'s Avenue',
+      address2: "St. Smith's Avenue",
       address3: '',
       town: 'London',
       postcode: 'sw184bx',
@@ -222,16 +221,17 @@ describe('Model/MarketingPreferencesModel', () => {
     const model = new MarketingPreferencesModel(mockedData);
 
     it('should validate the model and return an error response', (done) => {
-      model.validate()
+      model
+        .validate()
         .then(() => {
-          expect(true).to.eql(false);
+          expect(true).toEqual(false);
           done();
         })
         .catch((error) => {
-          expect(error instanceof ResponseModel).to.eql(true);
-          expect(error.getCode()).to.eql(400);
-          expect(error.body.validation_errors.email[0]).to.eql('Email is not a valid email');
-          expect(true).to.eql(true);
+          expect(error instanceof ResponseModel).toEqual(true);
+          expect(error.getCode()).toEqual(400);
+          expect(error.body.validation_errors.email[0]).toEqual('Email is not a valid email');
+          expect(true).toEqual(true);
           done();
         });
     });
@@ -265,19 +265,19 @@ describe('Model/MarketingPreferencesModel', () => {
     const model = new MarketingPreferencesModel(mockedData);
 
     it('should validate the model', (done) => {
-      model.validate()
+      model
+        .validate()
         .then(() => {
-          expect(true).to.eql(true);
+          expect(true).toEqual(true);
           done();
         })
         .catch((error) => {
-          console.log('Error: ', error);
-          expect(true).to.eql(false);
+          console.log('Error:', error);
+          expect(true).toEqual(false);
           done();
         });
     });
   });
-
 
   describe('Ensure validation passes when email permission is NO', () => {
     const mockedData = {
@@ -307,28 +307,28 @@ describe('Model/MarketingPreferencesModel', () => {
     const model = new MarketingPreferencesModel(mockedData);
 
     it('should validate the model', (done) => {
-      model.validate()
+      model
+        .validate()
         .then(() => {
-          expect(true).to.eql(true);
+          expect(true).toEqual(true);
           done();
         })
         .catch((error) => {
-          console.log('Error: ', error);
-          expect(true).to.eql(false);
+          console.log('Error:', error);
+          expect(true).toEqual(false);
           done();
         });
     });
   });
 
   describe('Ensure generating of timestamp when not set', () => {
-
     const mockedData = {
       firstname: 'Tim',
       lastname: 'Jones',
       phone: '0208 254 3062',
       mobile: '07917 321 492',
       address1: '32-36',
-      address2: 'St. Smith\'s Avenue',
+      address2: "St. Smith's Avenue",
       address3: '',
       town: 'London',
       postcode: 'sw184bx',
@@ -348,22 +348,22 @@ describe('Model/MarketingPreferencesModel', () => {
     const model = new MarketingPreferencesModel(mockedData);
 
     it('should get a timestamp', () => {
-      expect(model.getTimestamp() > 0).to.eql(true);
+      expect(model.getTimestamp() > 0).toEqual(true);
     });
 
     it('should validate the model', (done) => {
-      model.validate()
+      model
+        .validate()
         .then(() => {
-          expect(true).to.eql(true);
+          expect(true).toEqual(true);
           done();
         })
         .catch(() => {
-          expect(true).to.eql(false);
+          expect(true).toEqual(false);
           done();
         });
     });
   });
-
 
   describe('Ensure validation passes when nullable fields are not present', () => {
     const mockedData = {
@@ -371,7 +371,7 @@ describe('Model/MarketingPreferencesModel', () => {
       lastname: 'Jones',
       phone: '0208 254 3062',
       mobile: '07917 321 492',
-      address1: '32 Smith\'s Avenue',
+      address1: "32 Smith's Avenue",
       town: 'London',
       postcode: 'sw184bx',
       country: 'United Kindgom',
@@ -385,19 +385,19 @@ describe('Model/MarketingPreferencesModel', () => {
     const model = new MarketingPreferencesModel(mockedData);
 
     it('should validate the model', (done) => {
-      model.validate()
+      model
+        .validate()
         .then(() => {
-          expect(true).to.eql(true);
+          expect(true).toEqual(true);
           done();
         })
         .catch((error) => {
-          console.log('Error: ', error);
-          expect(true).to.eql(false);
+          console.log('Error:', error);
+          expect(true).toEqual(false);
           done();
         });
     });
   });
-
 
   describe('Ensure model permission evaluates to false when no permission is set', () => {
     const mockedData = {
@@ -405,7 +405,7 @@ describe('Model/MarketingPreferencesModel', () => {
       lastname: 'Jones',
       phone: '0208 254 3062',
       mobile: '07917 321 492',
-      address1: '32 Smith\'s Avenue',
+      address1: "32 Smith's Avenue",
       town: 'London',
       postcode: 'sw184bx',
       country: 'United Kindgom',
@@ -423,12 +423,10 @@ describe('Model/MarketingPreferencesModel', () => {
     const model = new MarketingPreferencesModel(mockedData);
 
     it('should evaluate model permissions to false', (done) => {
-
-      expect(model.isPermissionSet()).to.eql(false);
+      expect(model.isPermissionSet()).toEqual(false);
       done();
     });
   });
-
 
   describe('Ensure model permission evaluates to true when at least one permission is set', () => {
     const mockedData = {
@@ -436,7 +434,7 @@ describe('Model/MarketingPreferencesModel', () => {
       lastname: 'Jones',
       phone: '0208 254 3062',
       mobile: '07917 321 492',
-      address1: '32 Smith\'s Avenue',
+      address1: "32 Smith's Avenue",
       town: 'London',
       postcode: 'sw184bx',
       country: 'United Kindgom',
@@ -455,13 +453,8 @@ describe('Model/MarketingPreferencesModel', () => {
     const model = new MarketingPreferencesModel(mockedData);
 
     it('should evaluate model permissions to true', (done) => {
-
-      expect(model.isPermissionSet()).to.eql(true);
+      expect(model.isPermissionSet()).toEqual(true);
       done();
     });
   });
-
-
-
-
 });

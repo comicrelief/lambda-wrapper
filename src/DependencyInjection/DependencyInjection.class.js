@@ -6,6 +6,7 @@ import { DEFINITIONS, DEPENDENCIES } from '../Config/Dependencies';
 export default class DependencyInjection {
   /**
    * DependencyInjection constructor
+   *
    * @param configuration
    * @param event
    * @param context
@@ -34,12 +35,13 @@ export default class DependencyInjection {
 
   /**
    * Get Dependency
+   *
    * @param definition
-   * @return {*}
+   * @returns {*}
    */
   get(definition) {
     if (typeof this.dependencies[definition] === 'undefined') {
-      throw Error(`${definition} does not exist in di container`);
+      throw new TypeError(`${definition} does not exist in di container`);
     }
 
     return this.dependencies[definition];
@@ -47,7 +49,8 @@ export default class DependencyInjection {
 
   /**
    * Get Event
-   * @return {*}
+   *
+   * @returns {*}
    */
   getEvent() {
     return this.event;
@@ -55,7 +58,8 @@ export default class DependencyInjection {
 
   /**
    * Get Context
-   * @return {*}
+   *
+   * @returns {*}
    */
   getContext() {
     return this.context;
@@ -63,16 +67,54 @@ export default class DependencyInjection {
 
   /**
    * Get Configuration
+   *
    * @param definition string
-   * @return {*}
+   * @returns {*}
    */
   getConfiguration(definition = null) {
     if (definition !== null && typeof this.configuration[definition] === 'undefined') {
       return null;
-    } else if (typeof this.configuration[definition] !== 'undefined') {
+    }
+    if (typeof this.configuration[definition] !== 'undefined') {
       return this.configuration[definition];
     }
 
     return this.configuration;
+  }
+
+  /**
+   * Check whether the function
+   * is being executed in a serverless-offline context
+   *
+   * @returns {boolean}
+   */
+  get isOffline() {
+    const context = this.getContext();
+
+    if (!Object.prototype.hasOwnProperty.call(context, 'invokedFunctionArn')) {
+      return true;
+    }
+
+    if (context.invokedFunctionArn.includes('offline')) {
+      return true;
+    }
+
+    if (process.env.USE_SERVERLESS_OFFLINE) {
+      return true;
+    }
+
+    return false;
+  }
+
+  /**
+   * Returns the definitions
+   * associated to this DependencyInjection
+   * so that services can refer to them
+   * without causing circular imports.
+   *
+   * @returns {object}
+   */
+  get definitions() {
+    return this.configuration.DEFINITIONS;
   }
 }

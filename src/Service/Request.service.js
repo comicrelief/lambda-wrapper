@@ -1,23 +1,44 @@
+/* eslint-disable class-methods-use-this */
+/* eslint-disable sonarjs/no-duplicate-string */
 /* @flow */
+
 import QueryString from 'querystring';
+
+import useragent from 'useragent';
 import validate from 'validate.js/validate';
 import XML2JS from 'xml2js';
-import useragent from 'useragent';
 
+import { DEFINITIONS } from '../Config/Dependencies';
 import DependencyAwareClass from '../DependencyInjection/DependencyAware.class';
 import ResponseModel from '../Model/Response.model';
-import { DEFINITIONS } from '../Config/Dependencies';
 
 export const REQUEST_TYPES = {
+  DELETE: 'DELETE',
   GET: 'GET',
+  HEAD: 'HEAD',
+  OPTIONS: 'OPTIONS',
+  PATCH: 'PATCH',
   POST: 'POST',
+  PUT: 'PUT',
 };
+
+export const HTTP_METHODS_WITHOUT_PAYLOADS = [
+  REQUEST_TYPES.DELETE,
+  REQUEST_TYPES.GET,
+  REQUEST_TYPES.HEAD,
+  REQUEST_TYPES.OPTIONS,
+];
+
+export const HTTP_METHODS_WITH_PAYLOADS = [
+  REQUEST_TYPES.PATCH,
+  REQUEST_TYPES.POST,
+  REQUEST_TYPES.PUT,
+];
 
 // Define action specific error types
 export const ERROR_TYPES = {
   VALIDATION_ERROR: new ResponseModel({}, 400, 'required fields are missing'),
 };
-
 
 /**
  * RequestService class
@@ -25,33 +46,63 @@ export const ERROR_TYPES = {
 export default class RequestService extends DependencyAwareClass {
   /**
    * Get a parameter from the request.
-   * @param param
+   *
+   * @param parameter
    * @param ifNull
    * @param requestType
-   * @return {*}
    */
-  get(param: string, ifNull = null, requestType = null) {
-    const queryParams = this.getAll(requestType);
+  get(parameter: string, ifNull = null, requestType = null) {
+    const queryParameters = this.getAll(requestType);
 
-    if (queryParams === null) {
+    if (queryParameters === null) {
       return ifNull;
     }
 
-    return typeof queryParams[param] !== 'undefined' ? queryParams[param] : ifNull;
+    return typeof queryParameters[parameter] !== 'undefined' ? queryParameters[parameter] : ifNull;
+  }
+
+  /**
+   * Get all HTTP headers included in the request.
+   *
+   * @returns {object} An object with a key for each header.
+   */
+  getAllHeaders() {
+    return { ...this.getContainer().getEvent().headers };
+  }
+
+  /**
+   * Get an HTTP header from the request.
+   *
+   * The header name is case-insensitive.
+   *
+   * @param {string} name The name of the header.
+   * @param {string} [whenMissing] Value to return if the header is missing.
+   *   (default: empty string)
+   *
+   * @returns {string}
+   */
+  getHeader(name: string, whenMissing: string = '') {
+    const headers = this.getAllHeaders();
+    if (!headers) {
+      return whenMissing;
+    }
+    const lowerName = name.toLowerCase();
+    const key = Object.keys(headers).find((k) => k.toLowerCase() === lowerName);
+    return (key && headers[key]) || whenMissing;
   }
 
   /**
    * Get authorization token
-   * @return {*}
+   *
+   * @returns {*}
    */
   getAuthorizationToken() {
-    const { headers } = this.getContainer().getEvent();
-
-    if (typeof headers.Authorization === 'undefined' && typeof headers.authorization === 'undefined') {
+    const authorization = this.getHeader('Authorization');
+    if (!authorization) {
       return null;
     }
 
-    const tokenParts = headers[typeof headers.Authorization === 'undefined' ? 'authorization' : 'Authorization'].split(' ');
+    const tokenParts = authorization.split(' ');
     const tokenValue = tokenParts[1];
 
     if (!(tokenParts[0].toLowerCase() === 'bearer' && tokenValue)) {
@@ -63,21 +114,26 @@ export default class RequestService extends DependencyAwareClass {
 
   /**
    * Get a path parameter
-   * @param param  string|null
+   *
+   * @param parameter
    * @param ifNull mixed
-   * @return {*}
    */
-  getPathParameter(param: string = null, ifNull = {}) {
+  getPathParameter(parameter: string = null, ifNull = {}) {
     const event = this.getContainer().getEvent();
 
     // If no parameter has been requested, return all path parameters
-    if (param === null && typeof event.pathParameters === 'object') {
+    if (parameter === null && typeof event.pathParameters === 'object') {
       return event.pathParameters;
     }
 
     // If a specifc parameter has been requested, return the parameter if it exists
-    if (typeof param === 'string' && typeof event.pathParameters === 'object' && event.pathParameters !== null && typeof event.pathParameters[param] !== 'undefined') {
-      return event.pathParameters[param];
+    if (
+      typeof parameter === 'string'
+      && typeof event.pathParameters === 'object'
+      && event.pathParameters !== null
+      && typeof event.pathParameters[parameter] !== 'undefined'
+    ) {
+      return event.pathParameters[parameter];
     }
 
     return ifNull;
@@ -85,13 +141,15 @@ export default class RequestService extends DependencyAwareClass {
 
   /**
    * Get all request parameters
+   *
    * @param requestType
-   * @return {{}}
+   * @returns {{}}
    */
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   getAll(requestType = null) {
     const event = this.getContainer().getEvent();
 
-    if (event.httpMethod === 'GET' || requestType === REQUEST_TYPES.GET) {
+    if (HTTP_METHODS_WITHOUT_PAYLOADS.includes(event.httpMethod) || HTTP_METHODS_WITHOUT_PAYLOADS.includes(requestType)) {
       // get simple parameters
       const params = Object.assign({}, event.queryStringParameters);
       // add array parameters as arrays
@@ -101,38 +159,33 @@ export default class RequestService extends DependencyAwareClass {
       return params;
     }
 
-    if (event.httpMethod === 'POST' || requestType === REQUEST_TYPES.POST) {
-      let queryParams = {};
+    if (HTTP_METHODS_WITH_PAYLOADS.includes(event.httpMethod) || HTTP_METHODS_WITH_PAYLOADS.includes(requestType)) {
+      const contentType = this.getHeader('Content-Type');
+      let queryParameters = {};
 
-      if ((typeof event.headers['Content-Type'] !== 'undefined' && event.headers['Content-Type'].indexOf('application/x-www-form-urlencoded') !== -1)
-        || (typeof event.headers['content-type'] !== 'undefined' && event.headers['content-type'].indexOf('application/x-www-form-urlencoded') !== -1)) {
-        queryParams = QueryString.parse(event.body);
+      if (contentType.includes('application/x-www-form-urlencoded')) {
+        queryParameters = QueryString.parse(event.body);
       }
 
-      if ((typeof event.headers['Content-Type'] !== 'undefined' && event.headers['Content-Type'].indexOf('application/json') !== -1)
-        || (typeof event.headers['content-type'] !== 'undefined' && event.headers['content-type'].indexOf('application/json') !== -1)) {
+      if (contentType.includes('application/json')) {
         try {
-          queryParams = JSON.parse(event.body);
-        } catch (e) {
-          queryParams = {};
+          queryParameters = JSON.parse(event.body);
+        } catch {
+          queryParameters = {};
         }
       }
 
-      if ((typeof event.headers['Content-Type'] !== 'undefined' && event.headers['Content-Type'].indexOf('text/xml') !== -1)
-        || (typeof event.headers['content-type'] !== 'undefined' && event.headers['content-type'].indexOf('text/xml') !== -1)) {
-        XML2JS.parseString(event.body, ((err, result) => {
-          if (err) {
-            queryParams = {};
-          } else {
-            queryParams = result;
-          }
-        }));
+      if (contentType.includes('text/xml')) {
+        XML2JS.parseString(event.body, (error, result) => {
+          queryParameters = error ? {} : result;
+        });
       }
-      if ((typeof event.headers['Content-Type'] !== 'undefined' && event.headers['Content-Type'].indexOf('multipart/form-data') !== -1)
-        || (typeof event.headers['content-type'] !== 'undefined' && event.headers['content-type'].indexOf('multipart/form-data') !== -1)) {
-        queryParams = this.parseForm(true);
+
+      if (contentType.includes('multipart/form-data')) {
+        queryParameters = this.parseForm(true);
       }
-      return typeof queryParams !== 'undefined' ? queryParams : {};
+
+      return typeof queryParameters !== 'undefined' ? queryParameters : {};
     }
 
     return null;
@@ -140,14 +193,17 @@ export default class RequestService extends DependencyAwareClass {
 
   /**
    * Fetch the request IP address
-   * @return {*}
+   *
+   * @returns {*}
    */
   getIp() {
     const event = this.getContainer().getEvent();
 
-    if (typeof event.requestContext !== 'undefined'
+    if (
+      typeof event.requestContext !== 'undefined'
       && typeof event.requestContext.identity !== 'undefined'
-      && typeof event.requestContext.identity.sourceIp !== 'undefined') {
+      && typeof event.requestContext.identity.sourceIp !== 'undefined'
+    ) {
       return event.requestContext.identity.sourceIp;
     }
 
@@ -156,22 +212,11 @@ export default class RequestService extends DependencyAwareClass {
 
   /**
    * Get user agent
-   * @return {*}
+   *
+   * @returns {*}
    */
   getUserBrowserAndDevice() {
-    const { headers } = this.getContainer().getEvent();
-    let userAgent = null;
-
-    if (typeof headers !== 'object') {
-      return null;
-    }
-
-    Object.keys(headers).forEach((header) => {
-      if (header.toUpperCase() === 'USER-AGENT') {
-        userAgent = headers[header];
-      }
-    });
-
+    const userAgent = this.getHeader('user-agent', null);
     if (userAgent === null) {
       return null;
     }
@@ -187,7 +232,7 @@ export default class RequestService extends DependencyAwareClass {
         'operating-system': os.family,
         'operating-system-version': agent.os.toVersion(),
       };
-    } catch (error) {
+    } catch {
       this.getContainer().get(DEFINITIONS.LOGGER).label('user-agent-parsing-failed');
 
       return null;
@@ -196,8 +241,9 @@ export default class RequestService extends DependencyAwareClass {
 
   /**
    * Test a request against validation constraints
+   *
    * @param constraints
-   * @return {Promise<any>}
+   * @returns {Promise<any>}
    */
   validateAgainstConstraints(constraints: object) {
     const Logger = this.getContainer().get(DEFINITIONS.LOGGER);
@@ -219,8 +265,9 @@ export default class RequestService extends DependencyAwareClass {
 
   /**
    * Fetch the request multipart form
+   *
    * @param useBuffer
-   * @return {*}
+   * @returns {*}
    */
   parseForm(useBuffer: boolean) {
     const event = this.getContainer().getEvent();
@@ -229,48 +276,56 @@ export default class RequestService extends DependencyAwareClass {
     const body = event.isBase64Encoded ? Buffer.from(event.body, 'base64').toString('binary').trim() : event.body;
 
     const result = {};
-    body
-      .split(boundary)
-      .forEach((item) => {
-        if (/filename=".+"/g.test(item)) {
-          result[item.match(/name=".+";/g)[0].slice(6, -2)] = {
-            type: 'file',
-            filename: item.match(/filename=".+"/g)[0].slice(10, -1),
-            contentType: item.match(/Content-Type:\s.+/g)[0].slice(14),
-            content: useBuffer ? Buffer.from(item.slice(item.search(/Content-Type:\s.+/g) + item.match(/Content-Type:\s.+/g)[0].length + 4, -4), 'binary')
-              : item.slice(item.search(/Content-Type:\s.+/g) + item.match(/Content-Type:\s.+/g)[0].length + 4, -4),
-          };
-        } else if (/name=".+"/g.test(item)) {
-          result[item.match(/name=".+"/g)[0].slice(6, -1)] = item.slice(item.search(/name=".+"/g) + item.match(/name=".+"/g)[0].length + 4, -4);
-        }
-      });
+    body.split(boundary).forEach((item) => {
+      if (/filename=".+"/g.test(item)) {
+        result[item.match(/name=".+";/g)[0].slice(6, -2)] = {
+          type: 'file',
+          filename: item.match(/filename=".+"/g)[0].slice(10, -1),
+          contentType: item.match(/Content-Type:\s.+/g)[0].slice(14),
+          content: useBuffer
+            ? Buffer.from(item.slice(item.search(/Content-Type:\s.+/g) + item.match(/Content-Type:\s.+/g)[0].length + 4, -4), 'binary')
+            : item.slice(item.search(/Content-Type:\s.+/g) + item.match(/Content-Type:\s.+/g)[0].length + 4, -4),
+        };
+      } else if (/name=".+"/g.test(item)) {
+        result[item.match(/name=".+"/g)[0].slice(6, -1)] = item.slice(item.search(/name=".+"/g) + item.match(/name=".+"/g)[0].length + 4, -4);
+      }
+    });
     return result;
   }
 
   /**
    * Fetch the request AWS event Records
-   * @return {*}
+   *
+   * @returns {*}
    */
   getAWSRecords() {
     const event = this.getContainer().getEvent();
     const eventRecord = event.Records && event.Records[0];
 
-    if (typeof event.Records !== 'undefined'
-      && typeof event.Records[0] !== 'undefined'
-      && typeof eventRecord.eventSource !== 'undefined') {
+    if (typeof event.Records !== 'undefined' && typeof event.Records[0] !== 'undefined' && typeof eventRecord.eventSource !== 'undefined') {
       return eventRecord;
     }
     return null;
   }
 
-
+  /**
+   * Gets a value independently from
+   * the case of the key
+   *
+   * @param object
+   * @param key
+   */
   getValueIgnoringKeyCase(object, key) {
-    const foundKey = Object
-      .keys(object)
-      .find(currentKey => currentKey.toLocaleLowerCase() === key.toLowerCase());
+    const foundKey = Object.keys(object).find((currentKey) => currentKey.toLocaleLowerCase() === key.toLowerCase());
     return object[foundKey];
   }
 
+  /**
+   * Returns the content type
+   * assoiated with the request
+   *
+   * @param event
+   */
   getBoundary(event) {
     return this.getValueIgnoringKeyCase(event.headers, 'Content-Type').split('=')[1];
   }

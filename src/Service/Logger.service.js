@@ -1,44 +1,19 @@
-import Winston from 'winston';
-import Raven from 'raven';
+import * as Sentry from '@sentry/node';
 import Epsagon from 'epsagon';
+import Winston from 'winston';
 
 import DependencyAwareClass from '../DependencyInjection/DependencyAware.class';
 import DependencyInjection from '../DependencyInjection/DependencyInjection.class';
 
-const logger = Winston.createLogger({
-  level: 'info',
-  format: Winston.format.combine(
-    Winston.format.json({
-      replacer: (key, value) => {
-        if (value instanceof Buffer) {
-          return value.toString('base64');
-        } else if (value instanceof Error) {
-          const error = {};
+// Instantiate the sentry client
+const sentryIsAvailable = typeof process.env.RAVEN_DSN !== 'undefined' && typeof process.env.RAVEN_DSN === 'string' && process.env.RAVEN_DSN !== 'undefined';
 
-          Object.getOwnPropertyNames(value).forEach(((objectKey) => {
-            error[objectKey] = value[objectKey];
-          }));
-
-          return error;
-        }
-
-        return value;
-      },
-    }),
-  ),
-  transports: [
-    new Winston.transports.Console(),
-  ],
-});
-
-// Instantiate the raven client
-const ravenIsAvailable = typeof process.env.RAVEN_DSN !== 'undefined' && (typeof process.env.RAVEN_DSN === 'string' && process.env.RAVEN_DSN !== 'undefined');
-
-if (ravenIsAvailable) {
-  Raven.config(process.env.RAVEN_DSN, {
-    sendTimeout: 5,
+if (sentryIsAvailable) {
+  Sentry.init({
+    dsn: process.env.RAVEN_DSN,
+    shutdownTimeout: 5,
     environment: process.env.STAGE,
-  }).install();
+  });
 }
 
 /**
@@ -47,21 +22,21 @@ if (ravenIsAvailable) {
 export default class LoggerService extends DependencyAwareClass {
   constructor(di: DependencyInjection) {
     super(di);
-    this.raven = null;
+    this.sentry = null;
+    this.winston = null;
+
     const container = this.getContainer();
     const event = container.getEvent();
     const context = container.getContext();
-    const isOffline = !Object.prototype.hasOwnProperty.call(context, 'invokedFunctionArn') || context.invokedFunctionArn.indexOf('offline') !== -1;
 
-    // Set raven client context
-    if (ravenIsAvailable && isOffline === false) {
-      Raven.setContext({
-        extra: {
+    // Set sentry client context
+    if (sentryIsAvailable && !container.isOffline) {
+      Sentry.configureScope((scope) => {
+        scope.setTags({
           Event: event,
           Context: context,
-        },
-        environment: process.env.STAGE,
-        tags: {
+        });
+        scope.setExtras({
           lambda: context.functionName,
           memory_size: context.memoryLimitInMB,
           log_group: context.log_group_name,
@@ -69,21 +44,128 @@ export default class LoggerService extends DependencyAwareClass {
           stage: process.env.STAGE,
           path: event.path,
           httpMethod: event.httpMethod,
-        },
+        });
       });
 
-      this.raven = Raven;
+      this.sentry = Sentry;
     }
   }
 
   /**
+   * Returns a Winston logger object
+   * configured for our lambdas.
+   *
+   * Note:
+   *
+   * If the lambda is executed
+   * in a `serverless-offline` context
+   * the log output to console will be pretty printed.
+   */
+  getLogger() {
+    const loggerFormats = [
+      Winston.format.json({
+        replacer: (key, value) => {
+          if (value instanceof Buffer) {
+            return value.toString('base64');
+          }
+          if (value instanceof Error) {
+            const error = {};
+
+            Object.getOwnPropertyNames(value).forEach((objectKey) => {
+              error[objectKey] = value[objectKey];
+            });
+
+            return error;
+          }
+
+          return value;
+        },
+      }),
+    ];
+
+    if (this.getContainer().isOffline) {
+      loggerFormats.push(Winston.format.prettyPrint());
+    }
+
+    return Winston.createLogger({
+      level: 'info',
+      format: Winston.format.combine(...loggerFormats),
+      transports: [new Winston.transports.Console()],
+    });
+  }
+
+  /**
+   * Returns the logger.
+   *
+   * Uses a cached `Winston` object
+   * if it has been already generated,
+   * otherwise it generates one.
+   */
+  get logger() {
+    if (!this.winston) {
+      this.winston = this.getLogger();
+    }
+
+    return this.winston;
+  }
+
+  /**
+   * While handling an error, lambda wrapper should
+   * recognise axios errors and trim down the information.
+   *
+   * Keep the following keys:
+   * - message.config
+   * - message.message
+   * - message.response?.status
+   * - message.response?.data
+   *
+   * @param {object} error
+   */
+  static processAxiosError(error) {
+    const processed = {
+      config: error.config,
+      message: error.message,
+    };
+
+    // It's pretty common for axios errors
+    // to not have.response e.g.when there's
+    // a network error or timeout.
+    // These errors will have .request but not .response.
+    if (error.response) {
+      processed.response = {
+        status: error.response.status,
+        data: error.response.data,
+      };
+    }
+
+    return processed;
+  }
+
+  /**
+   * Transform the original message
+   * before it is passed to the winston logger
+   *
+   * @param {string|object} message
+   */
+  processMessage(message = '') {
+    let processed = message;
+
+    if (processed && processed.isAxiosError) {
+      processed = this.constructor.processAxiosError(processed);
+    }
+
+    return processed;
+  }
+
+  /**
    * Log Error Message
+   *
    * @param error object
    * @param message string
    */
   error(error, message = '') {
-    if (ravenIsAvailable && error instanceof Error) {
-      Raven.captureException(error);
+    if (sentryIsAvailable && error instanceof Error) {
+      Sentry.captureException(error);
     }
 
     if (
@@ -96,29 +178,53 @@ export default class LoggerService extends DependencyAwareClass {
       Epsagon.setError(error);
     }
 
-    logger.log('error', message, { error });
+    this.logger.log('error', message, { error: this.processMessage(error) });
     this.label('error', true);
     this.metric('error', 'error', true);
   }
 
   /**
-   * Get raven client
-   * @return {null|*}
+   * Get sentry client
+   *
+   * @returns {null|*}
    */
-  getRaven() {
-    return this.raven;
+  getSentry() {
+    return this.sentry;
   }
 
   /**
    * Log Information Message
+   *
    * @param message string
    */
   info(message) {
-    logger.log('info', message);
+    this.logger.log('info', this.processMessage(message));
+  }
+
+  /**
+   * Logs an error, using `LoggerService.error`
+   * or `LoggerService.info` based on
+   * `process.env.LOGGER_SOFT_WARNING`.
+   *
+   * Please note that `LoggerService.error` and `LoggerService.info`
+   * have different signatures. The function uses the shared argument
+   * instead of introducing ambiguity.
+   *
+   * @param error
+   */
+  warning(error) {
+    const softWarningValues = ['true', '1'];
+
+    if (softWarningValues.includes(process.env.LOGGER_SOFT_WARNING)) {
+      return this.info(error);
+    }
+
+    return this.error(error);
   }
 
   /**
    * Add a label
+   *
    * @param descriptor string
    * @param silent     boolean
    */
@@ -133,12 +239,13 @@ export default class LoggerService extends DependencyAwareClass {
     }
 
     if (silent === false) {
-      logger.log('info', `label - ${descriptor}`);
+      this.logger.log('info', `label - ${descriptor}`);
     }
   }
 
   /**
    * Add a metric
+   *
    * @param descriptor string
    * @param stat       integer | string
    * @param silent     boolean
@@ -154,7 +261,24 @@ export default class LoggerService extends DependencyAwareClass {
     }
 
     if (silent === false) {
-      logger.log('info', `metric - ${descriptor} - ${stat}`);
+      this.logger.log('info', `metric - ${descriptor} - ${stat}`);
     }
+  }
+
+  /**
+   * Logs an object so that it can be inspected
+   *
+   * @param action - What are we doing with the object, i.e. 'Processing'
+   * @param object - The object to be stored in logs
+   * @param level - 'error', 'warning' or 'info'
+   */
+  object(action, object, level = 'info') {
+    if (!(['error', 'warning', 'info'].includes(level))) {
+      throw new Error('Unrecognised log level');
+    }
+
+    const payload = JSON.stringify(object, null, 4);
+
+    return this[level](`${action}: '${payload}'`);
   }
 }

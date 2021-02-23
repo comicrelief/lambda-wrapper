@@ -1,6 +1,6 @@
+import { DEFINITIONS } from '../Config/Dependencies';
 import DependencyAwareClass from '../DependencyInjection/DependencyAware.class';
 import DependencyInjection from '../DependencyInjection/DependencyInjection.class';
-import { DEFINITIONS } from '../Config/Dependencies';
 
 /**
  * TimerService class
@@ -8,6 +8,7 @@ import { DEFINITIONS } from '../Config/Dependencies';
 export default class TimerService extends DependencyAwareClass {
   /**
    * TimerService constructor
+   *
    * @param di
    */
   constructor(di: DependencyInjection) {
@@ -17,6 +18,7 @@ export default class TimerService extends DependencyAwareClass {
 
   /**
    * Start timer
+   *
    * @param identifier
    */
   start(identifier: string) {
@@ -25,6 +27,7 @@ export default class TimerService extends DependencyAwareClass {
 
   /**
    * Stop timer
+   *
    * @param identifier
    */
   stop(identifier: string) {

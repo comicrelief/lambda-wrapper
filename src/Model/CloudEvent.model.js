@@ -1,4 +1,5 @@
-import UUID from 'uuid/v4';
+import { v4 as UUID } from 'uuid';
+
 import Model from './Model.model';
 
 /**
@@ -16,7 +17,7 @@ export default class CloudEventModel extends Model {
     this.eventType = '';
     this.source = '';
     this.eventID = UUID();
-    this.eventTime = (new Date()).toISOString();
+    this.eventTime = new Date().toISOString();
     this.extensions = {};
     this.contentType = 'application/json';
     this.data = {};
@@ -24,7 +25,8 @@ export default class CloudEventModel extends Model {
 
   /**
    * Get Cloud Events Version
-   * @return {number}
+   *
+   * @returns {number}
    */
   getCloudEventsVersion(): string {
     return this.cloudEventsVersion;
@@ -32,7 +34,8 @@ export default class CloudEventModel extends Model {
 
   /**
    * Get event type
-   * @return {string|*}
+   *
+   * @returns {string|*}
    */
   getEventType() {
     return this.eventType;
@@ -40,6 +43,7 @@ export default class CloudEventModel extends Model {
 
   /**
    * Set event type
+   *
    * @param value string
    */
   setEventType(value: string) {
@@ -48,7 +52,8 @@ export default class CloudEventModel extends Model {
 
   /**
    * Get source
-   * @return {string|*}
+   *
+   * @returns {string|*}
    */
   getSource() {
     return this.source;
@@ -56,6 +61,7 @@ export default class CloudEventModel extends Model {
 
   /**
    * Set source
+   *
    * @param value string
    */
   setSource(value: string) {
@@ -64,7 +70,8 @@ export default class CloudEventModel extends Model {
 
   /**
    * Get event id
-   * @return {*|string}
+   *
+   * @returns {*|string}
    */
   getEventID() {
     return this.eventID;
@@ -72,7 +79,8 @@ export default class CloudEventModel extends Model {
 
   /**
    * Get event time
-   * @return {*|string}
+   *
+   * @returns {*|string}
    */
   getEventTime() {
     return this.eventTime;
@@ -80,7 +88,8 @@ export default class CloudEventModel extends Model {
 
   /**
    * Get extensions
-   * @return {{}|*}
+   *
+   * @returns {{}|*}
    */
   getExtensions() {
     return this.extensions;
@@ -88,6 +97,7 @@ export default class CloudEventModel extends Model {
 
   /**
    * Set extensions
+   *
    * @param value object
    */
   setExtensions(value: object) {
@@ -96,7 +106,8 @@ export default class CloudEventModel extends Model {
 
   /**
    * Get content type
-   * @return {string}
+   *
+   * @returns {string}
    */
   getContentType() {
     return this.contentType;
@@ -104,7 +115,8 @@ export default class CloudEventModel extends Model {
 
   /**
    * Get data
-   * @return {{}|*}
+   *
+   * @returns {{}|*}
    */
   getData() {
     return this.data;
@@ -112,6 +124,7 @@ export default class CloudEventModel extends Model {
 
   /**
    * Set data
+   *
    * @param value object
    */
   setData(value: object) {
