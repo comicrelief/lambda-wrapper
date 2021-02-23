@@ -41,7 +41,7 @@ export const handleSuccess = (di, outcome) => {
 export const handleError = (di, error, throwError = false) => {
   const logger = di.get(DEFINITIONS.LOGGER);
 
-  logger.metric('lambda.returnCode', error.code || 500);
+  logger.metric('lambda.statusCode', error.code || 500);
 
   if (error.raiseOnEpsagon || !error.code || error.code >= 500) {
     logger.error(error);
