@@ -232,7 +232,10 @@ describe('Wrapper/LambdaWrapper', () => {
           const lambda = LambdaWrapper(configuration, handlers.SYNC_THROWING, true);
           const outcome = lambda(getEvent, getContext);
           expect(outcome).toMatchSnapshot();
+
+          // Be absolutely sure we got an Error object or the lambda will not count as failed
           expect(outcome instanceof LambdaTermination).toEqual(true);
+          expect(outcome instanceof Error).toEqual(true);
         });
       });
 
@@ -244,6 +247,8 @@ describe('Wrapper/LambdaWrapper', () => {
 
         it('rejects the promise with throwError === true', async () => {
           const lambda = LambdaWrapper(configuration, handlers.ASYNC_THROWING, true);
+
+          // Be absolutely sure we got a rejection or the lambda will not count as failed
           await expect(lambda(getEvent, getContext)).rejects.toThrowErrorMatchingSnapshot();
         });
       });

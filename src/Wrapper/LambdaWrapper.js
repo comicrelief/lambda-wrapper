@@ -54,6 +54,10 @@ export const handleError = (di, error, throwError = false) => {
       return error;
     }
 
+    // We want to be absolutely sure
+    // that we are returning an error
+    // as Lambda sync handlers will only fail
+    // if the object is instanceof Error
     return new Error(error);
   }
 
