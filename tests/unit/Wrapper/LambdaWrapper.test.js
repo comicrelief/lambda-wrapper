@@ -141,7 +141,7 @@ describe('Wrapper/LambdaWrapper', () => {
 
         expect(infoStub).not.toHaveBeenCalled();
         expect(errorStub).toHaveBeenCalled();
-        expect(metricStub).nthCalledWith(1, 'lambda.returnCode', 500);
+        expect(metricStub).nthCalledWith(1, 'lambda.statusCode', 500);
       });
 
       [400, 401, 403, 404, 409, 419, 421, 423, 499].forEach((errorCode) => {
@@ -164,7 +164,7 @@ describe('Wrapper/LambdaWrapper', () => {
 
           expect(infoStub).toHaveBeenCalled();
           expect(errorStub).not.toHaveBeenCalled();
-          expect(metricStub).nthCalledWith(1, 'lambda.returnCode', errorCode);
+          expect(metricStub).nthCalledWith(1, 'lambda.statusCode', errorCode);
         });
       });
 
@@ -188,7 +188,7 @@ describe('Wrapper/LambdaWrapper', () => {
 
           expect(infoStub).not.toHaveBeenCalled();
           expect(errorStub).toHaveBeenCalled();
-          expect(metricStub).nthCalledWith(1, 'lambda.returnCode', errorCode);
+          expect(metricStub).nthCalledWith(1, 'lambda.statusCode', errorCode);
         });
       });
 
