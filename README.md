@@ -44,6 +44,7 @@ Serverless Offline only emulates API Gateway & Lambda, so publishing an SQS mess
 
 In order to emulate SQS, `SQSService.prototype.publish` will look for `DependencyInjection.prototype.isOffline`. In that case, a lambda client will be created and the message will be delivered to the serverless offline endpoint, effectively running the triggered lambda _immediately_ as part of the original lambda invokation. This works very well in the offline environment because invoking a lambda will trigger its whole (local) execution tree.
 
+### How to use it?
 To take advantage of SQS Emulation, you will need to define the following in the implementing service:
 
 **QUEUE_CONSUMERS**
@@ -61,6 +62,12 @@ You can check the port in the output of Serverless Offline startup, in particula
 ```
 offline: Offline [http for lambda] listening on http://localhost:3002
 ```
+
+### Caveats
+
+1. You will be running the SQS triggered lambdas in the same serverless offline context you are running your triggering lambda. Expect logs of the triggered lambda in the serverless offline output.
+2. If you await `sqs.publish` you will effectively await until all SQS triggered lambdas (and possibly their own SQS triggered lambdas) have all completed. This is necessary to avoid any pending execution (i.e. the lambda terminating before its async processes are completed).
+3. If the triggered lambda incurs in an exception, this will be propagated upstream effectively killing the execution of the calling lambda.
 
 # Semantic release
 Release management is automated using [semantic-release](https://www.npmjs.com/package/semantic-release).
