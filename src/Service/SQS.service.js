@@ -283,9 +283,6 @@ export default class SQSService extends DependencyAwareClass {
 
     const parameters = { FunctionName, InvocationType, Payload };
 
-    // Don't await the promise, otherwise
-    // we will have all Lambdas hang until
-    // all queued invocations are completed
     await this.lambda.invoke(parameters).promise();
   }
 
