@@ -25,7 +25,7 @@ yarn add @comicrelief/lambda-wrapper
 
 You can then wrap your lambdas as follows.
 
-```yaml
+```js
 import {
   LambdaWrapper,
   ResponseModel,
