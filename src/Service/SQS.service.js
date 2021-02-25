@@ -16,10 +16,6 @@ AWS.Config.httpOptions = {
   timeout: 25000,
 };
 
-const sqs = new AWS.SQS({
-  region: process.env.REGION,
-});
-
 /**
  * SQSService class
  */
@@ -37,11 +33,14 @@ export default class SQSService extends DependencyAwareClass {
 
     this.queues = {};
 
+    this.$lambda = null;
+    this.$sqs = null;
+
     // Add the queues from configuration
     if (queues !== null && Object.keys(queues).length > 0) {
       Object.keys(queues).forEach((queueDefinition) => {
         if (container.isOffline) {
-          const offlineHost = typeof process.env.LAMBDA_WRAPPER_OFFLINE_SQS_HOST !== 'undefined' ? process.env.LAMBDA_WRAPPER_OFFLINE_SQS_HOST : 'localhost';
+          const offlineHost = process.env.LAMBDA_WRAPPER_OFFLINE_SQS_HOST || 'localhost';
 
           this.queues[queueDefinition] = `http://${offlineHost}:4576/queue/${queues[queueDefinition]}`;
         } else {
@@ -49,6 +48,42 @@ export default class SQSService extends DependencyAwareClass {
         }
       });
     }
+  }
+
+  /**
+   * Returns an SQS client instance
+   */
+  // eslint-disable-next-line class-methods-use-this
+  get sqs() {
+    if (!this.$sqs) {
+      this.$sqs = new AWS.SQS({
+        region: process.env.REGION,
+      });
+    }
+
+    return this.$sqs;
+  }
+
+  /**
+   * Returns a Lambda client instance
+   */
+  // eslint-disable-next-line class-methods-use-this
+  get lambda() {
+    if (!this.$lambda) {
+      const endpoint = process.env.SERVICE_LAMBDA_URL;
+
+      if (!endpoint) {
+        throw new Error('process.env.SERVICE_LAMBDA_URL must be defined.');
+      }
+
+      // move to subprocess
+      this.$lambda = new AWS.Lambda({
+        region: process.env.AWS_REGION,
+        endpoint,
+      });
+    }
+
+    return this.$lambda;
   }
 
   /**
@@ -87,7 +122,7 @@ export default class SQSService extends DependencyAwareClass {
             resolve();
           }
 
-          sqs.deleteMessageBatch(
+          this.sqs.deleteMessageBatch(
             {
               Entries: messagesForDeletion,
               QueueUrl: queueUrl,
@@ -121,7 +156,7 @@ export default class SQSService extends DependencyAwareClass {
     return new Promise((resolve) => {
       Timer.start(timerId);
 
-      sqs.listQueues({}, (error, data) => {
+      this.sqs.listQueues({}, (error, data) => {
         Timer.stop(timerId);
 
         const statusModel = new StatusModel('SQS', STATUS_TYPES.OK);
@@ -156,7 +191,7 @@ export default class SQSService extends DependencyAwareClass {
     return new Promise((resolve) => {
       Timer.start(timerId);
 
-      sqs.getQueueAttributes(
+      this.sqs.getQueueAttributes(
         {
           AttributeNames: ['ApproximateNumberOfMessages'],
           QueueUrl: queueUrl,
@@ -183,38 +218,75 @@ export default class SQSService extends DependencyAwareClass {
    * @param messageGroupId string
    * @returns {Promise<any>}
    */
-  publish(queue: string, messageObject: object, messageGroupId = null) {
+  async publish(queue: string, messageObject: object, messageGroupId = null) {
     const container = this.getContainer();
     const queueUrl = this.queues[queue];
     const Logger = container.get(DEFINITIONS.LOGGER);
     const Timer = container.get(DEFINITIONS.TIMER);
     const timerId = `sqs-send-message-${UUID()} - Queue: '${queueUrl}'`;
 
-    return new Promise((resolve) => {
-      Timer.start(timerId);
+    Timer.start(timerId);
 
-      const messageParameters = {
-        MessageBody: JSON.stringify(messageObject),
-        QueueUrl: queueUrl,
-      };
+    const messageParameters = {
+      MessageBody: JSON.stringify(messageObject),
+      QueueUrl: queueUrl,
+    };
 
-      if (queueUrl.includes('.fifo') === true) {
-        messageParameters.MessageDeduplicationId = UUID();
-        messageParameters.MessageGroupId = messageGroupId !== null ? messageGroupId : UUID();
+    if (queueUrl.includes('.fifo')) {
+      messageParameters.MessageDeduplicationId = UUID();
+      messageParameters.MessageGroupId = messageGroupId !== null ? messageGroupId : UUID();
+    }
+
+    try {
+      if (container.isOffline) {
+        await this.publishOffline(queue, messageParameters);
+      } else {
+        await this.sqs.sendMessage(messageParameters).promise();
       }
+    } catch (error) {
+      Logger.error(error);
+    }
 
-      sqs.sendMessage(messageParameters, (error) => {
-        Timer.stop(timerId);
+    return queue;
+  }
 
-        if (error) {
-          Logger.error(error);
-        }
+  /**
+   * Publishes a message in to the queue
+   * via serverless offline
+   *
+   * @param queue
+   * @param messageParameters
+   */
+  async publishOffline(queue: string, messageParameters) {
+    const container = this.getContainer();
 
-        resolve({
-          queue,
-        });
-      });
+    if (!container.isOffline) {
+      throw new Error('Can only publishOffline while running serverless offline.');
+    }
+
+    const consumers = container.getConfiguration('QUEUE_CONSUMERS') || {};
+    const FunctionName = consumers[queue];
+
+    if (!FunctionName) {
+      throw new Error(`Queue consumer for queue ${queue} was not found. Please configure your application's QUEUE_CONSUMERS.`);
+    }
+
+    const InvocationType = 'RequestResponse';
+
+    const Payload = JSON.stringify({
+      Records: [
+        {
+          body: messageParameters.MessageBody,
+        },
+      ],
     });
+
+    const parameters = { FunctionName, InvocationType, Payload };
+
+    // Don't await the promise, otherwise
+    // we will have all Lambdas hang until
+    // all queued invocations are completed
+    await this.lambda.invoke(parameters).promise();
   }
 
   /**
@@ -234,7 +306,7 @@ export default class SQSService extends DependencyAwareClass {
     return new Promise((resolve, reject) => {
       Timer.start(timerId);
 
-      sqs.receiveMessage(
+      this.sqs.receiveMessage(
         {
           QueueUrl: queueUrl,
           VisibilityTimeout: timeout,
