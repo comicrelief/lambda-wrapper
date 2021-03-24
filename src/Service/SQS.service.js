@@ -10,12 +10,6 @@ import DependencyInjection from '../DependencyInjection/DependencyInjection.clas
 import SQSMessageModel from '../Model/SQS/Message.model';
 import StatusModel, { STATUS_TYPES } from '../Model/Status.model';
 
-// Set a timeout on S3 in case of outage
-AWS.Config.httpOptions = {
-  connectTimeout: 25000,
-  timeout: 25000,
-};
-
 /**
  * SQSService class
  */
@@ -58,6 +52,12 @@ export default class SQSService extends DependencyAwareClass {
     if (!this.$sqs) {
       this.$sqs = new AWS.SQS({
         region: process.env.REGION,
+        httpOptions: {
+          // longest publish on NOTV took 5 seconds
+          connectTimeout: 8 * 1000,
+          timeout: 8 * 1000,
+        },
+        maxRetries: 3, // default is 3, we can change that
       });
     }
 
