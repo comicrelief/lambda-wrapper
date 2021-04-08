@@ -3406,9 +3406,9 @@ env-paths@^2.2.0:
   integrity sha512-6u0VYSCo/OW6IoD5WCLLy9JUGARbamfSavcNXry/eu8aHVFei6CD3Sw+VGX5alea1i9pgPHW0mbu6Xj0uBh7gA==
 
 epsagon@^1.104.2:
-  version "1.106.0"
-  resolved "https://registry.yarnpkg.com/epsagon/-/epsagon-1.106.0.tgz#021c40ddf1bcf83467ddc70ac7561aee77e82fbd"
-  integrity sha512-1MQ8zDzIfR/l/OazKs4Cv7qa0tcJ24RHulfEBVdXQj/mUjOgs8Ci7H8Jh9mgmMeX8yJ1rvcurb4kdaYQHFdMFw==
+  version "1.107.1"
+  resolved "https://registry.yarnpkg.com/epsagon/-/epsagon-1.107.1.tgz#7cbf7c0dcd07e11d0f15dc4993a390eb18c4fe23"
+  integrity sha512-aOnJrmnU7N7oLFz7nvw480lsxRxu/zM9l7FphAYUz3UCeHo4zoJi5OaOCWmKUcDskZh34tkLWYStIllVVotGqg==
   dependencies:
     axios "^0.21.1"
     google-protobuf "^3.5.0"
