@@ -128,5 +128,15 @@ describe('Service/SQS', () => {
         expect(() => getService({}, true)).toThrow();
       });
     });
+
+    it('throws an error if publish fails', async () => {
+      const service = getService({
+        sendMessage: new Error('SQS is down!'),
+      }, false);
+
+      const promise = service.publish(TEST_QUEUE, { test: 1 });
+
+      await expect(promise).rejects.toThrowError('SQS is down!');
+    });
   });
 });
