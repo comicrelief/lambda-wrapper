@@ -3406,12 +3406,13 @@ env-paths@^2.2.0:
   integrity sha512-6u0VYSCo/OW6IoD5WCLLy9JUGARbamfSavcNXry/eu8aHVFei6CD3Sw+VGX5alea1i9pgPHW0mbu6Xj0uBh7gA==
 
 epsagon@^1.104.2:
-  version "1.106.0"
-  resolved "https://registry.yarnpkg.com/epsagon/-/epsagon-1.106.0.tgz#021c40ddf1bcf83467ddc70ac7561aee77e82fbd"
-  integrity sha512-1MQ8zDzIfR/l/OazKs4Cv7qa0tcJ24RHulfEBVdXQj/mUjOgs8Ci7H8Jh9mgmMeX8yJ1rvcurb4kdaYQHFdMFw==
+  version "1.108.0"
+  resolved "https://registry.yarnpkg.com/epsagon/-/epsagon-1.108.0.tgz#047ad25794f9e7d75e91eae459d2d352f1638d65"
+  integrity sha512-H4FGUPfv81VDHFcpD2oEiNAk/4S5p/xkJyBJgLfYFm79nTnW+Ew6PvVajUx+zTT5Z+KDseDp37JLRj8zucMMNA==
   dependencies:
     axios "^0.21.1"
     google-protobuf "^3.5.0"
+    json-stringify-safe "^5.0.1"
     json.sortify "^2.2.2"
     md5 "^2.2.1"
     require-in-the-middle "^5.0.3"
