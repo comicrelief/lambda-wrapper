@@ -1,0 +1,298 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Service/HTTPService request DELETE Request: config 1`] = `
+Array [
+  Array [
+    Object {
+      "headers": Object {},
+      "method": "DELETE",
+      "timeout": 10000,
+      "url": "/",
+    },
+  ],
+]
+`;
+
+exports[`Service/HTTPService request GET Request: config 1`] = `
+Array [
+  Array [
+    Object {
+      "headers": Object {},
+      "method": "GET",
+      "timeout": 10000,
+      "url": "/",
+    },
+  ],
+]
+`;
+
+exports[`Service/HTTPService request HEAD Request: config 1`] = `
+Array [
+  Array [
+    Object {
+      "headers": Object {},
+      "method": "HEAD",
+      "timeout": 10000,
+      "url": "/",
+    },
+  ],
+]
+`;
+
+exports[`Service/HTTPService request PATCH Request: config 1`] = `
+Array [
+  Array [
+    Object {
+      "headers": Object {},
+      "method": "PATCH",
+      "timeout": 10000,
+      "url": "/",
+    },
+  ],
+]
+`;
+
+exports[`Service/HTTPService request POST Request: config 1`] = `
+Array [
+  Array [
+    Object {
+      "headers": Object {},
+      "method": "POST",
+      "timeout": 10000,
+      "url": "/",
+    },
+  ],
+]
+`;
+
+exports[`Service/HTTPService request PUT Request: config 1`] = `
+Array [
+  Array [
+    Object {
+      "headers": Object {},
+      "method": "PUT",
+      "timeout": 10000,
+      "url": "/",
+    },
+  ],
+]
+`;
+
+exports[`Service/HTTPService request adds the test header, DELETE Request: config 1`] = `
+Array [
+  Array [
+    Object {
+      "headers": Object {
+        "x-comicrelief-test-metadata": "{\\"user\\":\\"Dante Alighieri\\"}",
+      },
+      "method": "DELETE",
+      "timeout": 10000,
+      "url": "/",
+    },
+  ],
+]
+`;
+
+exports[`Service/HTTPService request adds the test header, GET Request: config 1`] = `
+Array [
+  Array [
+    Object {
+      "headers": Object {
+        "x-comicrelief-test-metadata": "{\\"user\\":\\"Dante Alighieri\\"}",
+      },
+      "method": "GET",
+      "timeout": 10000,
+      "url": "/",
+    },
+  ],
+]
+`;
+
+exports[`Service/HTTPService request adds the test header, HEAD Request: config 1`] = `
+Array [
+  Array [
+    Object {
+      "headers": Object {
+        "x-comicrelief-test-metadata": "{\\"user\\":\\"Dante Alighieri\\"}",
+      },
+      "method": "HEAD",
+      "timeout": 10000,
+      "url": "/",
+    },
+  ],
+]
+`;
+
+exports[`Service/HTTPService request adds the test header, PATCH Request: config 1`] = `
+Array [
+  Array [
+    Object {
+      "headers": Object {
+        "x-comicrelief-test-metadata": "{\\"user\\":\\"Dante Alighieri\\"}",
+      },
+      "method": "PATCH",
+      "timeout": 10000,
+      "url": "/",
+    },
+  ],
+]
+`;
+
+exports[`Service/HTTPService request adds the test header, POST Request: config 1`] = `
+Array [
+  Array [
+    Object {
+      "headers": Object {
+        "x-comicrelief-test-metadata": "{\\"user\\":\\"Dante Alighieri\\"}",
+      },
+      "method": "POST",
+      "timeout": 10000,
+      "url": "/",
+    },
+  ],
+]
+`;
+
+exports[`Service/HTTPService request adds the test header, PUT Request: config 1`] = `
+Array [
+  Array [
+    Object {
+      "headers": Object {
+        "x-comicrelief-test-metadata": "{\\"user\\":\\"Dante Alighieri\\"}",
+      },
+      "method": "PUT",
+      "timeout": 10000,
+      "url": "/",
+    },
+  ],
+]
+`;
+
+exports[`Service/HTTPService request adds the test header, overriding timeout: config 1`] = `
+Array [
+  Array [
+    Object {
+      "headers": Object {
+        "x-comicrelief-test-metadata": "{\\"user\\":\\"Dante Alighieri\\"}",
+      },
+      "timeout": 99,
+    },
+  ],
+]
+`;
+
+exports[`Service/HTTPService request adds the test header, with URL: config 1`] = `
+Array [
+  Array [
+    Object {
+      "headers": Object {
+        "x-comicrelief-test-metadata": "{\\"user\\":\\"Dante Alighieri\\"}",
+      },
+      "timeout": 10000,
+      "url": "/some/nested/path",
+    },
+  ],
+]
+`;
+
+exports[`Service/HTTPService request adds the test header, with baseURL: config 1`] = `
+Array [
+  Array [
+    Object {
+      "baseUrl": "https://comicrelief.com/test",
+      "headers": Object {
+        "x-comicrelief-test-metadata": "{\\"user\\":\\"Dante Alighieri\\"}",
+      },
+      "timeout": 10000,
+      "url": "/additional/url",
+    },
+  ],
+]
+`;
+
+exports[`Service/HTTPService request adds the test header, with headers: config 1`] = `
+Array [
+  Array [
+    Object {
+      "headers": Object {
+        "Authorization": "Bearer test",
+        "x-comicrelief-test-metadata": "{\\"user\\":\\"Dante Alighieri\\"}",
+      },
+      "timeout": 10000,
+    },
+  ],
+]
+`;
+
+exports[`Service/HTTPService request adds the test header, with undefined headers: config 1`] = `
+Array [
+  Array [
+    Object {
+      "headers": Object {
+        "x-comicrelief-test-metadata": "{\\"user\\":\\"Dante Alighieri\\"}",
+      },
+      "timeout": 10000,
+    },
+  ],
+]
+`;
+
+exports[`Service/HTTPService request overriding timeout: config 1`] = `
+Array [
+  Array [
+    Object {
+      "headers": Object {},
+      "timeout": 99,
+    },
+  ],
+]
+`;
+
+exports[`Service/HTTPService request with URL: config 1`] = `
+Array [
+  Array [
+    Object {
+      "headers": Object {},
+      "timeout": 10000,
+      "url": "/some/nested/path",
+    },
+  ],
+]
+`;
+
+exports[`Service/HTTPService request with baseURL: config 1`] = `
+Array [
+  Array [
+    Object {
+      "baseUrl": "https://comicrelief.com/test",
+      "headers": Object {},
+      "timeout": 10000,
+      "url": "/additional/url",
+    },
+  ],
+]
+`;
+
+exports[`Service/HTTPService request with headers: config 1`] = `
+Array [
+  Array [
+    Object {
+      "headers": Object {
+        "Authorization": "Bearer test",
+      },
+      "timeout": 10000,
+    },
+  ],
+]
+`;
+
+exports[`Service/HTTPService request with undefined headers: config 1`] = `
+Array [
+  Array [
+    Object {
+      "headers": undefined,
+      "timeout": 10000,
+    },
+  ],
+]
+`;
