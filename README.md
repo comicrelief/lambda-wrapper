@@ -1,5 +1,4 @@
-Lambda Wrapper
---------------
+# Lambda Wrapper
 
 [![CircleCI](https://circleci.com/gh/comicrelief/lambda-wrapper.svg?style=svg&circle-token=7db6e0ff0526bd635424f303fd4ffffc7ea05aed)](https://circleci.com/gh/comicrelief/lambda-wrapper)
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
@@ -7,7 +6,7 @@ Lambda Wrapper
 
 When writing Serverless endpoints, we have found ourselves replicating a lot of boiler plate code to do basic actions, such as reading request variables or writing to SQS. The aim of this package is to provide a wrapper for our Lambda functions, to provide some level of dependency and configuration injection and to reduce time spent on project setup.
 
-# Installation & usage
+## Installation & usage
 
 Install via npm:
 
@@ -88,6 +87,6 @@ By default, messages will be sent to a SQS service running on `localhost:4576`. 
 
 Use this mode by setting `LAMBDA_WRAPPER_OFFLINE_SQS_MODE=none`. Messages will be sent to the real queue in AWS. This is useful for running end-to-end tests where a message is sent to a queue and eventually appears in an external data store.
 
-# Semantic release
+## Semantic release
 
 Release management is automated using [semantic-release](https://www.npmjs.com/package/semantic-release).
