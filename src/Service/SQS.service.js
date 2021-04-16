@@ -11,6 +11,28 @@ import SQSMessageModel from '../Model/SQS/Message.model';
 import StatusModel, { STATUS_TYPES } from '../Model/Status.model';
 
 /**
+ * Allowed values for `process.env.LAMBDA_WRAPPER_OFFLINE_SQS_MODE`.
+ */
+const OFFLINE_MODES = {
+  /**
+   * When running offline, send messages to an offline Lambda endpoint defined
+   * by `process.env.SERVICE_LAMBDA_URL`. This is the default.
+   */
+  LAMBDA: 'lambda',
+
+  /**
+   * When running offline, send messages to an offline SQS service defined by
+   * `process.env.LAMBDA_WRAPPER_OFFLINE_SQS_HOST`.
+   */
+  SQS: 'sqs',
+
+  /**
+   * When running offline, send messages to AWS as normal.
+   */
+  NONE: 'none',
+};
+
+/**
  * SQSService class
  */
 export default class SQSService extends DependencyAwareClass {
@@ -30,15 +52,26 @@ export default class SQSService extends DependencyAwareClass {
     this.$lambda = null;
     this.$sqs = null;
 
+    const {
+      LAMBDA_WRAPPER_OFFLINE_SQS_HOST: offlineHost = 'localhost',
+      LAMBDA_WRAPPER_OFFLINE_SQS_MODE: offlineMode = OFFLINE_MODES.LAMBDA,
+      REGION,
+    } = process.env;
+
+    if (container.isOffline && !Object.values(OFFLINE_MODES).includes(offlineMode)) {
+      throw new Error(`Invalid LAMBDA_WRAPPER_OFFLINE_SQS_MODE: ${offlineMode}\n`
+        + `Please use one of: ${Object.values(OFFLINE_MODES).join(', ')}`);
+    }
+
     // Add the queues from configuration
     if (queues !== null && Object.keys(queues).length > 0) {
       Object.keys(queues).forEach((queueDefinition) => {
-        if (container.isOffline) {
-          const offlineHost = process.env.LAMBDA_WRAPPER_OFFLINE_SQS_HOST || 'localhost';
-
+        if (container.isOffline && offlineMode === OFFLINE_MODES.SQS) {
+          // custom URL when using an offline SQS service such as Localstack
           this.queues[queueDefinition] = `http://${offlineHost}:4576/queue/${queues[queueDefinition]}`;
         } else {
-          this.queues[queueDefinition] = `https://sqs.${process.env.REGION}.amazonaws.com/${Alai.parse(context)}/${queues[queueDefinition]}`;
+          // default AWS queue URL
+          this.queues[queueDefinition] = `https://sqs.${REGION}.amazonaws.com/${Alai.parse(context)}/${queues[queueDefinition]}`;
         }
       });
     }
@@ -47,7 +80,6 @@ export default class SQSService extends DependencyAwareClass {
   /**
    * Returns an SQS client instance
    */
-  // eslint-disable-next-line class-methods-use-this
   get sqs() {
     if (!this.$sqs) {
       this.$sqs = new AWS.SQS({
@@ -67,7 +99,6 @@ export default class SQSService extends DependencyAwareClass {
   /**
    * Returns a Lambda client instance
    */
-  // eslint-disable-next-line class-methods-use-this
   get lambda() {
     if (!this.$lambda) {
       const endpoint = process.env.SERVICE_LAMBDA_URL;
@@ -84,6 +115,16 @@ export default class SQSService extends DependencyAwareClass {
     }
 
     return this.$lambda;
+  }
+
+  /**
+   * Returns the mode to use for offline SQS.
+   *
+   * This is configured by `process.env.LAMBDA_WRAPPER_OFFLINE_SQS_MODE`. The
+   * default is `OFFLINE_MODES.LAMBDA`.
+   */
+  static get offlineMode() {
+    return process.env.LAMBDA_WRAPPER_OFFLINE_SQS_MODE || OFFLINE_MODES.LAMBDA;
   }
 
   /**
@@ -213,6 +254,10 @@ export default class SQSService extends DependencyAwareClass {
   /**
    * Publish to message queue
    *
+   * When running within serverless-offline, messages can be published to a
+   * local Lambda or SQS service instead of to AWS, depending on the offline
+   * mode specified by `process.env.LAMBDA_WRAPPER_OFFLINE_SQS_MODE`.
+   *
    * @param queue          string
    * @param messageObject  object
    * @param messageGroupId string
@@ -238,7 +283,7 @@ export default class SQSService extends DependencyAwareClass {
     }
 
     try {
-      if (container.isOffline) {
+      if (container.isOffline && this.constructor.offlineMode === OFFLINE_MODES.LAMBDA) {
         await this.publishOffline(queue, messageParameters);
       } else {
         await this.sqs.sendMessage(messageParameters).promise();
@@ -251,8 +296,11 @@ export default class SQSService extends DependencyAwareClass {
   }
 
   /**
-   * Publishes a message in to the queue
-   * via serverless offline
+   * Sends a message to a queue consumer running in serverless-offline.
+   *
+   * This method invokes the consumer function directly instead of sending the
+   * message to SQS, which requires a real or emulated SQS service not provided
+   * by serverless-offline. This works very well for local testing.
    *
    * @param queue
    * @param messageParameters
