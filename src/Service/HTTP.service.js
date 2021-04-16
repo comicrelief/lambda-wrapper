@@ -42,6 +42,7 @@ export default class HTTPService extends DependencyAwareClass {
     const testMetadata = event.getHeader(COMICRELIEF_TEST_METADATA_HEADER);
 
     if (testMetadata) {
+      mergedConfig.headers = mergedConfig.headers || {};
       mergedConfig.headers[COMICRELIEF_TEST_METADATA_HEADER] = testMetadata;
     }
 

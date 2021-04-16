@@ -25,6 +25,7 @@ describe('Service/HTTPService', () => {
       'with baseURL': { baseUrl: 'https://comicrelief.com/test', url: '/additional/url' },
       'overriding timeout': { timeout: 99 },
       'with headers': { headers: { Authorization: 'Bearer test' } },
+      'with undefined headers': { headers: undefined },
     };
 
     Object.entries(testCases).forEach(([description, config]) => {

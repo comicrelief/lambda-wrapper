@@ -224,6 +224,19 @@ Array [
 ]
 `;
 
+exports[`Service/HTTPService request adds the test header, with undefined headers: config 1`] = `
+Array [
+  Array [
+    Object {
+      "headers": Object {
+        "x-comicrelief-test-metadata": "{\\"user\\":\\"Dante Alighieri\\"}",
+      },
+      "timeout": 10000,
+    },
+  ],
+]
+`;
+
 exports[`Service/HTTPService request overriding timeout: config 1`] = `
 Array [
   Array [
@@ -267,6 +280,17 @@ Array [
       "headers": Object {
         "Authorization": "Bearer test",
       },
+      "timeout": 10000,
+    },
+  ],
+]
+`;
+
+exports[`Service/HTTPService request with undefined headers: config 1`] = `
+Array [
+  Array [
+    Object {
+      "headers": undefined,
       "timeout": 10000,
     },
   ],
