@@ -38,8 +38,8 @@ export default class HTTPService extends DependencyAwareClass {
       ...config,
     };
 
-    const event = this.getContainer().get(this.definitions.REQUEST);
-    const testMetadata = event.getHeader(COMICRELIEF_TEST_METADATA_HEADER);
+    const lambdaRequest = this.getContainer().get(this.definitions.REQUEST);
+    const testMetadata = lambdaRequest.getHeader(COMICRELIEF_TEST_METADATA_HEADER);
 
     if (testMetadata) {
       mergedConfig.headers = mergedConfig.headers || {};
