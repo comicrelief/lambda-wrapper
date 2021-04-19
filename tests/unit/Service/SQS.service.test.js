@@ -42,12 +42,14 @@ const getService = ({ sendMessage = null, invoke = null } = {}, isOffline = fals
 };
 
 describe('Service/SQS', () => {
+  let envOfflineSqsMode;
+
   beforeAll(() => {
-    process.env.LAMBDA_WRAPPER_OFFLINE_SQS_MODE = undefined;
+    envOfflineSqsMode = process.env.LAMBDA_WRAPPER_OFFLINE_SQS_MODE;
   });
 
   afterAll(() => {
-    delete process.env.LAMBDA_WRAPPER_OFFLINE_SQS_MODE;
+    process.env.LAMBDA_WRAPPER_OFFLINE_SQS_MODE = envOfflineSqsMode;
   });
 
   describe('publish', () => {
