@@ -41,15 +41,15 @@ Serverless Offline only emulates API Gateway and Lambda, so publishing an SQS me
 
 Offline SQS behaviour can be configured by setting the `LAMBDA_WRAPPER_OFFLINE_SQS_MODE` environment variable. Available modes are:
 
-- `lambda` (the default): send messages to an offline Lambda endpoint
-- `sqs`: send messages to an offline SQS service, such as Localstack
-- `none`: no special handling of SQS offline; messages will be sent to AWS
+- `direct` (the default): invokes the consumer function directly via an offline Lambda endpoint
+- `local`: send messages to an offline SQS endpoint, such as Localstack
+- `aws`: no special handling of SQS offline; messages will be sent to AWS
 
-When you send a message using `SQSService.prototype.publish`, it will check which mode to use and dispatch the message appropriately. These modes take effect only when running offline (as defined by `DependencyInjection.prototype.isOffline`). In a deployed environment, SQS messages will always be sent to AWS SQS.
+Details of each mode are documented in the sections below. When you send a message using `SQSService.prototype.publish`, it will check which mode to use and dispatch the message appropriately. These modes take effect only when running offline (as defined by `DependencyInjection.prototype.isOffline`). In a deployed environment, SQS messages will always be sent to AWS SQS.
 
-### Offline SQS using Lambda
+### Direct Lambda mode
 
-In this mode (which is the default if `LAMBDA_WRAPPER_OFFLINE_SQS_MODE` is not set), a Lambda client will be created and the message will be delivered to the offline Lambda endpoint, effectively running the consumer function _immediately_ as part of the original Lambda invocation. This works very well in the offline environment because invoking a Lambda function will trigger its whole (local) execution tree.
+This is the default mode if `LAMBDA_WRAPPER_OFFLINE_SQS_MODE` is not set. A Lambda client will be created and the message will be delivered to the offline Lambda endpoint, effectively running the consumer function _immediately_ as part of the original Lambda invocation. This works very well in the offline environment because invoking a Lambda function will trigger its whole (local) execution tree.
 
 To take advantage of SQS emulation, you will need to define the following in the implementing service:
 
@@ -77,15 +77,15 @@ The URL is likely to be your localhost URL and the next available port from the 
 
 3. If the triggered lambda incurs an exception, this will be propagated upstream, effectively killing the execution of the calling lambda.
 
-### Using an SQS service
+### Local SQS mode
 
-Use this mode by setting `LAMBDA_WRAPPER_OFFLINE_SQS_MODE=sqs`. Messages will still be sent to an SQS queue, but using a locally simulated version instead of AWS. This allows you to test your service using a tool like Localstack.
+Use this mode by setting `LAMBDA_WRAPPER_OFFLINE_SQS_MODE=local`. Messages will still be sent to an SQS queue, but using a locally simulated version instead of AWS. This allows you to test your service using a tool like Localstack.
 
 By default, messages will be sent to a SQS service running on `localhost:4576`. If you need to change the hostname, you can set `process.env.LAMBDA_WRAPPER_OFFLINE_SQS_HOST`.
 
-### No offline SQS
+### AWS SQS mode
 
-Use this mode by setting `LAMBDA_WRAPPER_OFFLINE_SQS_MODE=none`. Messages will be sent to the real queue in AWS. This is useful for running end-to-end tests where a message is sent to a queue and eventually appears in an external data store.
+Use this mode by setting `LAMBDA_WRAPPER_OFFLINE_SQS_MODE=aws`. Messages will be sent to the real queue in AWS. This is useful for running end-to-end tests where a message is sent to a queue and eventually appears in an external data store.
 
 ## Semantic release
 

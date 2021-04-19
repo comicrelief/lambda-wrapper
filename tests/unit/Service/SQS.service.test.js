@@ -54,13 +54,12 @@ describe('Service/SQS', () => {
     describe('when container.isOffline === false', () => {
       [
         ['sends to SQS', undefined],
-        ['sends to SQS, even in "lambda" offline mode', 'lambda'],
-        ['sends to SQS, even in "sqs" offline mode', 'sqs'],
-        ['sends to SQS, even in "none" offline mode', 'none'],
+        ['sends to SQS, even in "direct" offline mode', 'direct'],
+        ['sends to SQS, even in "local" offline mode', 'local'],
+        ['sends to SQS, even in "aws" offline mode', 'aws'],
         ['sends to SQS, even in "invalid" offline mode', 'invalid'],
       ].forEach(([description, offlineMode]) => {
         it(description, async () => {
-          process.env.CURRENT_TEST = `SQS/publish/ONLINE/${description}`;
           process.env.LAMBDA_WRAPPER_OFFLINE_SQS_MODE = offlineMode;
           const service = getService({}, false);
 
@@ -77,7 +76,6 @@ describe('Service/SQS', () => {
 
     describe('when container.isOffline === true', () => {
       it('sends a lambda request by default', async () => {
-        process.env.CURRENT_TEST = 'SQS/publish/offline/default';
         delete process.env.LAMBDA_WRAPPER_OFFLINE_SQS_MODE;
         const service = getService({}, true);
 
@@ -87,9 +85,8 @@ describe('Service/SQS', () => {
         expect(service.lambda.invoke).toHaveBeenCalledTimes(1);
       });
 
-      it('sends a lambda request in "lambda" mode', async () => {
-        process.env.CURRENT_TEST = 'SQS/publish/offline/lambda';
-        process.env.LAMBDA_WRAPPER_OFFLINE_SQS_MODE = 'lambda';
+      it('sends a lambda request in "direct" mode', async () => {
+        process.env.LAMBDA_WRAPPER_OFFLINE_SQS_MODE = 'direct';
         const service = getService({}, true);
 
         await service.publish(TEST_QUEUE, { test: 1 });
@@ -98,9 +95,8 @@ describe('Service/SQS', () => {
         expect(service.lambda.invoke).toHaveBeenCalledTimes(1);
       });
 
-      it('sends a local SQS request in "sqs" mode', async () => {
-        process.env.CURRENT_TEST = 'SQS/publish/offline/sqs';
-        process.env.LAMBDA_WRAPPER_OFFLINE_SQS_MODE = 'sqs';
+      it('sends a local SQS request in "local" mode', async () => {
+        process.env.LAMBDA_WRAPPER_OFFLINE_SQS_MODE = 'local';
         const service = getService({}, true);
 
         await service.publish(TEST_QUEUE, { test: 1 });
@@ -112,9 +108,8 @@ describe('Service/SQS', () => {
         expect(params.QueueUrl).toContain('localhost');
       });
 
-      it('sends a normal SQS request in "none" mode', async () => {
-        process.env.CURRENT_TEST = 'SQS/publish/offline/none';
-        process.env.LAMBDA_WRAPPER_OFFLINE_SQS_MODE = 'none';
+      it('sends a normal SQS request in "aws" mode', async () => {
+        process.env.LAMBDA_WRAPPER_OFFLINE_SQS_MODE = 'aws';
         const service = getService({}, true);
 
         await service.publish(TEST_QUEUE, { test: 1 });
@@ -127,7 +122,6 @@ describe('Service/SQS', () => {
       });
 
       it('throws an error for any other mode', async () => {
-        process.env.CURRENT_TEST = 'SQS/publish/offline/invalid';
         process.env.LAMBDA_WRAPPER_OFFLINE_SQS_MODE = 'invalid';
         expect(() => getService({}, true)).toThrow();
       });
