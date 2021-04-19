@@ -89,7 +89,7 @@ export default class DependencyInjection {
    * @returns {boolean}
    */
   get isOffline() {
-    const context = this.getContext();
+    const context = this.getContext() || {};
 
     if (!Object.prototype.hasOwnProperty.call(context, 'invokedFunctionArn')) {
       return true;
