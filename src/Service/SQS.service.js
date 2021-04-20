@@ -283,7 +283,9 @@ export default class SQSService extends DependencyAwareClass {
    * @param queue          string
    * @param messageObject  object
    * @param messageGroupId string
-   * @param failureMode
+   * @param {'catch' | 'throw'} failureMode Choose how failures are handled:
+   *   - `catch`: errors will be caught and logged. This is the default.
+   *   - `throw`: errors will be thrown, causing promise to reject.
    * @returns {Promise<any>}
    */
   async publish(queue: string, messageObject: object, messageGroupId = null, failureMode = SQS_PUBLISH_FAILURE_MODES.CATCH) {
@@ -312,15 +314,15 @@ export default class SQSService extends DependencyAwareClass {
       }
     } catch (error) {
       switch (failureMode) {
-      case SQS_PUBLISH_FAILURE_MODES.THROW:
-        throw error;
-
-      case '':
       case SQS_PUBLISH_FAILURE_MODES.CATCH:
-      default:
+      case '':
         container.get(DEFINITIONS.LOGGER).error(error);
 
         return null;
+
+      case SQS_PUBLISH_FAILURE_MODES.THROW:
+      default:
+        throw error;
       }
     }
 

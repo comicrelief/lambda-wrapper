@@ -142,7 +142,6 @@ describe('Service/SQS', () => {
       SQS_PUBLISH_FAILURE_MODES.CATCH,
       '',
       undefined,
-      'another-value',
     ].forEach((catchCase) => {
       it(`catches the error if publish fails with SQS_PUBLISH_FAILURE_MODES === ${catchCase}`, async () => {
         const service = getService({
@@ -157,6 +156,7 @@ describe('Service/SQS', () => {
 
     [
       SQS_PUBLISH_FAILURE_MODES.THROW,
+      'another-value',
     ].forEach((throwCase) => {
       it(`throws an error if publish fails with SQS_PUBLISH_FAILURE_MODES === ${throwCase}`, async () => {
         const service = getService({
