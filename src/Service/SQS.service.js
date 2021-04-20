@@ -45,13 +45,13 @@ export const SQS_PUBLISH_FAILURE_MODES = {
    * for LambdaWrapper 1.8.0 and below
    * and for LambdaWrapper 1.8.2 and above
    */
-  CATCH: 'CATCH',
+  CATCH: 'catch',
 
   /**
    * Throws the exception so that the caller
    * can handle it directly.
    */
-  THROW: 'THROW',
+  THROW: 'throw',
 };
 
 /**
@@ -313,9 +313,12 @@ export default class SQSService extends DependencyAwareClass {
         await this.sqs.sendMessage(messageParameters).promise();
       }
     } catch (error) {
+      if (!Object.values(SQS_PUBLISH_FAILURE_MODES).includes(failureMode)) {
+        throw new Error(`bad value for failureMode: ${failureMode}`);
+      }
+
       switch (failureMode) {
       case SQS_PUBLISH_FAILURE_MODES.CATCH:
-      case '':
         container.get(DEFINITIONS.LOGGER).error(error);
 
         return null;
