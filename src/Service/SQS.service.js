@@ -267,7 +267,6 @@ export default class SQSService extends DependencyAwareClass {
   async publish(queue: string, messageObject: object, messageGroupId = null) {
     const container = this.getContainer();
     const queueUrl = this.queues[queue];
-    const Logger = container.get(DEFINITIONS.LOGGER);
     const Timer = container.get(DEFINITIONS.TIMER);
     const timerId = `sqs-send-message-${UUID()} - Queue: '${queueUrl}'`;
 
@@ -283,14 +282,10 @@ export default class SQSService extends DependencyAwareClass {
       messageParameters.MessageGroupId = messageGroupId !== null ? messageGroupId : UUID();
     }
 
-    try {
-      if (container.isOffline && this.constructor.offlineMode === OFFLINE_MODES.DIRECT) {
-        await this.publishOffline(queue, messageParameters);
-      } else {
-        await this.sqs.sendMessage(messageParameters).promise();
-      }
-    } catch (error) {
-      Logger.error(error);
+    if (container.isOffline && this.constructor.offlineMode === OFFLINE_MODES.DIRECT) {
+      await this.publishOffline(queue, messageParameters);
+    } else {
+      await this.sqs.sendMessage(messageParameters).promise();
     }
 
     return queue;
