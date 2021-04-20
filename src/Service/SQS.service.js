@@ -13,7 +13,7 @@ import StatusModel, { STATUS_TYPES } from '../Model/Status.model';
 /**
  * Allowed values for `process.env.LAMBDA_WRAPPER_OFFLINE_SQS_MODE`.
  */
-const OFFLINE_MODES = {
+export const OFFLINE_MODES = {
   /**
    * When running offline, messages will trigger the consumer function directly
    * via a Lambda endpoint, set using `process.env.SERVICE_LAMBDA_URL`. This is
@@ -31,6 +31,27 @@ const OFFLINE_MODES = {
    * When running offline, send messages to AWS as normal.
    */
   AWS: 'aws',
+};
+
+/**
+ * Defines the preferred behaviour
+ * for SQSService.prototype.publish
+ * should AWS SQS fail.
+ */
+export const SQS_PUBLISH_FAILURE_MODES = {
+  /**
+   * Catches the exception and logs it.
+   * This is the default behaviour
+   * for LambdaWrapper 1.8.0 and below
+   * and for LambdaWrapper 1.8.2 and above
+   */
+  CATCH: 'CATCH',
+
+  /**
+   * Throws the exception so that the caller
+   * can handle it directly.
+   */
+  THROW: 'THROW',
 };
 
 /**
@@ -262,9 +283,10 @@ export default class SQSService extends DependencyAwareClass {
    * @param queue          string
    * @param messageObject  object
    * @param messageGroupId string
+   * @param failureMode
    * @returns {Promise<any>}
    */
-  async publish(queue: string, messageObject: object, messageGroupId = null) {
+  async publish(queue: string, messageObject: object, messageGroupId = null, failureMode = SQS_PUBLISH_FAILURE_MODES.CATCH) {
     const container = this.getContainer();
     const queueUrl = this.queues[queue];
     const Timer = container.get(DEFINITIONS.TIMER);
@@ -282,10 +304,24 @@ export default class SQSService extends DependencyAwareClass {
       messageParameters.MessageGroupId = messageGroupId !== null ? messageGroupId : UUID();
     }
 
-    if (container.isOffline && this.constructor.offlineMode === OFFLINE_MODES.DIRECT) {
-      await this.publishOffline(queue, messageParameters);
-    } else {
-      await this.sqs.sendMessage(messageParameters).promise();
+    try {
+      if (container.isOffline && this.constructor.offlineMode === OFFLINE_MODES.DIRECT) {
+        await this.publishOffline(queue, messageParameters);
+      } else {
+        await this.sqs.sendMessage(messageParameters).promise();
+      }
+    } catch (error) {
+      switch (failureMode) {
+      case SQS_PUBLISH_FAILURE_MODES.THROW:
+        throw error;
+
+      case '':
+      case SQS_PUBLISH_FAILURE_MODES.CATCH:
+      default:
+        container.get(DEFINITIONS.LOGGER).error(error);
+
+        return null;
+      }
     }
 
     return queue;

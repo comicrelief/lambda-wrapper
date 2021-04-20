@@ -1,5 +1,6 @@
 import { DEFINITIONS } from '../../../src/Config/Dependencies';
 import DependencyInjection from '../../../src/DependencyInjection/DependencyInjection.class';
+import { SQS_PUBLISH_FAILURE_MODES } from '../../../src/Service/SQS.service';
 
 const createAsyncMock = (returnValue) => {
   const mockedValue = returnValue instanceof Error
@@ -26,6 +27,10 @@ const getService = ({ sendMessage = null, invoke = null } = {}, isOffline = fals
     invokedFunctionArn: isOffline ? 'offline' : 'arn:aws:lambda:eu-west-1:0000:test',
   });
 
+  const logger = di.get(DEFINITIONS.LOGGER);
+
+  jest.spyOn(logger, 'error').mockImplementation();
+
   const service = di.get(DEFINITIONS.SQS);
   const sqs = {
     sendMessage: createAsyncMock(sendMessage),
@@ -50,6 +55,10 @@ describe('Service/SQS', () => {
 
   afterAll(() => {
     process.env.LAMBDA_WRAPPER_OFFLINE_SQS_MODE = envOfflineSqsMode;
+  });
+
+  afterEach(() => {
+    jest.resetAllMocks();
   });
 
   describe('publish', () => {
@@ -129,14 +138,35 @@ describe('Service/SQS', () => {
       });
     });
 
-    it('throws an error if publish fails', async () => {
-      const service = getService({
-        sendMessage: new Error('SQS is down!'),
-      }, false);
+    [
+      SQS_PUBLISH_FAILURE_MODES.CATCH,
+      '',
+      undefined,
+      'another-value',
+    ].forEach((catchCase) => {
+      it(`catches the error if publish fails with SQS_PUBLISH_FAILURE_MODES === ${catchCase}`, async () => {
+        const service = getService({
+          sendMessage: new Error('SQS is down!'),
+        }, false);
 
-      const promise = service.publish(TEST_QUEUE, { test: 1 });
+        const promise = service.publish(TEST_QUEUE, { test: 1 }, null, catchCase);
 
-      await expect(promise).rejects.toThrowError('SQS is down!');
+        await expect(promise).resolves.toEqual(null);
+      });
+    });
+
+    [
+      SQS_PUBLISH_FAILURE_MODES.THROW,
+    ].forEach((throwCase) => {
+      it(`throws an error if publish fails with SQS_PUBLISH_FAILURE_MODES === ${throwCase}`, async () => {
+        const service = getService({
+          sendMessage: new Error('SQS is down!'),
+        }, false);
+
+        const promise = service.publish(TEST_QUEUE, { test: 1 }, null, throwCase);
+
+        await expect(promise).rejects.toThrowError('SQS is down!');
+      });
     });
   });
 });
