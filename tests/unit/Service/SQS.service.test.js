@@ -1,4 +1,3 @@
-/* eslint-disable sonarjs/no-identical-functions */
 import { DEFINITIONS } from '../../../src/Config/Dependencies';
 import DependencyInjection from '../../../src/DependencyInjection/DependencyInjection.class';
 import { SQS_PUBLISH_FAILURE_MODES } from '../../../src/Service/SQS.service';
