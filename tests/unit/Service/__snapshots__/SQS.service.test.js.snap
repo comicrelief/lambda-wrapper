@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Service/SQS publish throws an error with the invalid value:  1`] = `[Error: bad value for failureMode: ]`;
+exports[`Service/SQS publish throws an error with the invalid value:  1`] = `"Invalid value for 'failureMode': "`;
 
-exports[`Service/SQS publish throws an error with the invalid value: another-value 1`] = `[Error: bad value for failureMode: another-value]`;
+exports[`Service/SQS publish throws an error with the invalid value: another-value 1`] = `"Invalid value for 'failureMode': another-value"`;
 
-exports[`Service/SQS publish throws an error with the invalid value: null 1`] = `[Error: bad value for failureMode: null]`;
+exports[`Service/SQS publish throws an error with the invalid value: null 1`] = `"Invalid value for 'failureMode': null"`;

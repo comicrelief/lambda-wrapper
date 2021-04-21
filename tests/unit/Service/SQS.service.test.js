@@ -175,13 +175,11 @@ describe('Service/SQS', () => {
       'another-value',
     ].forEach((invalidValue) => {
       it(`throws an error with the invalid value: ${invalidValue}`, async () => {
-        const service = getService({
-          sendMessage: new Error('SQS is down!'),
-        }, false);
+        const service = getService();
 
         const promise = service.publish(TEST_QUEUE, { test: 1 }, null, invalidValue);
 
-        await expect(promise).rejects.toMatchSnapshot();
+        await expect(promise).rejects.toThrowErrorMatchingSnapshot();
       });
     });
   });

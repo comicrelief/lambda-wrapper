@@ -289,6 +289,10 @@ export default class SQSService extends DependencyAwareClass {
    * @returns {Promise<any>}
    */
   async publish(queue: string, messageObject: object, messageGroupId = null, failureMode = SQS_PUBLISH_FAILURE_MODES.CATCH) {
+    if (!Object.values(SQS_PUBLISH_FAILURE_MODES).includes(failureMode)) {
+      throw new Error(`Invalid value for 'failureMode': ${failureMode}`);
+    }
+
     const container = this.getContainer();
     const queueUrl = this.queues[queue];
     const Timer = container.get(DEFINITIONS.TIMER);
@@ -313,10 +317,6 @@ export default class SQSService extends DependencyAwareClass {
         await this.sqs.sendMessage(messageParameters).promise();
       }
     } catch (error) {
-      if (!Object.values(SQS_PUBLISH_FAILURE_MODES).includes(failureMode)) {
-        throw new Error(`bad value for failureMode: ${failureMode}`);
-      }
-
       switch (failureMode) {
       case SQS_PUBLISH_FAILURE_MODES.CATCH:
         container.get(DEFINITIONS.LOGGER).error(error);
