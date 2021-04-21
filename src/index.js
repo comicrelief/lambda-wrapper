@@ -16,7 +16,7 @@ export { default as BaseConfigService } from './Service/BaseConfig.service';
 export { default as HTTPService, COMICRELIEF_TEST_METADATA_HEADER } from './Service/HTTP.service';
 export { default as LoggerService } from './Service/Logger.service';
 export { default as RequestService } from './Service/Request.service';
-export { default as SQSService } from './Service/SQS.service';
+export { default as SQSService, SQS_OFFLINE_MODES, SQS_PUBLISH_FAILURE_MODES } from './Service/SQS.service';
 
 // Wrapper
 export { default as LambdaTermination } from './Wrapper/LambdaTermination';

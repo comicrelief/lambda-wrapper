@@ -1,5 +1,6 @@
 import { DEFINITIONS } from '../../../src/Config/Dependencies';
 import DependencyInjection from '../../../src/DependencyInjection/DependencyInjection.class';
+import { SQS_PUBLISH_FAILURE_MODES } from '../../../src/Service/SQS.service';
 
 const createAsyncMock = (returnValue) => {
   const mockedValue = returnValue instanceof Error
@@ -26,6 +27,10 @@ const getService = ({ sendMessage = null, invoke = null } = {}, isOffline = fals
     invokedFunctionArn: isOffline ? 'offline' : 'arn:aws:lambda:eu-west-1:0000:test',
   });
 
+  const logger = di.get(DEFINITIONS.LOGGER);
+
+  jest.spyOn(logger, 'error').mockImplementation();
+
   const service = di.get(DEFINITIONS.SQS);
   const sqs = {
     sendMessage: createAsyncMock(sendMessage),
@@ -50,6 +55,10 @@ describe('Service/SQS', () => {
 
   afterAll(() => {
     process.env.LAMBDA_WRAPPER_OFFLINE_SQS_MODE = envOfflineSqsMode;
+  });
+
+  afterEach(() => {
+    jest.resetAllMocks();
   });
 
   describe('publish', () => {
@@ -129,14 +138,48 @@ describe('Service/SQS', () => {
       });
     });
 
-    it('throws an error if publish fails', async () => {
+    it(`catches the error if publish fails with failureMode === ${SQS_PUBLISH_FAILURE_MODES.CATCH}`, async () => {
       const service = getService({
         sendMessage: new Error('SQS is down!'),
       }, false);
 
-      const promise = service.publish(TEST_QUEUE, { test: 1 });
+      const promise = service.publish(TEST_QUEUE, { test: 1 }, null, SQS_PUBLISH_FAILURE_MODES.CATCH);
+
+      await expect(promise).resolves.toEqual(null);
+    });
+
+    it('catches the error if publish fails with failureMode === undefined', async () => {
+      const service = getService({
+        sendMessage: new Error('SQS is down!'),
+      }, false);
+
+      const promise = service.publish(TEST_QUEUE, { test: 1 }, null);
+
+      await expect(promise).resolves.toEqual(null);
+    });
+
+    it(`throws an error if publish fails with failureMode === ${SQS_PUBLISH_FAILURE_MODES.THROW}`, async () => {
+      const service = getService({
+        sendMessage: new Error('SQS is down!'),
+      }, false);
+
+      const promise = service.publish(TEST_QUEUE, { test: 1 }, null, SQS_PUBLISH_FAILURE_MODES.THROW);
 
       await expect(promise).rejects.toThrowError('SQS is down!');
+    });
+
+    [
+      '',
+      null,
+      'another-value',
+    ].forEach((invalidValue) => {
+      it(`throws an error with the invalid value: ${invalidValue}`, async () => {
+        const service = getService();
+
+        const promise = service.publish(TEST_QUEUE, { test: 1 }, null, invalidValue);
+
+        await expect(promise).rejects.toThrowErrorMatchingSnapshot();
+      });
     });
   });
 });
