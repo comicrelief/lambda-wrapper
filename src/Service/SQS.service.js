@@ -13,7 +13,7 @@ import StatusModel, { STATUS_TYPES } from '../Model/Status.model';
 /**
  * Allowed values for `process.env.LAMBDA_WRAPPER_OFFLINE_SQS_MODE`.
  */
-export const OFFLINE_MODES = {
+export const SQS_OFFLINE_MODES = {
   /**
    * When running offline, messages will trigger the consumer function directly
    * via a Lambda endpoint, set using `process.env.SERVICE_LAMBDA_URL`. This is
@@ -76,19 +76,19 @@ export default class SQSService extends DependencyAwareClass {
 
     const {
       LAMBDA_WRAPPER_OFFLINE_SQS_HOST: offlineHost = 'localhost',
-      LAMBDA_WRAPPER_OFFLINE_SQS_MODE: offlineMode = OFFLINE_MODES.DIRECT,
+      LAMBDA_WRAPPER_OFFLINE_SQS_MODE: offlineMode = SQS_OFFLINE_MODES.DIRECT,
       REGION,
     } = process.env;
 
-    if (container.isOffline && !Object.values(OFFLINE_MODES).includes(offlineMode)) {
+    if (container.isOffline && !Object.values(SQS_OFFLINE_MODES).includes(offlineMode)) {
       throw new Error(`Invalid LAMBDA_WRAPPER_OFFLINE_SQS_MODE: ${offlineMode}\n`
-        + `Please use one of: ${Object.values(OFFLINE_MODES).join(', ')}`);
+        + `Please use one of: ${Object.values(SQS_OFFLINE_MODES).join(', ')}`);
     }
 
     // Add the queues from configuration
     if (queues !== null && Object.keys(queues).length > 0) {
       Object.keys(queues).forEach((queueDefinition) => {
-        if (container.isOffline && offlineMode === OFFLINE_MODES.LOCAL) {
+        if (container.isOffline && offlineMode === SQS_OFFLINE_MODES.LOCAL) {
           // custom URL when using an offline SQS service such as Localstack
           this.queues[queueDefinition] = `http://${offlineHost}:4576/queue/${queues[queueDefinition]}`;
         } else {
@@ -143,10 +143,10 @@ export default class SQSService extends DependencyAwareClass {
    * Returns the mode to use for offline SQS.
    *
    * This is configured by `process.env.LAMBDA_WRAPPER_OFFLINE_SQS_MODE`. The
-   * default is `OFFLINE_MODES.LAMBDA`.
+   * default is `SQS_OFFLINE_MODES.LAMBDA`.
    */
   static get offlineMode() {
-    return process.env.LAMBDA_WRAPPER_OFFLINE_SQS_MODE || OFFLINE_MODES.DIRECT;
+    return process.env.LAMBDA_WRAPPER_OFFLINE_SQS_MODE || SQS_OFFLINE_MODES.DIRECT;
   }
 
   /**
@@ -311,7 +311,7 @@ export default class SQSService extends DependencyAwareClass {
     }
 
     try {
-      if (container.isOffline && this.constructor.offlineMode === OFFLINE_MODES.DIRECT) {
+      if (container.isOffline && this.constructor.offlineMode === SQS_OFFLINE_MODES.DIRECT) {
         await this.publishOffline(queue, messageParameters);
       } else {
         await this.sqs.sendMessage(messageParameters).promise();
