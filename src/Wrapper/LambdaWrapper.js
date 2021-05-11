@@ -14,7 +14,8 @@ import ResponseModel from '../Model/Response.model';
 export const handleSuccess = (di, outcome) => {
   const logger = di.get(DEFINITIONS.LOGGER);
 
-  logger.metric('lambda.statusCode', outcome.statusCode || 200);
+  // Outcome may be undefined as not all lambdas have a return value.
+  logger.metric('lambda.statusCode', (outcome && outcome.statusCode) || 200);
 
   return outcome;
 };
