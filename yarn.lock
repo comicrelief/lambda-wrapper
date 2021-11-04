@@ -2120,6 +2120,13 @@ axe-core@^4.0.2:
   resolved "https://registry.yarnpkg.com/axe-core/-/axe-core-4.1.1.tgz#70a7855888e287f7add66002211a423937063eaf"
   integrity sha512-5Kgy8Cz6LPC9DJcNb3yjAXTu3XihQgEdnIg50c//zOC/MyLP0Clg+Y8Sh9ZjjnvBrDZU4DgXS9C3T9r4/scGZQ==
 
+axios-minified@^1.0.7:
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/axios-minified/-/axios-minified-1.0.7.tgz#bccf7383c1bc8f0d0bbe2e93c60d11101d0c0e75"
+  integrity sha512-AOQFwQcyMgawzm1qHNLxD6z95cVRsLUZIydFfAp+fUs9MDhW3PkJgUtXPNQg2ncGBre3k4wNcH7QFf/PgTBoGw==
+  dependencies:
+    follow-redirects "^1.10.0"
+
 axios@^0.21.1:
   version "0.21.1"
   resolved "https://registry.yarnpkg.com/axios/-/axios-0.21.1.tgz#22563481962f4d6bde9a76d516ef0e5d3c09b2b8"
@@ -3406,12 +3413,13 @@ env-paths@^2.2.0:
   integrity sha512-6u0VYSCo/OW6IoD5WCLLy9JUGARbamfSavcNXry/eu8aHVFei6CD3Sw+VGX5alea1i9pgPHW0mbu6Xj0uBh7gA==
 
 epsagon@^1.104.2:
-  version "1.106.0"
-  resolved "https://registry.yarnpkg.com/epsagon/-/epsagon-1.106.0.tgz#021c40ddf1bcf83467ddc70ac7561aee77e82fbd"
-  integrity sha512-1MQ8zDzIfR/l/OazKs4Cv7qa0tcJ24RHulfEBVdXQj/mUjOgs8Ci7H8Jh9mgmMeX8yJ1rvcurb4kdaYQHFdMFw==
+  version "1.116.3"
+  resolved "https://registry.yarnpkg.com/epsagon/-/epsagon-1.116.3.tgz#97151be9128177213567a167d269dd7963b1d2c5"
+  integrity sha512-QyslaiZ/0sEEcxv5MeijixKfYUWQZqIvp1JlEjXtOJQLV/k9bKSftSuxvMHJwpVxv44yXMqSX1bZP8g2SgSYPg==
   dependencies:
-    axios "^0.21.1"
-    google-protobuf "^3.5.0"
+    axios-minified "^1.0.7"
+    google-protobuf-minified "^1.0.8"
+    json-stringify-safe "^5.0.1"
     json.sortify "^2.2.2"
     md5 "^2.2.1"
     require-in-the-middle "^5.0.3"
@@ -4411,10 +4419,10 @@ globby@^11.0.0, globby@^11.0.1:
     merge2 "^1.3.0"
     slash "^3.0.0"
 
-google-protobuf@^3.5.0:
-  version "3.12.4"
-  resolved "https://registry.yarnpkg.com/google-protobuf/-/google-protobuf-3.12.4.tgz#fd89b7e5052cdb35a80f9b455612851d542a5c9f"
-  integrity sha512-ItTn8YepDQMHEMHloUPH+FDaTPiHTnbsMvP50aXfbI65IK3AA5+wXlHSygJH8xz+h1g4gu7V+CK5X1/SaGITsA==
+google-protobuf-minified@^1.0.8:
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/google-protobuf-minified/-/google-protobuf-minified-1.0.8.tgz#c1bf97efddf4f0ba5a2ba74dc7b8576ea9cc3fa1"
+  integrity sha512-FejfI4d9HOtBijz7Ph0jtjNUIBMqMdLRyzzG7fgQgi0MnyuCmTcXEe2Fo30fgKv9d6kqZALoQgNYrHfREwLZvA==
 
 got@^6.7.1:
   version "6.7.1"
