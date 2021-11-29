@@ -1,6 +1,6 @@
 # Lambda Wrapper
 
-[![CircleCI](https://circleci.com/gh/comicrelief/lambda-wrapper.svg?style=svg&circle-token=7db6e0ff0526bd635424f303fd4ffffc7ea05aed)](https://circleci.com/gh/comicrelief/lambda-wrapper)
+![GitHub Actions](https://github.com/comicrelief/lambda-wrapper/actions/workflows/main.yml/badge.svg)
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
 [![semantic-release](https://badge.fury.io/js/%40comicrelief%2Flambda-wrapper.svg)](https://www.npmjs.com/package/@comicrelief/lambda-wrapper)
 
