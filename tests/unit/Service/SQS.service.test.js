@@ -21,10 +21,10 @@ const TEST_QUEUE = 'TEST_QUEUE';
  */
 const getService = ({ sendMessage = null, invoke = null } = {}, isOffline = false) => {
   const di = new DependencyInjection({
-    QUEUES: { TEST_QUEUE },
+    QUEUES: { [TEST_QUEUE]: 'QueueName' },
     QUEUE_CONSUMERS: { TEST_QUEUE },
   }, {}, {
-    invokedFunctionArn: isOffline ? 'offline' : 'arn:aws:lambda:eu-west-1:0000:test',
+    invokedFunctionArn: isOffline ? 'offline' : 'arn:aws:lambda:eu-west-1:0123456789:test',
   });
 
   const logger = di.get(DEFINITIONS.LOGGER);
@@ -47,14 +47,20 @@ const getService = ({ sendMessage = null, invoke = null } = {}, isOffline = fals
 };
 
 describe('Service/SQS', () => {
+  let envAccountId;
   let envOfflineSqsMode;
+  let envRegion;
 
   beforeAll(() => {
+    envAccountId = process.env.AWS_ACCOUNT_ID;
     envOfflineSqsMode = process.env.LAMBDA_WRAPPER_OFFLINE_SQS_MODE;
+    envRegion = process.env.REGION;
   });
 
   afterAll(() => {
+    process.env.AWS_ACCOUNT_ID = envAccountId;
     process.env.LAMBDA_WRAPPER_OFFLINE_SQS_MODE = envOfflineSqsMode;
+    process.env.REGION = envRegion;
   });
 
   afterEach(() => {
@@ -135,6 +141,46 @@ describe('Service/SQS', () => {
       it('throws an error for any other mode', async () => {
         process.env.LAMBDA_WRAPPER_OFFLINE_SQS_MODE = 'invalid';
         expect(() => getService({}, true)).toThrow();
+      });
+    });
+
+    describe('queue URLs', () => {
+      describe('when container.isOffline === false', () => {
+        it('should use a correctly formed AWS queue URL', async () => {
+          delete process.env.LAMBDA_WRAPPER_OFFLINE_SQS_MODE;
+          process.env.REGION = 'eu-west-1';
+          const service = getService({}, false);
+
+          await service.publish(TEST_QUEUE, { test: 1 });
+
+          const params = service.sqs.sendMessage.mock.calls[0][0];
+          expect(params.QueueUrl).toEqual('https://sqs.eu-west-1.amazonaws.com/0123456789/QueueName');
+        });
+      });
+
+      describe('when container.isOffline === true', () => {
+        it('should use a LocalStack URL in "local" mode', async () => {
+          process.env.LAMBDA_WRAPPER_OFFLINE_SQS_MODE = 'local';
+          const service = getService({}, true);
+
+          await service.publish(TEST_QUEUE, { test: 1 });
+
+          const params = service.sqs.sendMessage.mock.calls[0][0];
+          expect(params.QueueUrl).toEqual('http://localhost:4576/queue/QueueName');
+        });
+
+        it('should use a correctly formed AWS queue URL in "aws" mode', async () => {
+          // `AWS_ACCOUNT_ID` and `REGION` need to be set for this to work
+          process.env.LAMBDA_WRAPPER_OFFLINE_SQS_MODE = 'aws';
+          process.env.AWS_ACCOUNT_ID = '0123456789';
+          process.env.REGION = 'eu-west-1';
+          const service = getService({}, true);
+
+          await service.publish(TEST_QUEUE, { test: 1 });
+
+          const params = service.sqs.sendMessage.mock.calls[0][0];
+          expect(params.QueueUrl).toEqual('https://sqs.eu-west-1.amazonaws.com/0123456789/QueueName');
+        });
       });
     });
 
