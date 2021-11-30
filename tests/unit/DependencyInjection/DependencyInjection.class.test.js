@@ -71,7 +71,7 @@ describe('DependencyInjection/DependencyInjectionClass', () => {
         expect(di.isOffline).toEqual(true);
       });
 
-      it('When process.env.USES_SERVERLESS_OFFLINE is defined', () => {
+      it('When process.env.USE_SERVERLESS_OFFLINE is defined', () => {
         process.env.USE_SERVERLESS_OFFLINE = 'true';
         const di = new DependencyInjection({}, getEvent, { invokedFunctionArn: 'my-function' });
         expect(di.isOffline).toEqual(true);

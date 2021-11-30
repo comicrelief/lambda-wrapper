@@ -18,7 +18,7 @@ const createAsyncMock = (returnValue) => {
  * @returns {BaseConfigService}
  */
 const getService = ({ getObject = null, putObject = null, deleteObject = null } = {}) => {
-  const di = new DependencyInjection({});
+  const di = new DependencyInjection({}, {}, {});
   const service = new BaseConfigService(di);
   const client = {
     getObject: createAsyncMock(getObject),
@@ -261,7 +261,7 @@ describe('Service/BaseConfigService', () => {
     });
 
     it('Returns an s3 instance', () => {
-      const di = new DependencyInjection({});
+      const di = new DependencyInjection({}, {}, {});
       const service = new BaseConfigService(di);
 
       expect(service.client instanceof S3).toEqual(true);

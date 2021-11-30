@@ -76,7 +76,7 @@ export default class SQSService extends DependencyAwareClass {
     const container = this.getContainer();
     const context = container.getContext();
     const queues = container.getConfiguration('QUEUES');
-    const accountId = alai.parse(context) || AWS_ACCOUNT_ID;
+    const accountId = (context && context.invokedFunctionArn && alai.parse(context)) || AWS_ACCOUNT_ID;
 
     this.queues = {};
 
