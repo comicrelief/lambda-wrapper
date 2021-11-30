@@ -85,7 +85,12 @@ By default, messages will be sent to a SQS service running on `localhost:4576`. 
 
 ### AWS SQS mode
 
-Use this mode by setting `LAMBDA_WRAPPER_OFFLINE_SQS_MODE=aws`. Messages will be sent to the real queue in AWS. This is useful for running end-to-end tests where a message is sent to a queue and eventually appears in an external data store.
+Use this mode by setting `LAMBDA_WRAPPER_OFFLINE_SQS_MODE=aws`. Messages will be sent to the real queue in AWS. This mode is useful when a queue is consumed by an external service, rather than another function in the service under test.
+
+In order for queue URLs to be correctly constructed, you must either:
+
+- set `AWS_ACCOUNT_ID` to the account ID that hosts your queue; or
+- invoke offline functions via the Lambda API, passing a context that contains a realistic `invokedFunctionArn` including the account ID.
 
 ## Semantic release
 

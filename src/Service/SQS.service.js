@@ -77,8 +77,11 @@ export default class SQSService extends DependencyAwareClass {
     const {
       LAMBDA_WRAPPER_OFFLINE_SQS_HOST: offlineHost = 'localhost',
       LAMBDA_WRAPPER_OFFLINE_SQS_MODE: offlineMode = SQS_OFFLINE_MODES.DIRECT,
+      AWS_ACCOUNT_ID,
       REGION,
     } = process.env;
+
+    const accountId = Alai.parse(context) || AWS_ACCOUNT_ID;
 
     if (container.isOffline && !Object.values(SQS_OFFLINE_MODES).includes(offlineMode)) {
       throw new Error(`Invalid LAMBDA_WRAPPER_OFFLINE_SQS_MODE: ${offlineMode}\n`
@@ -93,7 +96,7 @@ export default class SQSService extends DependencyAwareClass {
           this.queues[queueDefinition] = `http://${offlineHost}:4576/queue/${queues[queueDefinition]}`;
         } else {
           // default AWS queue URL
-          this.queues[queueDefinition] = `https://sqs.${REGION}.amazonaws.com/${Alai.parse(context)}/${queues[queueDefinition]}`;
+          this.queues[queueDefinition] = `https://sqs.${REGION}.amazonaws.com/${accountId}/${queues[queueDefinition]}`;
         }
       });
     }
