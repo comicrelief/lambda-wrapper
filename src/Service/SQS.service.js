@@ -1,5 +1,5 @@
 /* @flow */
-import Alai from 'alai';
+import alai from 'alai';
 import each from 'async/each';
 import AWS from 'aws-sdk';
 import { v4 as UUID } from 'uuid';
@@ -65,20 +65,23 @@ export default class SQSService extends DependencyAwareClass {
    */
   constructor(di: DependencyInjection) {
     super(di);
+
+    const {
+      LAMBDA_WRAPPER_OFFLINE_SQS_HOST: offlineHost = 'localhost',
+      LAMBDA_WRAPPER_OFFLINE_SQS_MODE: offlineMode = SQS_OFFLINE_MODES.DIRECT,
+      AWS_ACCOUNT_ID,
+      REGION,
+    } = process.env;
+
     const container = this.getContainer();
     const context = container.getContext();
     const queues = container.getConfiguration('QUEUES');
+    const accountId = (context && context.invokedFunctionArn && alai.parse(context)) || AWS_ACCOUNT_ID;
 
     this.queues = {};
 
     this.$lambda = null;
     this.$sqs = null;
-
-    const {
-      LAMBDA_WRAPPER_OFFLINE_SQS_HOST: offlineHost = 'localhost',
-      LAMBDA_WRAPPER_OFFLINE_SQS_MODE: offlineMode = SQS_OFFLINE_MODES.DIRECT,
-      REGION,
-    } = process.env;
 
     if (container.isOffline && !Object.values(SQS_OFFLINE_MODES).includes(offlineMode)) {
       throw new Error(`Invalid LAMBDA_WRAPPER_OFFLINE_SQS_MODE: ${offlineMode}\n`
@@ -93,7 +96,7 @@ export default class SQSService extends DependencyAwareClass {
           this.queues[queueDefinition] = `http://${offlineHost}:4576/queue/${queues[queueDefinition]}`;
         } else {
           // default AWS queue URL
-          this.queues[queueDefinition] = `https://sqs.${REGION}.amazonaws.com/${Alai.parse(context)}/${queues[queueDefinition]}`;
+          this.queues[queueDefinition] = `https://sqs.${REGION}.amazonaws.com/${accountId}/${queues[queueDefinition]}`;
         }
       });
     }
