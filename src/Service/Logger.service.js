@@ -235,7 +235,7 @@ export default class LoggerService extends DependencyAwareClass {
       && typeof process.env.EPSAGON_SERVICE_NAME === 'string'
       && process.env.EPSAGON_SERVICE_NAME !== 'undefined'
     ) {
-      Epsagon.label(descriptor);
+      Epsagon.label(descriptor, true);
     }
 
     if (silent === false) {
