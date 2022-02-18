@@ -49,17 +49,23 @@ const getService = ({ sendMessage = null, invoke = null } = {}, isOffline = fals
 describe('Service/SQS', () => {
   let envAccountId;
   let envOfflineSqsMode;
+  let envOfflineSqsHost;
+  let envOfflineSqsPort;
   let envRegion;
 
   beforeAll(() => {
     envAccountId = process.env.AWS_ACCOUNT_ID;
     envOfflineSqsMode = process.env.LAMBDA_WRAPPER_OFFLINE_SQS_MODE;
+    envOfflineSqsHost = process.env.LAMBDA_WRAPPER_OFFLINE_SQS_HOST;
+    envOfflineSqsPort = process.env.LAMBDA_WRAPPER_OFFLINE_SQS_PORT;
     envRegion = process.env.REGION;
   });
 
   afterAll(() => {
     process.env.AWS_ACCOUNT_ID = envAccountId;
     process.env.LAMBDA_WRAPPER_OFFLINE_SQS_MODE = envOfflineSqsMode;
+    process.env.LAMBDA_WRAPPER_OFFLINE_SQS_HOST = envOfflineSqsHost;
+    process.env.LAMBDA_WRAPPER_OFFLINE_SQS_PORT = envOfflineSqsPort;
     process.env.REGION = envRegion;
   });
 
@@ -113,6 +119,8 @@ describe('Service/SQS', () => {
       });
 
       it('sends a local SQS request in "local" mode', async () => {
+        delete process.env.LAMBDA_WRAPPER_OFFLINE_SQS_HOST;
+        delete process.env.LAMBDA_WRAPPER_OFFLINE_SQS_PORT;
         process.env.LAMBDA_WRAPPER_OFFLINE_SQS_MODE = 'local';
         const service = getService({}, true);
 
@@ -162,6 +170,8 @@ describe('Service/SQS', () => {
 
       describe('when container.isOffline === true', () => {
         it('should use a LocalStack URL in "local" mode', async () => {
+          delete process.env.LAMBDA_WRAPPER_OFFLINE_SQS_HOST;
+          delete process.env.LAMBDA_WRAPPER_OFFLINE_SQS_PORT;
           process.env.LAMBDA_WRAPPER_OFFLINE_SQS_MODE = 'local';
           const service = getService({}, true);
 
@@ -172,6 +182,7 @@ describe('Service/SQS', () => {
         });
 
         it('should use a custom host in "local" mode', async () => {
+          delete process.env.LAMBDA_WRAPPER_OFFLINE_SQS_PORT;
           process.env.LAMBDA_WRAPPER_OFFLINE_SQS_MODE = 'local';
           process.env.LAMBDA_WRAPPER_OFFLINE_SQS_HOST = 'custom-host';
           const service = getService({}, true);
