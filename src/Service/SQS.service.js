@@ -68,6 +68,7 @@ export default class SQSService extends DependencyAwareClass {
 
     const {
       LAMBDA_WRAPPER_OFFLINE_SQS_HOST: offlineHost = 'localhost',
+      LAMBDA_WRAPPER_OFFLINE_SQS_PORT: offlinePort = '4576',
       LAMBDA_WRAPPER_OFFLINE_SQS_MODE: offlineMode = SQS_OFFLINE_MODES.DIRECT,
       AWS_ACCOUNT_ID,
       REGION,
@@ -93,7 +94,7 @@ export default class SQSService extends DependencyAwareClass {
       Object.keys(queues).forEach((queueDefinition) => {
         if (container.isOffline && offlineMode === SQS_OFFLINE_MODES.LOCAL) {
           // custom URL when using an offline SQS service such as Localstack
-          this.queues[queueDefinition] = `http://${offlineHost}:4576/queue/${queues[queueDefinition]}`;
+          this.queues[queueDefinition] = `http://${offlineHost}:${offlinePort}/queue/${queues[queueDefinition]}`;
         } else {
           // default AWS queue URL
           this.queues[queueDefinition] = `https://sqs.${REGION}.amazonaws.com/${accountId}/${queues[queueDefinition]}`;

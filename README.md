@@ -82,6 +82,7 @@ The URL is likely to be your localhost URL and the next available port from the 
 Use this mode by setting `LAMBDA_WRAPPER_OFFLINE_SQS_MODE=local`. Messages will still be sent to an SQS queue, but using a locally simulated version instead of AWS. This allows you to test your service using a tool like Localstack.
 
 By default, messages will be sent to a SQS service running on `localhost:4576`. If you need to change the hostname, you can set `process.env.LAMBDA_WRAPPER_OFFLINE_SQS_HOST`.
+Also, if you need to change the port, you can set `process.env.LAMBDA_WRAPPER_OFFLINE_SQS_PORT`.
 
 ### AWS SQS mode
 
