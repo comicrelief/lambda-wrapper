@@ -123,6 +123,7 @@ describe('Service/SQS', () => {
 
         const params = service.sqs.sendMessage.mock.calls[0][0];
         expect(params.QueueUrl).toContain('localhost');
+        expect(params.QueueUrl).toContain('4576');
       });
 
       it('sends a normal SQS request in "aws" mode', async () => {
@@ -136,6 +137,7 @@ describe('Service/SQS', () => {
 
         const params = service.sqs.sendMessage.mock.calls[0][0];
         expect(params.QueueUrl).not.toContain('localhost');
+        expect(params.QueueUrl).not.toContain('4576');
       });
 
       it('throws an error for any other mode', async () => {
@@ -167,6 +169,30 @@ describe('Service/SQS', () => {
 
           const params = service.sqs.sendMessage.mock.calls[0][0];
           expect(params.QueueUrl).toEqual('http://localhost:4576/queue/QueueName');
+        });
+
+        it('should use a custom host in "local" mode', async () => {
+          process.env.LAMBDA_WRAPPER_OFFLINE_SQS_MODE = 'local';
+          process.env.LAMBDA_WRAPPER_OFFLINE_SQS_HOST = 'custom-host';
+          const service = getService({}, true);
+
+          await service.publish(TEST_QUEUE, { test: 1 });
+
+          const params = service.sqs.sendMessage.mock.calls[0][0];
+          expect(params.QueueUrl).toEqual('http://custom-host:4576/queue/QueueName');
+        });
+
+
+        it('should use a custom port in "local" mode', async () => {
+          delete process.env.LAMBDA_WRAPPER_OFFLINE_SQS_HOST;
+          process.env.LAMBDA_WRAPPER_OFFLINE_SQS_MODE = 'local';
+          process.env.LAMBDA_WRAPPER_OFFLINE_SQS_PORT = '4566';
+          const service = getService({}, true);
+
+          await service.publish(TEST_QUEUE, { test: 1 });
+
+          const params = service.sqs.sendMessage.mock.calls[0][0];
+          expect(params.QueueUrl).toEqual('http://localhost:4566/queue/QueueName');
         });
 
         it('should use a correctly formed AWS queue URL in "aws" mode', async () => {
