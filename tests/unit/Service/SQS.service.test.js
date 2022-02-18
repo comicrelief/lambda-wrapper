@@ -182,7 +182,6 @@ describe('Service/SQS', () => {
           expect(params.QueueUrl).toEqual('http://custom-host:4576/queue/QueueName');
         });
 
-
         it('should use a custom port in "local" mode', async () => {
           delete process.env.LAMBDA_WRAPPER_OFFLINE_SQS_HOST;
           process.env.LAMBDA_WRAPPER_OFFLINE_SQS_MODE = 'local';
