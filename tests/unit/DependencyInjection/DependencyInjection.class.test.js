@@ -2,9 +2,8 @@ import { DEFINITIONS } from '../../../src/Config/Dependencies';
 import DependencyInjection from '../../../src/DependencyInjection/DependencyInjection.class';
 import LoggerService from '../../../src/Service/Logger.service';
 import RequestService from '../../../src/Service/Request.service';
-
-const getContext = require('../../mocks/aws/context.json');
-const getEvent = require('../../mocks/aws/event.json');
+import getContext from '../../mocks/aws/context.json';
+import getEvent from '../../mocks/aws/event.json';
 
 describe('DependencyInjection/DependencyInjectionClass', () => {
   describe('should instantiate', () => {

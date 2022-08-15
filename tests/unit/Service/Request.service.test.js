@@ -4,9 +4,8 @@ import QueryString from 'querystring';
 import CONFIGURATION from '../../../src/Config/Dependencies';
 import DependencyInjection from '../../../src/DependencyInjection/DependencyInjection.class';
 import RequestService, { HTTP_METHODS_WITHOUT_PAYLOADS, HTTP_METHODS_WITH_PAYLOADS } from '../../../src/Service/Request.service';
-
-const getContext = require('../../mocks/aws/context.json');
-const baseEvent = require('../../mocks/aws/event.json');
+import getContext from '../../mocks/aws/context.json';
+import baseEvent from '../../mocks/aws/event.json';
 
 const getEvent = (overrides = {}) => JSON.parse(JSON.stringify(({
   ...baseEvent,

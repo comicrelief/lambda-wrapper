@@ -3,8 +3,7 @@ import axios from 'axios';
 import CONFIGURATION from '../../../src/Config/Dependencies';
 import DependencyInjection from '../../../src/DependencyInjection/DependencyInjection.class';
 import HTTPService, { COMICRELIEF_TEST_METADATA_HEADER } from '../../../src/Service/HTTP.service';
-
-const getEvent = require('../../mocks/aws/event.json');
+import getEvent from '../../mocks/aws/event.json';
 
 const getContext = { invokedFunctionArn: 'my-function' };
 

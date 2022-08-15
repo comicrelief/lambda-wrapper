@@ -99,11 +99,7 @@ export default class DependencyInjection {
       return true;
     }
 
-    if (process.env.USE_SERVERLESS_OFFLINE) {
-      return true;
-    }
-
-    return false;
+    return !!process.env.USE_SERVERLESS_OFFLINE;
   }
 
   /**

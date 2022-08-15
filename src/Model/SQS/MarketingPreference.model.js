@@ -546,13 +546,14 @@ export default class MarketingPreference extends Model {
       const validation = validate(this.getEntityMappings(), requestConstraintsClone);
 
       if (typeof validation === 'undefined') {
-        return resolve();
+        resolve();
+        return;
       }
 
       const validationErrorResponse = ERROR_TYPES.VALIDATION_ERROR;
       validationErrorResponse.setBodyVariable('validation_errors', validation);
 
-      return reject(validationErrorResponse);
+      reject(validationErrorResponse);
     });
   }
 }

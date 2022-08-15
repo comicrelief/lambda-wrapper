@@ -4,7 +4,13 @@ extends:
   - '@comicrelief/eslint-config'
   - '@comicrelief/eslint-config/mixins/jsdoc'
 
+parser: '@babel/eslint-parser'
+
 ignorePatterns:
   - node_modules
   - dist
   - coverage
+  - babel.config.js
+
+rules:
+  unicorn/prefer-node-protocol: off

@@ -321,16 +321,11 @@ export default class SQSService extends DependencyAwareClass {
         await this.sqs.sendMessage(messageParameters).promise();
       }
     } catch (error) {
-      switch (failureMode) {
-      case SQS_PUBLISH_FAILURE_MODES.CATCH:
+      if (failureMode === SQS_PUBLISH_FAILURE_MODES.CATCH) {
         container.get(DEFINITIONS.LOGGER).error(error);
-
         return null;
-
-      case SQS_PUBLISH_FAILURE_MODES.THROW:
-      default:
-        throw error;
       }
+      throw error;
     }
 
     return queue;

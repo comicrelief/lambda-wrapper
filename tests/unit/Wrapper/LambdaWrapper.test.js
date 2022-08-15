@@ -6,9 +6,8 @@ import RequestService, { REQUEST_TYPES } from '../../../src/Service/Request.serv
 import LambdaTermination from '../../../src/Wrapper/LambdaTermination';
 import LambdaWrapper, { handleError } from '../../../src/Wrapper/LambdaWrapper';
 import { getMockedDi } from '../../lib/mocks';
-
-const getContext = require('../../mocks/aws/context.json');
-const getEvent = require('../../mocks/aws/event.json');
+import getContext from '../../mocks/aws/context.json';
+import getEvent from '../../mocks/aws/event.json';
 
 const handlers = {
   SYNC_SUCCESS: () => ResponseModel.generate({ x: 'success' }, 200, 'ok'),
