@@ -12,3 +12,4 @@ ignorePatterns:
 
 rules:
   unicorn/prefer-node-protocol: off
+  '@typescript-eslint/no-explicit-any': off

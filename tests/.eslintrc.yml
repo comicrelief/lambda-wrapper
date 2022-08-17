@@ -1,2 +1,5 @@
 extends:
   - '@comicrelief/eslint-config/mixins/jest'
+
+rules:
+  max-classes-per-file: off

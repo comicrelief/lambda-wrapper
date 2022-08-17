@@ -1748,6 +1748,11 @@
   resolved "https://registry.yarnpkg.com/@tsconfig/node16/-/node16-1.0.3.tgz#472eaab5f15c1ffdd7f8628bd4c4f753995ec79e"
   integrity sha512-yOlFc+7UtL/89t2ZhjPvvB/DeAr3r+Dq58IgzsFkOAvVC6NMJXmCGjbptdXdR9qsX7pKcTL+s87FtYREi2dEEQ==
 
+"@types/aws-lambda@^8.10.102":
+  version "8.10.102"
+  resolved "https://registry.yarnpkg.com/@types/aws-lambda/-/aws-lambda-8.10.102.tgz#d2402224ec30cdddfb669005c25b6ee01fd6f5be"
+  integrity sha512-BT05v46n9KtSHa9SgGuOvm49eSruJ9utD8iNXpdpuUVYk8wOcqmm1LEzpNRkrXxD0CULc38sdLpk6q3Wa2WOwg==
+
 "@types/babel__core@^7.1.14":
   version "7.1.19"
   resolved "https://registry.yarnpkg.com/@types/babel__core/-/babel__core-7.1.19.tgz#7b497495b7d1b4812bdb9d02804d0576f43ee460"
