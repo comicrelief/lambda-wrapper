@@ -5,6 +5,13 @@
   "main": "dist/index.js",
   "author": "Adam Clark",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/comicrelief/lambda-wrapper.git"
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "prepare": "yarn clean && yarn build",
     "build": "tsc -p tsconfig-build.json",
@@ -28,6 +35,7 @@
     "jest": "^28.1.3",
     "nyc": "^15.1.0",
     "semantic-release": "^19.0.3",
+    "ts-jest": "^28.0.8",
     "ts-node": "^10.9.1",
     "tsconfig-paths": "^4.1.0",
     "typescript": "^4.7.4"
