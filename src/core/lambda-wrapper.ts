@@ -1,6 +1,6 @@
-import { Context, Handler } from 'aws-lambda';
 import Epsagon from 'epsagon';
 
+import { Context, Handler } from '../index';
 import { LambdaWrapperConfig, mergeConfig } from './config';
 import DependencyInjection from './dependency-injection';
 
