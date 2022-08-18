@@ -22,4 +22,8 @@ export { default as DependencyAwareClass } from './core/dependency-base';
 export { default as DependencyInjection } from './core/dependency-injection';
 export { default as LambdaWrapper } from './core/lambda-wrapper';
 
-export { default as SQSService } from './services/SQSService';
+export {
+  default as SQSService,
+  SQSServiceConfig,
+  WithSQSServiceConfig,
+} from './services/SQSService';

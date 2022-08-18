@@ -1,6 +1,16 @@
 import { SQS } from 'aws-sdk';
 
 import DependencyAwareClass from '../core/dependency-base';
+import DependencyInjection from '../core/dependency-injection';
+
+export interface SQSServiceConfig {
+  queues?: Record<string, string>;
+  queueConsumers?: Record<string, string>;
+}
+
+export interface WithSQSServiceConfig {
+  sqs?: SQSServiceConfig;
+}
 
 /**
  * Helper service for working with SQS.
@@ -17,6 +27,18 @@ export default class SQSService extends DependencyAwareClass {
     },
     maxRetries: 3, // default is 3, we can change that
   });
+
+  readonly queues: Record<string, string>;
+
+  readonly queueConsumers: Record<string, string>;
+
+  constructor(di: DependencyInjection) {
+    super(di);
+
+    const config = (this.di.config as WithSQSServiceConfig).sqs;
+    this.queues = config?.queues || {};
+    this.queueConsumers = config?.queueConsumers || {};
+  }
 
   async send(queue: string, message: any): Promise<void> {
     await this.sqs.sendMessage({
