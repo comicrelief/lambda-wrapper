@@ -14,7 +14,7 @@ export default class LambdaWrapper {
    *
    * @param config
    */
-  configure(config: LambdaWrapperConfig) {
+  configure(config: Partial<LambdaWrapperConfig>) {
     return new LambdaWrapper(mergeConfig(this.config, config));
   }
 

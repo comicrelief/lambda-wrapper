@@ -18,7 +18,7 @@ export interface LambdaWrapperConfig {
  * @param old Current config.
  * @param new_ New config that will override the old.
  */
-export function mergeConfig(old: LambdaWrapperConfig, new_: LambdaWrapperConfig): LambdaWrapperConfig {
+export function mergeConfig(old: LambdaWrapperConfig, new_: Partial<LambdaWrapperConfig>): LambdaWrapperConfig {
   return {
     ...old,
     ...new_,
