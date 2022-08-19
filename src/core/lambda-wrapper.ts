@@ -4,8 +4,8 @@ import { Context, Handler } from '../index';
 import { LambdaWrapperConfig, mergeConfig } from './config';
 import DependencyInjection from './dependency-injection';
 
-export default class LambdaWrapper {
-  constructor(readonly config: LambdaWrapperConfig) {}
+export default class LambdaWrapper<TConfig extends LambdaWrapperConfig = LambdaWrapperConfig> {
+  constructor(readonly config: TConfig) {}
 
   /**
    * Returns a new Lambda Wrapper with the given configuration applied.
@@ -14,7 +14,7 @@ export default class LambdaWrapper {
    *
    * @param config
    */
-  configure(config: Partial<LambdaWrapperConfig>) {
+  configure<TMoreConfig>(config: Partial<TConfig> & TMoreConfig): LambdaWrapper<TConfig & TMoreConfig> {
     return new LambdaWrapper(mergeConfig(this.config, config));
   }
 

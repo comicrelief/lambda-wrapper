@@ -35,7 +35,7 @@ export default lambdaWrapper.wrap(async (di) => {
 });
 ```
 
-Here we've used the default export `lambdaWrapper` which is a preconfigured instance that can be used out of the box. However, you'll likely want to add your own dependencies and service config using the `configure` method:
+Here we've used the default export `lambdaWrapper` which is a preconfigured instance that can be used out of the box. You'll likely want to add your own dependencies and service config using the `configure` method:
 
 ```ts
 // src/Config/LambdaWrapper.ts
@@ -49,6 +49,17 @@ export default lambdaWrapper.configure({
 `configure` returns a new Lambda Wrapper instance with the given configuration. You'll want to export it and then use this when wrapping your handler functions.
 
 Read the next section to see what goes inside the config object!
+
+If you want to start from scratch without the built-in dependencies, you can use the `LambdaWrapper` constructor directly.
+
+```ts
+// src/Config/LambdaWrapper.ts
+import { LambdaWrapper } from '@comicrelief/lambda-wrapper';
+
+export default new LambdaWrapper({
+  // your config goes here
+});
+```
 
 ## Dependencies
 
@@ -118,6 +129,71 @@ export default lambdaWrapper.configure({
     // your SQSService config
   },
   // ... other configs ...
+});
+```
+
+To use config with your own dependencies, you need to do three things:
+
+1. Define the key and type of your config object.
+
+   Using `SQSService` as an example, we have the `sqs` key which has the `SQSServiceConfig` type:
+
+   ```ts
+   export interface SQSServiceConfig {
+     queues?: Record<string, string>;
+     queueConsumers?: Record<string, string>;
+   }
+   ```
+
+2. Define a type that can be applied to a Lambda Wrapper config.
+
+   This simply combines the key and type defined in step 1. Conventionally we name these `With...` types.
+
+   ```ts
+   export interface WithSQSServiceConfig {
+     sqs?: SQSServiceConfig;
+   }
+   ```
+
+   In the case of `SQSService`, the `sqs` key is optional because this dependency is included by default and not all applications need it. If your dependency requires config in order to work, you can make this a required key.
+
+3. In your dependency constructor, cast the config to this type.
+
+   ```ts
+   export default class SQSService extends DependencyAwareClass {
+     constructor(di: DependencyInjection) {
+       super(di);
+
+       const config = (this.di.config as WithSQSServiceConfig).sqs;
+       // Bear in mind that because the `sqs` key is optional, the type of
+       // `config` will be `SQSServiceConfig | undefined`. Take care when
+       // accessing its properties! You can use optional chaining:
+       const queues = config?.queues || {};
+       // ...
+     }
+   }
+   ```
+
+When you go to configure your Lambda Wrapper, you can now include your dependency's config type in the generic for `configure` to get IntelliSense completions and type checking for your config keys.
+
+```ts
+lambdaWrapper.configure<WithSQSServiceConfig>({
+  sqs: {
+    queues: 42 // Oops! This will be flaggeed as a type error by TypeScript
+  },
+});
+```
+
+You can combine types for multiple dependencies if needed using `&`:
+
+```ts
+lambdaWrapper.configure<WithSQSServiceConfig & WithOtherServiceConfig>({
+  sqs: {
+    // SQSService config
+  },
+  other: {
+    // OtherService config
+  },
 });
 ```
 

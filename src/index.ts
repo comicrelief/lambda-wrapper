@@ -1,5 +1,6 @@
+import { LambdaWrapperConfig } from './core/config';
 import LambdaWrapper from './core/lambda-wrapper';
-import SQSService from './services/SQSService';
+import SQSService, { WithSQSServiceConfig } from './services/SQSService';
 
 /**
  * Lambda Wrapper preconfigured with our core services that can be used
@@ -7,7 +8,7 @@ import SQSService from './services/SQSService';
  *
  * Use `lambdaWrapper.configure()` to add your own dependencies.
  */
-const lambdaWrapper = new LambdaWrapper({
+const lambdaWrapper = new LambdaWrapper<LambdaWrapperConfig & WithSQSServiceConfig>({
   dependencies: {
     SQSService,
   },
