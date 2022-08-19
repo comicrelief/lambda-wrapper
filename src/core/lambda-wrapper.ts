@@ -10,8 +10,6 @@ export default class LambdaWrapper<TConfig extends LambdaWrapperConfig = LambdaW
   /**
    * Returns a new Lambda Wrapper with the given configuration applied.
    *
-   * TODO: shall we call this `extend` instead?
-   *
    * @param config
    */
   configure<TMoreConfig>(config: Partial<TConfig> & TMoreConfig): LambdaWrapper<TConfig & TMoreConfig> {
