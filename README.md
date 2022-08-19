@@ -68,7 +68,7 @@ Lambda Wrapper comes with some commonly used dependencies built in:
 - [LoggerService](docs/services/LoggerService.md)
 - [SQSService](docs/services/SQSService.md)
 
-Access these via dependency injection. You've already seen an example of this. Pass the dependency class to `di.get()` to get its instance.
+Access these via dependency injection. You've already seen an example of this where we got `RequestService`. Pass the dependency class to `di.get()` to get its instance:
 
 ```ts
 export default lambdaWrapper.wrap(async (di) => {
@@ -105,7 +105,7 @@ export default lambdaWrapper.configure({
 });
 ```
 
-Now you can use it inside your handler functions!
+Now you can use it inside your handler functions and other dependencies!
 
 ```ts
 // src/Action/DoSomething.ts
