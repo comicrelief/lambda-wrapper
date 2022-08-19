@@ -28,6 +28,10 @@ export { default as DependencyInjection } from './core/dependency-injection';
 export { default as LambdaWrapper } from './core/lambda-wrapper';
 
 export {
+  default as ResponseModel,
+} from './models/ResponseModel';
+
+export {
   default as LoggerService,
 } from './services/LoggerService';
 export {
