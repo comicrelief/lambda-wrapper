@@ -67,6 +67,7 @@ Lambda Wrapper comes with some commonly used dependencies built in:
 
 - [LoggerService](docs/services/LoggerService.md)
 - [SQSService](docs/services/SQSService.md)
+- [TimerService](docs/services/TimerService.md)
 
 Access these via dependency injection. You've already seen an example of this where we got `RequestService`. Pass the dependency class to `di.get()` to get its instance:
 

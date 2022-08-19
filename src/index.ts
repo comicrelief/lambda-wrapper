@@ -35,3 +35,6 @@ export {
   SQSServiceConfig,
   WithSQSServiceConfig,
 } from './services/SQSService';
+export {
+  default as TimerService,
+} from './services/TimerService';
