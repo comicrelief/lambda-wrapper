@@ -1,6 +1,8 @@
 import { LambdaWrapperConfig } from './core/config';
 import LambdaWrapper from './core/lambda-wrapper';
+import LoggerService from './services/LoggerService';
 import SQSService, { WithSQSServiceConfig } from './services/SQSService';
+import TimerService from './services/TimerService';
 
 /**
  * Lambda Wrapper preconfigured with our core services that can be used
@@ -10,7 +12,9 @@ import SQSService, { WithSQSServiceConfig } from './services/SQSService';
  */
 const lambdaWrapper = new LambdaWrapper<LambdaWrapperConfig & WithSQSServiceConfig>({
   dependencies: {
+    LoggerService,
     SQSService,
+    TimerService,
   },
 });
 
@@ -23,6 +27,9 @@ export { default as DependencyAwareClass } from './core/dependency-base';
 export { default as DependencyInjection } from './core/dependency-injection';
 export { default as LambdaWrapper } from './core/lambda-wrapper';
 
+export {
+  default as LoggerService,
+} from './services/LoggerService';
 export {
   default as SQSService,
   SQSServiceConfig,
