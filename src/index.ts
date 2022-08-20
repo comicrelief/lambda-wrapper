@@ -33,6 +33,9 @@ export {
   default as ResponseModel,
 } from './models/ResponseModel';
 export {
+  default as SQSMessageModel,
+} from './models/SQSMessageModel';
+export {
   default as StatusModel,
   STATUS_TYPES,
 } from './models/StatusModel';
@@ -47,6 +50,8 @@ export {
 } from './services/RequestService';
 export {
   default as SQSService,
+  SQS_OFFLINE_MODES,
+  SQS_PUBLISH_FAILURE_MODES,
   SQSServiceConfig,
   WithSQSServiceConfig,
 } from './services/SQSService';

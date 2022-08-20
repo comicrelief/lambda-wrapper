@@ -1748,6 +1748,11 @@
   resolved "https://registry.yarnpkg.com/@tsconfig/node16/-/node16-1.0.3.tgz#472eaab5f15c1ffdd7f8628bd4c4f753995ec79e"
   integrity sha512-yOlFc+7UtL/89t2ZhjPvvB/DeAr3r+Dq58IgzsFkOAvVC6NMJXmCGjbptdXdR9qsX7pKcTL+s87FtYREi2dEEQ==
 
+"@types/async@^3.2.15":
+  version "3.2.15"
+  resolved "https://registry.yarnpkg.com/@types/async/-/async-3.2.15.tgz#26d4768fdda0e466f18d6c9918ca28cc89a4e1fe"
+  integrity sha512-PAmPfzvFA31mRoqZyTVsgJMsvbynR429UTTxhmfsUCrWGh3/fxOrzqBtaTPJsn4UtzTv4Vb0+/O7CARWb69N4g==
+
 "@types/aws-lambda@^8.10.102":
   version "8.10.102"
   resolved "https://registry.yarnpkg.com/@types/aws-lambda/-/aws-lambda-8.10.102.tgz#d2402224ec30cdddfb669005c25b6ee01fd6f5be"
@@ -1874,6 +1879,11 @@
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/@types/useragent/-/useragent-2.3.1.tgz#c971243faa04f50df399da35d77538ab5fabae20"
   integrity sha512-w70ziElAVDD8lEOQ2Id3YBDE0sn2DTVA1zLB59H4kFngYoOJAIlnMkndiZFrzzHE0jmFDZ9AEWNvmeTm6Rvj9A==
+
+"@types/uuid@^8.3.4":
+  version "8.3.4"
+  resolved "https://registry.yarnpkg.com/@types/uuid/-/uuid-8.3.4.tgz#bd86a43617df0594787d38b735f55c805becf1bc"
+  integrity sha512-c/I8ZRb51j+pYGAu5CrFMRxqZ2ke4y2grEBO5AUjgSkSk+qT2Ea+OdWElz/OiMf5MNpn2b17kuVBwZLQJXzihw==
 
 "@types/xml2js@^0.4.11":
   version "0.4.11"

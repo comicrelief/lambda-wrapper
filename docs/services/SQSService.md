@@ -19,13 +19,13 @@ const lambdaWrapper = lw.configure({
 
 This config is optional – not every application uses SQS!
 
-You can then send messages to a queue within your Lambda handler using the `send` method.
+You can then send messages to a queue within your Lambda handler using the `publish` method.
 
 ```ts
 export default lambdaWrapper.wrap(async (di) => {
   const sqs = di.get(SQSService);
   const message = { data: 'Hello SQS!' };
-  await sqs.send('submissions', message);
+  await sqs.publish('submissions', message);
 });
 ```
 
@@ -39,7 +39,7 @@ Offline SQS behaviour can be configured by setting the `LAMBDA_WRAPPER_OFFLINE_S
 - `local`: send messages to an offline SQS endpoint, such as Localstack
 - `aws`: no special handling of SQS offline; messages will be sent to AWS
 
-Details of each mode are documented in the sections below. When you send a message using `SQSService.prototype.send`, it will check which mode to use and dispatch the message appropriately. These modes take effect only when running offline (as defined by `DependencyInjection.prototype.isOffline`). In a deployed environment, SQS messages will always be sent to AWS SQS.
+Details of each mode are documented in the sections below. When you send a message using `SQSService.prototype.publish`, it will check which mode to use and dispatch the message appropriately. These modes take effect only when running offline (as defined by `DependencyInjection.prototype.isOffline`). In a deployed environment, SQS messages will always be sent to AWS SQS.
 
 ### Direct Lambda mode
 
@@ -70,7 +70,7 @@ To take advantage of SQS emulation, you will need to do the following in your pr
   });
   ```
 
-  Now when a message is sent using `sqs.send('submissions', message)`, the `SubmissionConsumer` function will be directly invoked to consume the message.
+  Now when a message is sent using `sqs.publish('submissions', message)`, the `SubmissionConsumer` function will be directly invoked to consume the message.
 
 - Set `process.env.SERVICE_LAMBDA_URL`.
 
@@ -86,7 +86,7 @@ To take advantage of SQS emulation, you will need to do the following in your pr
 
 1. You will be running the SQS-triggered lambdas in the same Serverless Offline context as your triggering lambda. Expect logs from both lambdas in the Serverless Offline output.
 
-2. If you await `sqs.send` you will effectively wait until all SQS-triggered lambdas (and possibly their own SQS-triggered lambdas) have all completed. This is necessary to avoid any pending execution (i.e. the lambda terminating before its async processes are completed).
+2. If you await `sqs.publish` you will effectively wait until all SQS-triggered lambdas (and possibly their own SQS-triggered lambdas) have all completed. This is necessary to avoid any pending execution (i.e. the lambda terminating before its async processes are completed).
 
 3. If the triggered lambda incurs an exception, this will be propagated upstream, effectively killing the execution of the calling lambda.
 
