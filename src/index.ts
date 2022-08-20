@@ -32,6 +32,10 @@ export { default as LambdaWrapper } from './core/lambda-wrapper';
 export {
   default as ResponseModel,
 } from './models/ResponseModel';
+export {
+  default as StatusModel,
+  STATUS_TYPES,
+} from './models/StatusModel';
 
 export {
   default as LoggerService,
