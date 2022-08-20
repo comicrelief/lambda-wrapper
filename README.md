@@ -66,6 +66,7 @@ export default new LambdaWrapper({
 Lambda Wrapper comes with some commonly used dependencies built in:
 
 - [LoggerService](docs/services/LoggerService.md)
+- [RequestService](docs/services/RequestService.md)
 - [SQSService](docs/services/SQSService.md)
 - [TimerService](docs/services/TimerService.md)
 

@@ -1,6 +1,7 @@
 import { LambdaWrapperConfig } from './core/config';
 import LambdaWrapper from './core/lambda-wrapper';
 import LoggerService from './services/LoggerService';
+import RequestService from './services/RequestService';
 import SQSService, { WithSQSServiceConfig } from './services/SQSService';
 import TimerService from './services/TimerService';
 
@@ -13,6 +14,7 @@ import TimerService from './services/TimerService';
 const lambdaWrapper = new LambdaWrapper<LambdaWrapperConfig & WithSQSServiceConfig>({
   dependencies: {
     LoggerService,
+    RequestService,
     SQSService,
     TimerService,
   },
@@ -34,6 +36,11 @@ export {
 export {
   default as LoggerService,
 } from './services/LoggerService';
+export {
+  default as RequestService,
+  REQUEST_TYPES,
+  RequestFile,
+} from './services/RequestService';
 export {
   default as SQSService,
   SQSServiceConfig,
