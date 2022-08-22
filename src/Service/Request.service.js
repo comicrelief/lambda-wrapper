@@ -78,7 +78,6 @@ export default class RequestService extends DependencyAwareClass {
    * @param {string} name The name of the header.
    * @param {string} [whenMissing] Value to return if the header is missing.
    *   (default: empty string)
-   *
    * @returns {string}
    */
   getHeader(name: string, whenMissing: string = '') {

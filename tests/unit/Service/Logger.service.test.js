@@ -3,8 +3,7 @@ import Winston from 'winston';
 import CONFIGURATION from '../../../src/Config/Dependencies';
 import DependencyInjection from '../../../src/DependencyInjection/DependencyInjection.class';
 import LoggerService from '../../../src/Service/Logger.service';
-
-const getEvent = require('../../mocks/aws/event.json');
+import getEvent from '../../mocks/aws/event.json';
 
 const getContext = { invokedFunctionArn: 'my-function' };
 

@@ -1,13 +1,16 @@
 root: true
 
 extends:
-  - '@comicrelief/eslint-config/mixins/base'
-  - '@comicrelief/eslint-config/mixins/flowtype'
+  - '@comicrelief/eslint-config'
   - '@comicrelief/eslint-config/mixins/jsdoc'
-  - '@comicrelief/eslint-config/mixins/sonarjs'
-  - '@comicrelief/eslint-config/mixins/unicorn'
+
+parser: '@babel/eslint-parser'
 
 ignorePatterns:
   - node_modules
   - dist
   - coverage
+  - babel.config.js
+
+rules:
+  unicorn/prefer-node-protocol: off

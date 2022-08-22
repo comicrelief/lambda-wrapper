@@ -124,7 +124,7 @@ export default (configuration, handler, throwError = false) => {
               // and not an error object directly
               // and will treat resolved errors as successful
               // as it will cast the error to JSON, i.e. `{}`
-              return Promise.reject(handled);
+              throw handled;
             }
 
             return handled;
