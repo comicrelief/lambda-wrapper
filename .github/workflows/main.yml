@@ -66,9 +66,6 @@ jobs:
 
       - name: Build and publish release.
         run: yarn install
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Publish via Semantic Release
         run: yarn semantic-release
