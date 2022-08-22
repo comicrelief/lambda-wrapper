@@ -6,6 +6,8 @@
 
 When writing Serverless applications, we have found ourselves replicating a lot of boilerplate code to do basic actions, such as reading request data or sending messages to SQS. The aim of this package is to provide a wrapper for our Lambda functions, to provide some level of dependency and configuration injection and to reduce time spent on project setup.
 
+If you're coming from v1 and updating to v2, check out the [v2 migration guide](docs/migration/v2.md).
+
 ## Getting started
 
 Install via npm or Yarn:
