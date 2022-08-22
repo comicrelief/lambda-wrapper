@@ -58,3 +58,7 @@ export {
 export {
   default as TimerService,
 } from './services/TimerService';
+
+export {
+  default as LambdaTermination,
+} from './utils/LambdaTermination';
