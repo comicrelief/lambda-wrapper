@@ -41,6 +41,9 @@ export {
 } from './models/StatusModel';
 
 export {
+  default as BaseConfigService,
+} from './services/BaseConfigService';
+export {
   default as LoggerService,
 } from './services/LoggerService';
 export {
