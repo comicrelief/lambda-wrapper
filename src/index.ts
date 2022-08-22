@@ -59,6 +59,5 @@ export {
   default as TimerService,
 } from './services/TimerService';
 
-export {
-  default as LambdaTermination,
-} from './utils/LambdaTermination';
+export { default as LambdaTermination } from './utils/LambdaTermination';
+export { default as PromisifiedDelay } from './utils/PromisifiedDelay';
