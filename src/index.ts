@@ -44,6 +44,10 @@ export {
   default as BaseConfigService,
 } from './services/BaseConfigService';
 export {
+  default as HTTPService,
+  COMICRELIEF_TEST_METADATA_HEADER,
+} from './services/HTTPService';
+export {
   default as LoggerService,
 } from './services/LoggerService';
 export {
