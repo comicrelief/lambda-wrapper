@@ -1,8 +1,8 @@
 import Epsagon from 'epsagon';
 
 import { Context, Handler } from '../index';
+import DependencyInjection from './DependencyInjection';
 import { LambdaWrapperConfig, mergeConfig } from './config';
-import DependencyInjection from './dependency-injection';
 
 export default class LambdaWrapper<TConfig extends LambdaWrapperConfig = LambdaWrapperConfig> {
   constructor(readonly config: TConfig) {}

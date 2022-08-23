@@ -3,8 +3,8 @@ import { AxiosError } from 'axios';
 import Epsagon from 'epsagon';
 import Winston from 'winston';
 
-import DependencyAwareClass from '../core/dependency-base';
-import DependencyInjection from '../core/dependency-injection';
+import DependencyAwareClass from '../core/DependencyAwareClass';
+import DependencyInjection from '../core/DependencyInjection';
 
 const sentryIsAvailable = typeof process.env.RAVEN_DSN !== 'undefined' && typeof process.env.RAVEN_DSN === 'string' && process.env.RAVEN_DSN !== 'undefined';
 

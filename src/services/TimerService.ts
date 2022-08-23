@@ -1,4 +1,4 @@
-import DependencyAwareClass from '../core/dependency-base';
+import DependencyAwareClass from '../core/DependencyAwareClass';
 import LoggerService from './LoggerService';
 
 /**

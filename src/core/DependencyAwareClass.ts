@@ -1,4 +1,4 @@
-import DependencyInjection from './dependency-injection';
+import DependencyInjection from './DependencyInjection';
 
 /**
  * Base class for dependencies.

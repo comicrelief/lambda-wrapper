@@ -1,7 +1,7 @@
 import { Context } from 'aws-lambda';
 
+import DependencyAwareClass from './DependencyAwareClass';
 import { LambdaWrapperConfig } from './config';
-import DependencyAwareClass from './dependency-base';
 
 // eslint-disable-next-line no-use-before-define
 type Class<T> = new (di: DependencyInjection) => T;

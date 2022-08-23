@@ -1,7 +1,7 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 
-import DependencyAwareClass from '../core/dependency-base';
-import DependencyInjection from '../core/dependency-injection';
+import DependencyAwareClass from '../core/DependencyAwareClass';
+import DependencyInjection from '../core/DependencyInjection';
 import RequestService from './RequestService';
 
 export const COMICRELIEF_TEST_METADATA_HEADER = 'x-comicrelief-test-metadata';

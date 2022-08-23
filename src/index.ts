@@ -1,5 +1,5 @@
+import LambdaWrapper from './core/LambdaWrapper';
 import { LambdaWrapperConfig } from './core/config';
-import LambdaWrapper from './core/lambda-wrapper';
 import LoggerService from './services/LoggerService';
 import RequestService from './services/RequestService';
 import SQSService, { WithSQSServiceConfig } from './services/SQSService';
@@ -25,9 +25,9 @@ export default lambdaWrapper;
 export { Context, Handler } from 'aws-lambda';
 
 export { LambdaWrapperConfig } from './core/config';
-export { default as DependencyAwareClass } from './core/dependency-base';
-export { default as DependencyInjection } from './core/dependency-injection';
-export { default as LambdaWrapper } from './core/lambda-wrapper';
+export { default as DependencyAwareClass } from './core/DependencyAwareClass';
+export { default as DependencyInjection } from './core/DependencyInjection';
+export { default as LambdaWrapper } from './core/LambdaWrapper';
 
 export {
   default as ResponseModel,

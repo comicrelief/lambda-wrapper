@@ -1,4 +1,4 @@
-import DependencyAwareClass from './dependency-base';
+import DependencyAwareClass from './DependencyAwareClass';
 
 /**
  * Config for Lambda Wrapper defining dependencies and their configuration.

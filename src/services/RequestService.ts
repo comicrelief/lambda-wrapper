@@ -5,7 +5,7 @@ import useragent from 'useragent';
 import validate from 'validate.js/validate';
 import XML2JS from 'xml2js';
 
-import DependencyAwareClass from '../core/dependency-base';
+import DependencyAwareClass from '../core/DependencyAwareClass';
 import ResponseModel from '../models/ResponseModel';
 import LoggerService from './LoggerService';
 

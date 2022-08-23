@@ -1,6 +1,6 @@
-import _DependencyAwareClass from '@/src/core/dependency-base';
-import _DependencyInjection from '@/src/core/dependency-injection';
-import _LambdaWrapper from '@/src/core/lambda-wrapper';
+import _DependencyAwareClass from '@/src/core/DependencyAwareClass';
+import _DependencyInjection from '@/src/core/DependencyInjection';
+import _LambdaWrapper from '@/src/core/LambdaWrapper';
 import _SQSService from '@/src/services/SQSService';
 
 import lambdaWrapper, {

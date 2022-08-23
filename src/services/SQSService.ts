@@ -3,8 +3,8 @@ import { each } from 'async';
 import AWS from 'aws-sdk';
 import { v4 as uuid } from 'uuid';
 
-import DependencyAwareClass from '../core/dependency-base';
-import DependencyInjection from '../core/dependency-injection';
+import DependencyAwareClass from '../core/DependencyAwareClass';
+import DependencyInjection from '../core/DependencyInjection';
 import SQSMessageModel from '../models/SQSMessageModel';
 import StatusModel, { STATUS_TYPES } from '../models/StatusModel';
 import LoggerService from './LoggerService';

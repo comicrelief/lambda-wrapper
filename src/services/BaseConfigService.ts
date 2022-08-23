@@ -1,6 +1,6 @@
 import { S3 } from 'aws-sdk';
 
-import DependencyAwareClass from '../core/dependency-base';
+import DependencyAwareClass from '../core/DependencyAwareClass';
 import LambdaTermination from '../utils/LambdaTermination';
 
 /**
