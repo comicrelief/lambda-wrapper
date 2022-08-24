@@ -1,6 +1,5 @@
-import { Context, DependencyAwareClass, DependencyInjection } from '@/src';
-import mockContext from '@/tests/mocks/aws/context.json';
-import mockEvent from '@/tests/mocks/aws/event.json';
+import { DependencyAwareClass, DependencyInjection } from '@/src';
+import { mockContext, mockEvent } from '@/tests/mocks/aws';
 
 class A extends DependencyAwareClass {}
 
@@ -15,7 +14,8 @@ describe('unit.core.DependencyInjection', () => {
       B,
     },
   };
-  const di = new DependencyInjection(mockConfig, mockEvent, mockContext as Context);
+
+  const di = new DependencyInjection(mockConfig, mockEvent, mockContext);
 
   describe('get', () => {
     it('should return an instance of A, given A', () => {

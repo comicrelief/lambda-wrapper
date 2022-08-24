@@ -6,26 +6,24 @@ import {
 } from '@/src/services/RequestService';
 
 import {
-  Context,
   DependencyInjection,
   LoggerService,
   RequestService,
 } from '@/src';
-import mockContext from '@/tests/mocks/aws/context.json';
-import baseEvent from '@/tests/mocks/aws/event.json';
+import { mockContext, mockEvent } from '@/tests/mocks/aws';
 
 const getEvent = (overrides = {}) => JSON.parse(JSON.stringify(({
-  ...baseEvent,
+  ...mockEvent,
   ...overrides,
 })));
 
-const getRequestService = (event: any, context: any = mockContext) => {
+const getRequestService = (event: any) => {
   const di = new DependencyInjection({
     dependencies: {
       RequestService,
       LoggerService,
     },
-  }, event, context as Context);
+  }, event, mockContext);
   return new RequestService(di);
 };
 

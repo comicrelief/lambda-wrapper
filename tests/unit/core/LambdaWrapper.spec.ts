@@ -1,7 +1,6 @@
 import { RESPONSE_HEADERS } from '@/src/models/ResponseModel';
 
 import {
-  Context,
   DependencyInjection,
   LambdaTermination,
   LambdaWrapper,
@@ -9,8 +8,7 @@ import {
   LoggerService,
   RequestService,
 } from '@/src';
-import mockContext from '@/tests/mocks/aws/context.json';
-import mockEvent from '@/tests/mocks/aws/event.json';
+import { mockContext, mockEvent } from '@/tests/mocks/aws';
 
 type ErrorWithCode = Error & { code?: number };
 
@@ -21,7 +19,7 @@ const config: LambdaWrapperConfig = {
   },
 };
 
-const getDi = () => new DependencyInjection(config, mockEvent, mockContext as Context);
+const getDi = () => new DependencyInjection(config, mockEvent, mockContext);
 
 describe('unit.core.LambdaWrapper', () => {
   beforeEach(() => {
@@ -74,7 +72,7 @@ describe('unit.core.LambdaWrapper', () => {
         const fn = jest.fn();
         const wrapped = lambdaWrapper.wrap(fn);
 
-        await wrapped(mockEvent, mockContext as Context);
+        await wrapped(mockEvent, mockContext);
 
         expect(fn).toHaveBeenCalled();
       });
@@ -84,14 +82,14 @@ describe('unit.core.LambdaWrapper', () => {
         const fn = jest.fn().mockResolvedValue(result);
         const wrapped = lambdaWrapper.wrap(fn);
 
-        expect(await wrapped(mockEvent, mockContext as Context)).toEqual(result);
+        expect(await wrapped(mockEvent, mockContext)).toEqual(result);
       });
 
       it('should pass dependency injection to the handler', async () => {
         const fn = jest.fn();
         const wrapped = lambdaWrapper.wrap(fn);
 
-        await wrapped(mockEvent, mockContext as Context);
+        await wrapped(mockEvent, mockContext);
 
         const callArgs: any[] = fn.mock.calls[0];
         expect(callArgs).toHaveLength(1);
@@ -102,7 +100,7 @@ describe('unit.core.LambdaWrapper', () => {
         const fn = jest.fn();
         const wrapped = lambdaWrapper.wrap(fn);
 
-        await wrapped(mockEvent, mockContext as Context);
+        await wrapped(mockEvent, mockContext);
 
         const [di]: [DependencyInjection] = fn.mock.calls[0];
         expect(di.event).toEqual(mockEvent);
@@ -112,7 +110,7 @@ describe('unit.core.LambdaWrapper', () => {
         const fn = jest.fn();
         const wrapped = lambdaWrapper.wrap(fn);
 
-        await wrapped(mockEvent, mockContext as Context);
+        await wrapped(mockEvent, mockContext);
 
         const [di]: [DependencyInjection] = fn.mock.calls[0];
         expect(di.context).toEqual(mockContext);
@@ -133,7 +131,7 @@ describe('unit.core.LambdaWrapper', () => {
             throw new Error('Undefined error');
           });
 
-          await lambda(mockEvent, mockContext as Context);
+          await lambda(mockEvent, mockContext);
 
           expect(infoStub).not.toHaveBeenCalled();
           expect(errorStub).toHaveBeenCalled();
@@ -158,7 +156,7 @@ describe('unit.core.LambdaWrapper', () => {
               throw error;
             });
 
-            await lambda(mockEvent, mockContext as Context);
+            await lambda(mockEvent, mockContext);
 
             expect(infoStub).toHaveBeenCalled();
             expect(errorStub).not.toHaveBeenCalled();
@@ -184,7 +182,7 @@ describe('unit.core.LambdaWrapper', () => {
               throw error;
             });
 
-            await lambda(mockEvent, mockContext as Context);
+            await lambda(mockEvent, mockContext);
 
             expect(infoStub).not.toHaveBeenCalled();
             expect(errorStub).toHaveBeenCalled();
@@ -200,7 +198,7 @@ describe('unit.core.LambdaWrapper', () => {
               throw new Error('Some error');
             });
 
-            const response = await lambda(mockEvent, mockContext as Context);
+            const response = await lambda(mockEvent, mockContext);
 
             expect(response.statusCode).toEqual(500);
             expect(JSON.parse(response.body)).toHaveProperty('message', 'unknown error');
@@ -213,7 +211,7 @@ describe('unit.core.LambdaWrapper', () => {
               throw new LambdaTermination('internal', 403, 'external', 'some message');
             });
 
-            const response = await lambda(mockEvent, mockContext as Context);
+            const response = await lambda(mockEvent, mockContext);
 
             expect(response.statusCode).toEqual(403);
             const body = JSON.parse(response.body);
@@ -234,7 +232,7 @@ describe('unit.core.LambdaWrapper', () => {
             handleUncaughtErrors: false,
           });
 
-          const promise = lambda(mockEvent, mockContext as Context);
+          const promise = lambda(mockEvent, mockContext);
 
           // be absolutely sure we got a rejection or the lambda will not count as failed
           await expect(promise).rejects.toThrowError(LambdaTermination);
@@ -250,7 +248,7 @@ describe('unit.core.LambdaWrapper', () => {
             handleUncaughtErrors: false,
           });
 
-          const promise = lambda(mockEvent, mockContext as Context);
+          const promise = lambda(mockEvent, mockContext);
 
           // be absolutely sure we got a rejection or the lambda will not count as failed
           await expect(promise).rejects.toThrowError(LambdaTermination);
