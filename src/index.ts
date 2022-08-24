@@ -27,7 +27,7 @@ export { Context, Handler } from 'aws-lambda';
 export { LambdaWrapperConfig } from './core/config';
 export { default as DependencyAwareClass } from './core/DependencyAwareClass';
 export { default as DependencyInjection } from './core/DependencyInjection';
-export { default as LambdaWrapper } from './core/LambdaWrapper';
+export { default as LambdaWrapper, WrapOptions } from './core/LambdaWrapper';
 
 export {
   default as ResponseModel,
