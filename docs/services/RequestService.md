@@ -7,6 +7,8 @@ Provides access to components of the HTTP request being handled.
 Since Lambda Wrapper v2, the `RequestService` instance is no longer passed as an argument to your wrapped handler, and must be obtained via `di`.
 
 ```ts
+import lambdaWrapper, { RequestService } from '@comicrelief/lambda-wrapper';
+
 lambdaWrapper.wrap(async (di) => {
   const request = di.get(RequestService);
   // get the 'name' request parameter, defaulting to 'world' if not set

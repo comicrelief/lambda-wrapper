@@ -7,7 +7,9 @@ SQS queues are configured inside an `sqs` key in your Lambda Wrapper config.
 The `queues` key maps short friendly names to the full SQS queue name. Usually we define queue names in our `serverless.yml` and provide them to the application via environment variables.
 
 ```ts
-const lambdaWrapper = lw.configure({
+import lw, { WithSQSServiceConfig } from '@comicrelief/lambda-wrapper';
+
+const lambdaWrapper = lw.configure<WithSQSServiceConfig>({
   sqs: {
     queues: {
       // add an entry for each queue mapping to its AWS name

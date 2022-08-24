@@ -7,6 +7,8 @@ Timer helper that can be used to measure how long operations take.
 Start and stop the timer using the `start` and `stop` methods.
 
 ```ts
+import lambdaWrapper, { TimerService } from '@comicrelief/lambda-wrapper';
+
 lambdaWrapper.wrap(async (di) => {
   const timer = di.get(TimerService);
 
@@ -15,5 +17,5 @@ lambdaWrapper.wrap(async (di) => {
   await someLongSlowOperation();
   timer.stop(timerId);
   // logs 'someLongSlowOperation took 12345 ms to complete'
-})
+});
 ```
