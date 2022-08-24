@@ -131,13 +131,13 @@ export default class LambdaWrapper<TConfig extends LambdaWrapperConfig = LambdaW
     const logger = di.get(LoggerService);
 
     const {
-      code = 500,
+      code,
       raiseOnEpsagon,
       body = {},
       details = 'unknown error',
     } = error as any;
 
-    logger.metric('lambda.statusCode', code);
+    logger.metric('lambda.statusCode', code || 500);
 
     if (raiseOnEpsagon || !code || code >= 500) {
       logger.error(error);
@@ -155,6 +155,6 @@ export default class LambdaWrapper<TConfig extends LambdaWrapperConfig = LambdaW
       return new Error(error);
     }
 
-    return ResponseModel.generate(body, code, details);
+    return ResponseModel.generate(body, code || 500, details);
   }
 }
