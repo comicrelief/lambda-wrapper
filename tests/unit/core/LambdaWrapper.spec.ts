@@ -22,9 +22,13 @@ const config: LambdaWrapperConfig = {
 const getDi = () => new DependencyInjection(config, mockEvent, mockContext);
 
 describe('unit.core.LambdaWrapper', () => {
-  beforeEach(() => {
-    // Mute Winston
-    jest.spyOn(process.stdout, 'write').mockImplementation(() => false);
+  beforeAll(() => {
+    // mute log ouptut
+    const noop = () => { /* do nothing */ };
+    jest.spyOn(LoggerService.prototype, 'info').mockImplementation(noop);
+    jest.spyOn(LoggerService.prototype, 'error').mockImplementation(noop);
+    jest.spyOn(LoggerService.prototype, 'metric').mockImplementation(noop);
+    jest.spyOn(LoggerService.prototype, 'label').mockImplementation(noop);
   });
 
   afterEach(() => jest.resetAllMocks());
@@ -120,36 +124,28 @@ describe('unit.core.LambdaWrapper', () => {
     describe('handleUncaughtErrors = true (default)', () => {
       describe('when error has no code property', () => {
         it('should pass it to logger.error', async () => {
-          let infoStub;
-          let errorStub;
-          let metricStub;
+          let logger: LoggerService;
 
           const lambda = lambdaWrapper.wrap((di) => {
-            infoStub = jest.spyOn(di.get(LoggerService), 'info');
-            errorStub = jest.spyOn(di.get(LoggerService), 'error');
-            metricStub = jest.spyOn(di.get(LoggerService), 'metric');
+            logger = di.get(LoggerService);
             throw new Error('Undefined error');
           });
 
           await lambda(mockEvent, mockContext);
 
-          expect(infoStub).not.toHaveBeenCalled();
-          expect(errorStub).toHaveBeenCalled();
-          expect(metricStub).nthCalledWith(1, 'lambda.statusCode', 500);
+          expect(logger!.info).not.toHaveBeenCalled();
+          expect(logger!.error).toHaveBeenCalled();
+          expect(logger!.metric).lastCalledWith('lambda.statusCode', 500);
         });
       });
 
       describe('when error has code 4xx', () => {
         [400, 401, 403, 404, 409, 419, 421, 423, 499].forEach((errorCode) => {
           it(`should call logger.info with code ${errorCode}`, async () => {
-            let infoStub;
-            let errorStub;
-            let metricStub;
+            let logger: LoggerService;
 
             const lambda = lambdaWrapper.wrap((di) => {
-              infoStub = jest.spyOn(di.get(LoggerService), 'info');
-              errorStub = jest.spyOn(di.get(LoggerService), 'error');
-              metricStub = jest.spyOn(di.get(LoggerService), 'metric');
+              logger = di.get(LoggerService);
 
               const error: ErrorWithCode = new Error('4xx error');
               error.code = errorCode;
@@ -158,9 +154,9 @@ describe('unit.core.LambdaWrapper', () => {
 
             await lambda(mockEvent, mockContext);
 
-            expect(infoStub).toHaveBeenCalled();
-            expect(errorStub).not.toHaveBeenCalled();
-            expect(metricStub).nthCalledWith(1, 'lambda.statusCode', errorCode);
+            expect(logger!.info).toHaveBeenCalled();
+            expect(logger!.error).not.toHaveBeenCalled();
+            expect(logger!.metric).lastCalledWith('lambda.statusCode', errorCode);
           });
         });
       });
@@ -168,14 +164,10 @@ describe('unit.core.LambdaWrapper', () => {
       describe('when error has code 5xx', () => {
         [500, 501, 502, 503].forEach((errorCode) => {
           it(`should call logger.error with code ${errorCode}`, async () => {
-            let infoStub;
-            let errorStub;
-            let metricStub;
+            let logger: LoggerService;
 
             const lambda = lambdaWrapper.wrap((di) => {
-              infoStub = jest.spyOn(di.get(LoggerService), 'info');
-              errorStub = jest.spyOn(di.get(LoggerService), 'error');
-              metricStub = jest.spyOn(di.get(LoggerService), 'metric');
+              logger = di.get(LoggerService);
 
               const error: ErrorWithCode = new Error('5xx error');
               error.code = errorCode;
@@ -184,9 +176,9 @@ describe('unit.core.LambdaWrapper', () => {
 
             await lambda(mockEvent, mockContext);
 
-            expect(infoStub).not.toHaveBeenCalled();
-            expect(errorStub).toHaveBeenCalled();
-            expect(metricStub).nthCalledWith(1, 'lambda.statusCode', errorCode);
+            expect(logger!.info).not.toHaveBeenCalled();
+            expect(logger!.error).toHaveBeenCalled();
+            expect(logger!.metric).lastCalledWith('lambda.statusCode', errorCode);
           });
         });
       });

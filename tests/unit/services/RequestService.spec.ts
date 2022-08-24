@@ -28,6 +28,15 @@ const getRequestService = (event: any) => {
 };
 
 describe('unit.services.RequestService', () => {
+  beforeAll(() => {
+    // mute log ouptut
+    const noop = () => { /* do nothing */ };
+    jest.spyOn(LoggerService.prototype, 'info').mockImplementation(noop);
+    jest.spyOn(LoggerService.prototype, 'error').mockImplementation(noop);
+    jest.spyOn(LoggerService.prototype, 'metric').mockImplementation(noop);
+    jest.spyOn(LoggerService.prototype, 'label').mockImplementation(noop);
+  });
+
   afterEach(() => jest.resetAllMocks());
 
   HTTP_METHODS_WITHOUT_PAYLOADS.forEach((httpMethod) => {
@@ -93,11 +102,6 @@ describe('unit.services.RequestService', () => {
             numericality: true,
           },
         };
-
-        beforeEach(() => {
-          // Mute Winston
-          jest.spyOn(process.stdout, 'write').mockImplementation(() => false);
-        });
 
         it('should resolve if there are no validation errors', async () => {
           const event = getEvent({ httpMethod });
@@ -203,11 +207,6 @@ describe('unit.services.RequestService', () => {
             numericality: true,
           },
         };
-
-        beforeEach(() => {
-          // Mute Winston
-          jest.spyOn(process.stdout, 'write').mockImplementation(() => false);
-        });
 
         it('should resolve if there are no validation errors', async () => {
           const event = getPayloadEvent({ body: 'giftaid=123' });
