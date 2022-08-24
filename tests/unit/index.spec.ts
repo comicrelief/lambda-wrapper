@@ -1,14 +1,19 @@
-import _DependencyAwareClass from '@/src/core/DependencyAwareClass';
-import _DependencyInjection from '@/src/core/DependencyInjection';
-import _LambdaWrapper from '@/src/core/LambdaWrapper';
-import _SQSService from '@/src/services/SQSService';
+import DependencyAwareClass from '@/src/core/DependencyAwareClass';
+import DependencyInjection from '@/src/core/DependencyInjection';
+import LambdaWrapper from '@/src/core/LambdaWrapper';
+import ResponseModel from '@/src/models/ResponseModel';
+import SQSMessageModel from '@/src/models/SQSMessageModel';
+import StatusModel from '@/src/models/StatusModel';
+import BaseConfigService from '@/src/services/BaseConfigService';
+import HTTPService, { COMICRELIEF_TEST_METADATA_HEADER } from '@/src/services/HTTPService';
+import LoggerService from '@/src/services/LoggerService';
+import RequestService, { REQUEST_TYPES } from '@/src/services/RequestService';
+import SQSService, { SQS_OFFLINE_MODES, SQS_PUBLISH_FAILURE_MODES } from '@/src/services/SQSService';
+import TimerService from '@/src/services/TimerService';
+import LambdaTermination from '@/src/utils/LambdaTermination';
+import PromisifiedDelay from '@/src/utils/PromisifiedDelay';
 
-import lambdaWrapper, {
-  DependencyAwareClass,
-  DependencyInjection,
-  LambdaWrapper,
-  SQSService,
-} from '@/src';
+import lambdaWrapper, * as lib from '@/src';
 
 describe('unit.index', () => {
   describe('default export', () => {
@@ -25,18 +30,68 @@ describe('unit.index', () => {
   // these tests prevent accidental removal of exports
 
   it('should export DependencyAwareClass', () => {
-    expect(DependencyAwareClass).toBe(_DependencyAwareClass);
+    expect(lib.DependencyAwareClass).toBe(DependencyAwareClass);
   });
 
   it('should export DependencyInjection', () => {
-    expect(DependencyInjection).toBe(_DependencyInjection);
+    expect(lib.DependencyInjection).toBe(DependencyInjection);
   });
 
   it('should export LambdaWrapper', () => {
-    expect(LambdaWrapper).toBe(_LambdaWrapper);
+    expect(lib.LambdaWrapper).toBe(LambdaWrapper);
+  });
+
+  // models
+
+  it('should export ResponseModel', () => {
+    expect(lib.ResponseModel).toBe(ResponseModel);
+  });
+
+  it('should export SQSMessageModel', () => {
+    expect(lib.SQSMessageModel).toBe(SQSMessageModel);
+  });
+
+  it('should export StatusModel', () => {
+    expect(lib.StatusModel).toBe(StatusModel);
+  });
+
+  // services
+
+  it('should export BaseConfigService', () => {
+    expect(lib.BaseConfigService).toBe(BaseConfigService);
+  });
+
+  it('should export HTTPService', () => {
+    expect(lib.HTTPService).toBe(HTTPService);
+    expect(lib.COMICRELIEF_TEST_METADATA_HEADER).toBe(COMICRELIEF_TEST_METADATA_HEADER);
+  });
+
+  it('should export LoggerService', () => {
+    expect(lib.LoggerService).toBe(LoggerService);
+  });
+
+  it('should export RequestService', () => {
+    expect(lib.RequestService).toBe(RequestService);
+    expect(lib.REQUEST_TYPES).toBe(REQUEST_TYPES);
   });
 
   it('should export SQSService', () => {
-    expect(SQSService).toBe(_SQSService);
+    expect(lib.SQSService).toBe(SQSService);
+    expect(lib.SQS_OFFLINE_MODES).toBe(SQS_OFFLINE_MODES);
+    expect(lib.SQS_PUBLISH_FAILURE_MODES).toBe(SQS_PUBLISH_FAILURE_MODES);
+  });
+
+  it('should export TimerService', () => {
+    expect(lib.TimerService).toBe(TimerService);
+  });
+
+  // utils
+
+  it('should export LambdaTermination', () => {
+    expect(lib.LambdaTermination).toBe(LambdaTermination);
+  });
+
+  it('should export PromisifiedDelay', () => {
+    expect(lib.PromisifiedDelay).toBe(PromisifiedDelay);
   });
 });
