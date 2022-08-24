@@ -17,6 +17,24 @@ describe('unit.core.DependencyInjection', () => {
 
   const di = new DependencyInjection(mockConfig, mockEvent, mockContext);
 
+  describe('event', () => {
+    it('should expose the event', () => {
+      expect(di.event).toBe(mockEvent);
+    });
+  });
+
+  describe('context', () => {
+    it('should expose the Lambda context', () => {
+      expect(di.context).toBe(mockContext);
+    });
+  });
+
+  describe('config', () => {
+    it('should expose the config object', () => {
+      expect(di.config).toBe(mockConfig);
+    });
+  });
+
   describe('get', () => {
     it('should return an instance of A, given A', () => {
       expect(di.get(A)).toBeInstanceOf(A);

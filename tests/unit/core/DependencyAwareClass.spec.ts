@@ -8,4 +8,12 @@ describe('unit.core.DependencyAwareClass', () => {
       expect(dep.getContainer()).toBe(di);
     });
   });
+
+  describe('di', () => {
+    it('should expose the DependencyInjection instance', () => {
+      const di = new DependencyInjection({ dependencies: {} }, {}, {} as Context);
+      const dep = new DependencyAwareClass(di);
+      expect(dep.di).toBe(di);
+    });
+  });
 });

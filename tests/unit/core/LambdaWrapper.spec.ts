@@ -33,6 +33,13 @@ describe('unit.core.LambdaWrapper', () => {
 
   afterEach(() => jest.resetAllMocks());
 
+  describe('config', () => {
+    it('should expose the config object', () => {
+      const lw = new LambdaWrapper(config);
+      expect(lw.config).toBe(config);
+    });
+  });
+
   describe('configure', () => {
     // see tests/unit/core/config.spec.ts for config merge tests
 
