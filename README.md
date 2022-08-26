@@ -115,7 +115,7 @@ Now you can use it inside your handler functions and other dependencies!
 ```ts
 // src/Action/DoSomething.ts
 import lambdaWrapper from '../Config/LambdaWrapper';
-import MyService from '../Sevice/MyService';
+import MyService from '../Service/MyService';
 
 export default lambdaWrapper.wrap(async (di) => {
   di.get(MyService).doSomething();
