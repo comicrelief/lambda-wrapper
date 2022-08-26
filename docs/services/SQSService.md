@@ -7,9 +7,9 @@ SQS queues are configured inside an `sqs` key in your Lambda Wrapper config.
 The `queues` key maps short friendly names to the full SQS queue name. Usually we define queue names in our `serverless.yml` and provide them to the application via environment variables.
 
 ```ts
-import lw, { WithSQSServiceConfig } from '@comicrelief/lambda-wrapper';
+import lambdaWrapper, { WithSQSServiceConfig } from '@comicrelief/lambda-wrapper';
 
-const lambdaWrapper = lw.configure<WithSQSServiceConfig>({
+export default lambdaWrapper.configure<WithSQSServiceConfig>({
   sqs: {
     queues: {
       // add an entry for each queue mapping to its AWS name
@@ -24,6 +24,10 @@ This config is optional – not every application uses SQS!
 You can then send messages to a queue within your Lambda handler using the `publish` method.
 
 ```ts
+import { SQSService } from '@comicrelief/lambda-wrapper';
+
+import lambdaWrapper from '@/src/config/LambdaWrapper';
+
 export default lambdaWrapper.wrap(async (di) => {
   const sqs = di.get(SQSService);
   const message = { data: 'Hello SQS!' };

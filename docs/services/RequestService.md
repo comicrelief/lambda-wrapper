@@ -9,7 +9,7 @@ Since Lambda Wrapper v2, the `RequestService` instance is no longer passed as an
 ```ts
 import lambdaWrapper, { RequestService } from '@comicrelief/lambda-wrapper';
 
-lambdaWrapper.wrap(async (di) => {
+export default lambdaWrapper.wrap(async (di) => {
   const request = di.get(RequestService);
   // get the 'name' request parameter, defaulting to 'world' if not set
   const name = request.get('name', 'world');

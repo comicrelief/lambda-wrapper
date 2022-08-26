@@ -32,7 +32,7 @@ Config is typed as `unknown` in the base class since you shouldn't trust what's 
 Then add to your Lambda Wrapper dependencies:
 
 ```ts
-// src/config/lambda-wrapper.ts
+// src/config/LambdaWrapper.ts
 import lambdaWrapper from '@comicrelief/lambda-wrapper';
 
 import ConfigService from '@/src/services/ConfigService';

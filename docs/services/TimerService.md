@@ -9,7 +9,7 @@ Start and stop the timer using the `start` and `stop` methods.
 ```ts
 import lambdaWrapper, { TimerService } from '@comicrelief/lambda-wrapper';
 
-lambdaWrapper.wrap(async (di) => {
+export default lambdaWrapper.wrap(async (di) => {
   const timer = di.get(TimerService);
 
   const timerId = 'someLongSlowOperation';

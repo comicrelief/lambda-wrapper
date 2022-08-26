@@ -21,7 +21,7 @@ yarn add @comicrelief/lambda-wrapper
 You can then wrap your Lambda handler functions like this:
 
 ```ts
-// src/Action/Hello.ts
+// src/action/Hello.ts
 import lambdaWrapper, {
   ResponseModel,
   RequestService,
@@ -40,7 +40,7 @@ export default lambdaWrapper.wrap(async (di) => {
 Here we've used the default export `lambdaWrapper` which is a preconfigured instance that can be used out of the box. You'll likely want to add your own dependencies and service config using the `configure` method:
 
 ```ts
-// src/Config/LambdaWrapper.ts
+// src/config/LambdaWrapper.ts
 import lambdaWrapper from '@comicrelief/lambda-wrapper';
 
 export default lambdaWrapper.configure({
@@ -55,7 +55,7 @@ Read the next section to see what goes inside the config object!
 If you want to start from scratch without the built-in dependencies, you can use the `LambdaWrapper` constructor directly.
 
 ```ts
-// src/Config/LambdaWrapper.ts
+// src/config/LambdaWrapper.ts
 import { LambdaWrapper } from '@comicrelief/lambda-wrapper';
 
 export default new LambdaWrapper({
@@ -86,7 +86,7 @@ export default lambdaWrapper.wrap(async (di) => {
 To add your own dependencies, first extend `DependencyAwareClass`.
 
 ```ts
-// src/Service/MyService.ts
+// src/services/MyService.ts
 import { DependencyAwareClass } from '@comicrelief/lambda-wrapper';
 
 export default class MyService extends DependencyAwareClass {
@@ -99,9 +99,10 @@ export default class MyService extends DependencyAwareClass {
 Then add it to your Lambda Wrapper configuration in the `dependencies` key.
 
 ```ts
-// src/Config/LambdaWrapper.ts
+// src/config/LambdaWrapper.ts
 import lambdaWrapper from '@comicrelief/lambda-wrapper';
-import MyService from '../Service/MyService';
+
+import MyService from '@/src/services/MyService';
 
 export default lambdaWrapper.configure({
   dependencies: {
@@ -113,9 +114,9 @@ export default lambdaWrapper.configure({
 Now you can use it inside your handler functions and other dependencies!
 
 ```ts
-// src/Action/DoSomething.ts
-import lambdaWrapper from '../Config/LambdaWrapper';
-import MyService from '../Service/MyService';
+// src/action/DoSomething.ts
+import lambdaWrapper from '@/src/config/LambdaWrapper';
+import MyService from '@/src/services/MyService';
 
 export default lambdaWrapper.wrap(async (di) => {
   di.get(MyService).doSomething();
