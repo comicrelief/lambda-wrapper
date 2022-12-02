@@ -28,9 +28,9 @@ export default class DependencyInjection {
     readonly event: any,
     readonly context: Context,
   ) {
+    const classes = Object.values(config.dependencies);
     this.dependencies = Object.fromEntries(
-      Object.entries(config.dependencies)
-        .map(([, Constructor]) => [Constructor.name, new Constructor(this)]),
+      classes.map((Constructor) => [Constructor.name, new Constructor(this)]),
     );
 
     this.isConstructing = false;
