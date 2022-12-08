@@ -38,7 +38,7 @@
     "aws-sdk": "^2.831.0"
   },
   "dependencies": {
-    "@sentry/node": "^6.0.1",
+    "@sentry/node": "^7.24.2",
     "alai": "1.0.3",
     "async": "^3.2.4",
     "axios": "^0.27.2",
