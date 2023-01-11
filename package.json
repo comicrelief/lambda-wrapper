@@ -24,7 +24,6 @@
     "@comicrelief/eslint-config": "^2.0.3",
     "@istanbuljs/nyc-config-typescript": "^1.0.2",
     "@types/async": "^3.2.15",
-    "@types/aws-lambda": "^8.10.102",
     "@types/jest": "^28.1.6",
     "@types/node": "14",
     "@types/useragent": "^2.3.1",
@@ -49,6 +48,7 @@
   },
   "dependencies": {
     "@sentry/node": "^6.0.1",
+    "@types/aws-lambda": "^8.10.102",
     "alai": "1.0.3",
     "async": "^3.2.4",
     "axios": "^0.27.2",
