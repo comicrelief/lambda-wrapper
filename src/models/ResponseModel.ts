@@ -1,12 +1,12 @@
 /**
- * HTTP headers to be included in all responses.
+ * HTTP headers to be included in `ResponseModel`.
  */
-export const RESPONSE_HEADERS = {
+export const RESPONSE_HEADERS: Record<string, string> = {
   'Content-Type': 'application/json',
   /** Required for CORS support to work */
   'Access-Control-Allow-Origin': '*',
   /** Required for cookies, authorization headers with HTTPS */
-  'Access-Control-Allow-Credentials': true,
+  'Access-Control-Allow-Credentials': 'true',
 };
 
 /**

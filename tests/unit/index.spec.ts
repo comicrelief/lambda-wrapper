@@ -1,7 +1,7 @@
 import DependencyAwareClass from '@/src/core/DependencyAwareClass';
 import DependencyInjection from '@/src/core/DependencyInjection';
 import LambdaWrapper from '@/src/core/LambdaWrapper';
-import ResponseModel from '@/src/models/ResponseModel';
+import ResponseModel, { RESPONSE_HEADERS } from '@/src/models/ResponseModel';
 import SQSMessageModel from '@/src/models/SQSMessageModel';
 import StatusModel from '@/src/models/StatusModel';
 import BaseConfigService from '@/src/services/BaseConfigService';
@@ -45,6 +45,7 @@ describe('unit.index', () => {
 
   it('should export ResponseModel', () => {
     expect(lib.ResponseModel).toBe(ResponseModel);
+    expect(lib.RESPONSE_HEADERS).toBe(RESPONSE_HEADERS);
   });
 
   it('should export SQSMessageModel', () => {
