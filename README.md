@@ -186,7 +186,7 @@ When you go to configure your Lambda Wrapper, you can now include your dependenc
 ```ts
 lambdaWrapper.configure<WithSQSServiceConfig>({
   sqs: {
-    queues: 42 // Oops! This will be flaggeed as a type error by TypeScript
+    queues: 42 // Oops! This will be flagged as a type error by TypeScript
   },
 });
 ```
