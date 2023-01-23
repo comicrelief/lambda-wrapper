@@ -6,6 +6,8 @@
 
 When writing Serverless endpoints, we have found ourselves replicating a lot of boiler plate code to do basic actions, such as reading request variables or writing to SQS. The aim of this package is to provide a wrapper for our Lambda functions, to provide some level of dependency and configuration injection and to reduce time spent on project setup.
 
+> 🚀 [Lambda Wrapper v2 is now available in beta!](https://github.com/comicrelief/lambda-wrapper/tree/beta) This major release includes TypeScript support and some significant design changes.
+
 ## Installation & usage
 
 Install via npm:
