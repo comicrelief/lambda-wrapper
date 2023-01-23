@@ -31,6 +31,7 @@ export { default as LambdaWrapper, WrapOptions } from './core/LambdaWrapper';
 
 export {
   default as ResponseModel,
+  RESPONSE_HEADERS,
 } from './models/ResponseModel';
 export {
   default as SQSMessageModel,
