@@ -13,9 +13,9 @@ If you're coming from v1 and updating to v2, check out the [v2 migration guide](
 Install via npm or Yarn:
 
 ```bash
-npm i @comicrelief/lambda-wrapper
+npm i @comicrelief/lambda-wrapper@beta
 # or
-yarn add @comicrelief/lambda-wrapper
+yarn add @comicrelief/lambda-wrapper@beta
 ```
 
 You can then wrap your Lambda handler functions like this:
@@ -186,7 +186,7 @@ When you go to configure your Lambda Wrapper, you can now include your dependenc
 ```ts
 lambdaWrapper.configure<WithSQSServiceConfig>({
   sqs: {
-    queues: 42 // Oops! This will be flaggeed as a type error by TypeScript
+    queues: 42 // Oops! This will be flagged as a type error by TypeScript
   },
 });
 ```
