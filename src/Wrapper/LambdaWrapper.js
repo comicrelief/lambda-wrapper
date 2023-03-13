@@ -92,6 +92,7 @@ export default (configuration, handler, throwError = false) => {
 
     // If the event is to trigger a warm up, then don't bother returning the function.
     if (di.getEvent().source === 'serverless-plugin-warmup') {
+      logger.metric('warmup', true, true);
       return callback(null, 'Lambda is warm!');
     }
 
