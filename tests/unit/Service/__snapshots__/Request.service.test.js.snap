@@ -2,11 +2,11 @@
 
 exports[`Service/RequestService HTTP DELETE .validateAgainstConstraints should return a response containing validation errors if the data provided is incorrect 1`] = `
 ResponseModel {
-  "body": Object {
-    "data": Object {},
+  "body": {
+    "data": {},
     "message": "required fields are missing",
-    "validation_errors": Object {
-      "giftaid": Array [
+    "validation_errors": {
+      "giftaid": [
         "Giftaid is not a number",
       ],
     },
@@ -17,11 +17,11 @@ ResponseModel {
 
 exports[`Service/RequestService HTTP GET .validateAgainstConstraints should return a response containing validation errors if the data provided is incorrect 1`] = `
 ResponseModel {
-  "body": Object {
-    "data": Object {},
+  "body": {
+    "data": {},
     "message": "required fields are missing",
-    "validation_errors": Object {
-      "giftaid": Array [
+    "validation_errors": {
+      "giftaid": [
         "Giftaid is not a number",
       ],
     },
@@ -32,11 +32,11 @@ ResponseModel {
 
 exports[`Service/RequestService HTTP HEAD .validateAgainstConstraints should return a response containing validation errors if the data provided is incorrect 1`] = `
 ResponseModel {
-  "body": Object {
-    "data": Object {},
+  "body": {
+    "data": {},
     "message": "required fields are missing",
-    "validation_errors": Object {
-      "giftaid": Array [
+    "validation_errors": {
+      "giftaid": [
         "Giftaid is not a number",
       ],
     },
@@ -47,11 +47,11 @@ ResponseModel {
 
 exports[`Service/RequestService HTTP OPTIONS .validateAgainstConstraints should return a response containing validation errors if the data provided is incorrect 1`] = `
 ResponseModel {
-  "body": Object {
-    "data": Object {},
+  "body": {
+    "data": {},
     "message": "required fields are missing",
-    "validation_errors": Object {
-      "giftaid": Array [
+    "validation_errors": {
+      "giftaid": [
         "Giftaid is not a number",
       ],
     },
@@ -62,11 +62,11 @@ ResponseModel {
 
 exports[`Service/RequestService HTTP PATCH .validateAgainstConstraints should return a response containing validation errors if the data provided is incorrect 1`] = `
 ResponseModel {
-  "body": Object {
-    "data": Object {},
+  "body": {
+    "data": {},
     "message": "required fields are missing",
-    "validation_errors": Object {
-      "giftaid": Array [
+    "validation_errors": {
+      "giftaid": [
         "Giftaid is not a number",
       ],
     },
@@ -77,11 +77,11 @@ ResponseModel {
 
 exports[`Service/RequestService HTTP POST .validateAgainstConstraints should return a response containing validation errors if the data provided is incorrect 1`] = `
 ResponseModel {
-  "body": Object {
-    "data": Object {},
+  "body": {
+    "data": {},
     "message": "required fields are missing",
-    "validation_errors": Object {
-      "giftaid": Array [
+    "validation_errors": {
+      "giftaid": [
         "Giftaid is not a number",
       ],
     },
@@ -92,11 +92,11 @@ ResponseModel {
 
 exports[`Service/RequestService HTTP PUT .validateAgainstConstraints should return a response containing validation errors if the data provided is incorrect 1`] = `
 ResponseModel {
-  "body": Object {
-    "data": Object {},
+  "body": {
+    "data": {},
     "message": "required fields are missing",
-    "validation_errors": Object {
-      "giftaid": Array [
+    "validation_errors": {
+      "giftaid": [
         "Giftaid is not a number",
       ],
     },
