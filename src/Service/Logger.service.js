@@ -6,7 +6,7 @@ import DependencyAwareClass from '../DependencyInjection/DependencyAware.class';
 import DependencyInjection from '../DependencyInjection/DependencyInjection.class';
 
 // Instantiate the sentry client
-const sentryIsAvailable = typeof process.env.RAVEN_DSN !== 'undefined' && typeof process.env.RAVEN_DSN === 'string' && process.env.RAVEN_DSN !== 'undefined';
+const sentryIsAvailable = process.env.RAVEN_DSN !== undefined && typeof process.env.RAVEN_DSN === 'string' && process.env.RAVEN_DSN !== 'undefined';
 
 if (sentryIsAvailable) {
   Sentry.init({
@@ -118,7 +118,6 @@ export default class LoggerService extends DependencyAwareClass {
    * - message.message
    * - message.response?.status
    * - message.response?.data
-   *
    * @param {object} error
    */
   static processAxiosError(error) {
@@ -144,7 +143,6 @@ export default class LoggerService extends DependencyAwareClass {
   /**
    * Transform the original message
    * before it is passed to the winston logger
-   *
    * @param {string|object} message
    */
   processMessage(message = '') {
@@ -159,7 +157,6 @@ export default class LoggerService extends DependencyAwareClass {
 
   /**
    * Log Error Message
-   *
    * @param error object
    * @param message string
    */
@@ -185,7 +182,6 @@ export default class LoggerService extends DependencyAwareClass {
 
   /**
    * Get sentry client
-   *
    * @returns {null|*}
    */
   getSentry() {
@@ -194,7 +190,6 @@ export default class LoggerService extends DependencyAwareClass {
 
   /**
    * Log Information Message
-   *
    * @param message string
    */
   info(message) {
@@ -209,7 +204,6 @@ export default class LoggerService extends DependencyAwareClass {
    * Please note that `LoggerService.error` and `LoggerService.info`
    * have different signatures. The function uses the shared argument
    * instead of introducing ambiguity.
-   *
    * @param error
    */
   warning(error) {
@@ -224,7 +218,6 @@ export default class LoggerService extends DependencyAwareClass {
 
   /**
    * Add a label
-   *
    * @param descriptor string
    * @param silent     boolean
    */
@@ -245,7 +238,6 @@ export default class LoggerService extends DependencyAwareClass {
 
   /**
    * Add a metric
-   *
    * @param descriptor string
    * @param stat       integer | string
    * @param silent     boolean
@@ -267,7 +259,6 @@ export default class LoggerService extends DependencyAwareClass {
 
   /**
    * Logs an object so that it can be inspected
-   *
    * @param action - What are we doing with the object, i.e. 'Processing'
    * @param object - The object to be stored in logs
    * @param level - 'error', 'warning' or 'info'

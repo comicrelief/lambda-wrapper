@@ -60,7 +60,6 @@ export const SQS_PUBLISH_FAILURE_MODES = {
 export default class SQSService extends DependencyAwareClass {
   /**
    * SQSService constructor
-   *
    * @param di DependencyInjection
    */
   constructor(di: DependencyInjection) {
@@ -155,7 +154,6 @@ export default class SQSService extends DependencyAwareClass {
 
   /**
    * Batch delete messages
-   *
    * @param queue strung
    * @param messageModels [SQSMessageModel]
    * @returns {Promise<any>}
@@ -211,7 +209,6 @@ export default class SQSService extends DependencyAwareClass {
 
   /**
    * Check SQS status
-   *
    * @returns {Promise<any>}
    */
   checkStatus() {
@@ -233,7 +230,7 @@ export default class SQSService extends DependencyAwareClass {
           statusModel.setStatus(STATUS_TYPES.APPLICATION_FAILURE);
         }
 
-        if (typeof data.QueueUrls === 'undefined' || data.QueueUrls.length === 0) {
+        if (data.QueueUrls === undefined || data.QueueUrls.length === 0) {
           statusModel.setStatus(STATUS_TYPES.APPLICATION_FAILURE);
         }
 
@@ -244,7 +241,6 @@ export default class SQSService extends DependencyAwareClass {
 
   /**
    * Get number of messages in a queue
-   *
    * @param queue
    * @returns {Promise<any>}
    */
@@ -283,7 +279,6 @@ export default class SQSService extends DependencyAwareClass {
    * When running within serverless-offline, messages can be published to a
    * local Lambda or SQS service instead of to AWS, depending on the offline
    * mode specified by `process.env.LAMBDA_WRAPPER_OFFLINE_SQS_MODE`.
-   *
    * @param queue          string
    * @param messageObject  object
    * @param messageGroupId string
@@ -311,7 +306,7 @@ export default class SQSService extends DependencyAwareClass {
 
     if (queueUrl.includes('.fifo')) {
       messageParameters.MessageDeduplicationId = UUID();
-      messageParameters.MessageGroupId = messageGroupId !== null ? messageGroupId : UUID();
+      messageParameters.MessageGroupId = messageGroupId === null ? UUID() : messageGroupId;
     }
 
     try {
@@ -337,7 +332,6 @@ export default class SQSService extends DependencyAwareClass {
    * This method invokes the consumer function directly instead of sending the
    * message to SQS, which requires a real or emulated SQS service not provided
    * by serverless-offline. This works very well for local testing.
-   *
    * @param queue
    * @param messageParameters
    */
@@ -372,7 +366,6 @@ export default class SQSService extends DependencyAwareClass {
 
   /**
    * Receive from message queue
-   *
    * @param queue string
    * @param timeout number
    * @returns {Promise<any>}
@@ -401,7 +394,7 @@ export default class SQSService extends DependencyAwareClass {
             return reject(error);
           }
 
-          if (typeof data.Messages === 'undefined') {
+          if (data.Messages === undefined) {
             return resolve([]);
           }
 

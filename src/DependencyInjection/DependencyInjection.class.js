@@ -6,7 +6,6 @@ import { DEFINITIONS, DEPENDENCIES } from '../Config/Dependencies';
 export default class DependencyInjection {
   /**
    * DependencyInjection constructor
-   *
    * @param configuration
    * @param event
    * @param context
@@ -25,7 +24,7 @@ export default class DependencyInjection {
       });
 
       // Iterate over child dependencies and add to container
-      if (typeof configuration.DEPENDENCIES !== 'undefined') {
+      if (configuration.DEPENDENCIES !== undefined) {
         Object.keys(configuration.DEPENDENCIES).forEach((dependencyKey) => {
           this.dependencies[dependencyKey] = new configuration.DEPENDENCIES[dependencyKey](this);
         });
@@ -35,12 +34,11 @@ export default class DependencyInjection {
 
   /**
    * Get Dependency
-   *
    * @param definition
    * @returns {*}
    */
   get(definition) {
-    if (typeof this.dependencies[definition] === 'undefined') {
+    if (this.dependencies[definition] === undefined) {
       throw new TypeError(`${definition} does not exist in di container`);
     }
 
@@ -49,7 +47,6 @@ export default class DependencyInjection {
 
   /**
    * Get Event
-   *
    * @returns {*}
    */
   getEvent() {
@@ -58,7 +55,6 @@ export default class DependencyInjection {
 
   /**
    * Get Context
-   *
    * @returns {*}
    */
   getContext() {
@@ -67,15 +63,14 @@ export default class DependencyInjection {
 
   /**
    * Get Configuration
-   *
    * @param definition string
    * @returns {*}
    */
   getConfiguration(definition = null) {
-    if (definition !== null && typeof this.configuration[definition] === 'undefined') {
+    if (definition !== null && this.configuration[definition] === undefined) {
       return null;
     }
-    if (typeof this.configuration[definition] !== 'undefined') {
+    if (this.configuration[definition] !== undefined) {
       return this.configuration[definition];
     }
 
@@ -85,7 +80,6 @@ export default class DependencyInjection {
   /**
    * Check whether the function
    * is being executed in a serverless-offline context
-   *
    * @returns {boolean}
    */
   get isOffline() {
@@ -107,7 +101,6 @@ export default class DependencyInjection {
    * associated to this DependencyInjection
    * so that services can refer to them
    * without causing circular imports.
-   *
    * @returns {object}
    */
   get definitions() {

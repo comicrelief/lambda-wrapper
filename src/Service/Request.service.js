@@ -46,7 +46,6 @@ export const ERROR_TYPES = {
 export default class RequestService extends DependencyAwareClass {
   /**
    * Get a parameter from the request.
-   *
    * @param parameter
    * @param ifNull
    * @param requestType
@@ -58,12 +57,11 @@ export default class RequestService extends DependencyAwareClass {
       return ifNull;
     }
 
-    return typeof queryParameters[parameter] !== 'undefined' ? queryParameters[parameter] : ifNull;
+    return queryParameters[parameter] === undefined ? ifNull : queryParameters[parameter];
   }
 
   /**
    * Get all HTTP headers included in the request.
-   *
    * @returns {object} An object with a key for each header.
    */
   getAllHeaders() {
@@ -74,7 +72,6 @@ export default class RequestService extends DependencyAwareClass {
    * Get an HTTP header from the request.
    *
    * The header name is case-insensitive.
-   *
    * @param {string} name The name of the header.
    * @param {string} [whenMissing] Value to return if the header is missing.
    *   (default: empty string)
@@ -92,7 +89,6 @@ export default class RequestService extends DependencyAwareClass {
 
   /**
    * Get authorization token
-   *
    * @returns {*}
    */
   getAuthorizationToken() {
@@ -113,7 +109,6 @@ export default class RequestService extends DependencyAwareClass {
 
   /**
    * Get a path parameter
-   *
    * @param parameter
    * @param ifNull mixed
    */
@@ -130,7 +125,7 @@ export default class RequestService extends DependencyAwareClass {
       typeof parameter === 'string'
       && typeof event.pathParameters === 'object'
       && event.pathParameters !== null
-      && typeof event.pathParameters[parameter] !== 'undefined'
+      && event.pathParameters[parameter] !== undefined
     ) {
       return event.pathParameters[parameter];
     }
@@ -140,7 +135,6 @@ export default class RequestService extends DependencyAwareClass {
 
   /**
    * Get all request parameters
-   *
    * @param requestType
    * @returns {{}}
    */
@@ -186,7 +180,7 @@ export default class RequestService extends DependencyAwareClass {
         queryParameters = this.parseForm(true);
       }
 
-      return typeof queryParameters !== 'undefined' ? queryParameters : {};
+      return queryParameters === undefined ? {} : queryParameters;
     }
 
     return null;
@@ -194,16 +188,15 @@ export default class RequestService extends DependencyAwareClass {
 
   /**
    * Fetch the request IP address
-   *
    * @returns {*}
    */
   getIp() {
     const event = this.getContainer().getEvent();
 
     if (
-      typeof event.requestContext !== 'undefined'
-      && typeof event.requestContext.identity !== 'undefined'
-      && typeof event.requestContext.identity.sourceIp !== 'undefined'
+      event.requestContext !== undefined
+      && event.requestContext.identity !== undefined
+      && event.requestContext.identity.sourceIp !== undefined
     ) {
       return event.requestContext.identity.sourceIp;
     }
@@ -213,7 +206,6 @@ export default class RequestService extends DependencyAwareClass {
 
   /**
    * Get user agent
-   *
    * @returns {*}
    */
   getUserBrowserAndDevice() {
@@ -242,7 +234,6 @@ export default class RequestService extends DependencyAwareClass {
 
   /**
    * Test a request against validation constraints
-   *
    * @param constraints
    * @returns {Promise<any>}
    */
@@ -252,7 +243,7 @@ export default class RequestService extends DependencyAwareClass {
     return new Promise((resolve, reject) => {
       const validation = validate(this.getAll(), constraints);
 
-      if (typeof validation === 'undefined') {
+      if (validation === undefined) {
         resolve();
       } else {
         Logger.label('request-validation-failed');
@@ -266,7 +257,6 @@ export default class RequestService extends DependencyAwareClass {
 
   /**
    * Fetch the request multipart form
-   *
    * @param useBuffer
    * @returns {*}
    */
@@ -296,14 +286,13 @@ export default class RequestService extends DependencyAwareClass {
 
   /**
    * Fetch the request AWS event Records
-   *
    * @returns {*}
    */
   getAWSRecords() {
     const event = this.getContainer().getEvent();
     const eventRecord = event.Records && event.Records[0];
 
-    if (typeof event.Records !== 'undefined' && typeof event.Records[0] !== 'undefined' && typeof eventRecord.eventSource !== 'undefined') {
+    if (event.Records !== undefined && event.Records[0] !== undefined && eventRecord.eventSource !== undefined) {
       return eventRecord;
     }
     return null;
@@ -312,7 +301,6 @@ export default class RequestService extends DependencyAwareClass {
   /**
    * Gets a value independently from
    * the case of the key
-   *
    * @param object
    * @param key
    */
@@ -324,7 +312,6 @@ export default class RequestService extends DependencyAwareClass {
   /**
    * Returns the content type
    * assoiated with the request
-   *
    * @param event
    */
   getBoundary(event) {

@@ -12,7 +12,6 @@ export const RESPONSE_HEADERS = {
 
 /**
  * Default message provided as part of response
- *
  * @type {string}
  */
 export const DEFAULT_MESSAGE = 'success';
@@ -23,7 +22,6 @@ export const DEFAULT_MESSAGE = 'success';
 export default class ResponseModel extends Model {
   /**
    * ResponseModel Constructor
-   *
    * @param data
    * @param code
    * @param message
@@ -32,15 +30,14 @@ export default class ResponseModel extends Model {
     super();
 
     this.body = {
-      data: data !== null ? data : {},
-      message: message !== null ? message : DEFAULT_MESSAGE,
+      data: data === null ? {} : data,
+      message: message === null ? DEFAULT_MESSAGE : message,
     };
-    this.code = code !== null ? code : {};
+    this.code = code === null ? {} : code;
   }
 
   /**
    * Add or update a body variable
-   *
    * @param variable
    * @param value
    */
@@ -50,7 +47,6 @@ export default class ResponseModel extends Model {
 
   /**
    * Set Data
-   *
    * @param data
    */
   setData(data: object) {
@@ -59,7 +55,6 @@ export default class ResponseModel extends Model {
 
   /**
    * Set Status Code
-   *
    * @param code
    */
   setCode(code: number) {
@@ -68,7 +63,6 @@ export default class ResponseModel extends Model {
 
   /**
    * Get Status Code
-   *
    * @returns {*}
    */
   getCode() {
@@ -77,7 +71,6 @@ export default class ResponseModel extends Model {
 
   /**
    * Set message
-   *
    * @param message
    */
   setMessage(message: string) {
@@ -86,7 +79,6 @@ export default class ResponseModel extends Model {
 
   /**
    * Get Message
-   *
    * @returns {string|*}
    */
   getMessage() {
@@ -95,7 +87,6 @@ export default class ResponseModel extends Model {
 
   /**
    * Geneate a response
-   *
    * @returns {object}
    */
   generate() {
@@ -113,7 +104,6 @@ export default class ResponseModel extends Model {
    *
    * Saves only 1 line of code
    * but keeps code terse in a lot of places.
-   *
    * @param {*} data
    * @param {*} code
    * @param {*} message

@@ -6,7 +6,6 @@ import { DEFINITIONS } from '../../src/Config/Dependencies';
  * You can pass an overrides object
  * specifying the return values
  * and/or behaviour for each property.
- *
  * @param {object} overrides
  * @param {object} di
  */
@@ -28,7 +27,6 @@ export const getMockedLogger = (overrides = {}, di = null) => {
  *
  * You can pass an overrides object
  * specifying the behaviour of a depedendency.
- *
  * @param {object} overrides
  */
 export const getMockedDi = (overrides = {}) => {

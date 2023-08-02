@@ -14,7 +14,6 @@ const TEST_QUEUE = 'TEST_QUEUE';
 
 /**
  * Generates a SQSService
- *
  * @param {*} param0
  * @param isOffline
  * @returns {SQSService}

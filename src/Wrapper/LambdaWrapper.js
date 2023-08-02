@@ -7,7 +7,6 @@ import ResponseModel from '../Model/Response.model';
 
 /**
  * Processes the outcome once we have one
- *
  * @param di
  * @param outcome
  */
@@ -34,10 +33,9 @@ export const handleSuccess = (di, outcome) => {
  *
  * 1. `error.raiseOnEpsagon` is defined & truthy
  * 2. `error.code` is defined and `error.code >= 500`.
- *
  * @param {DependencyInjection} di
  * @param {Error} error
- * @param {boolean} [throwError=false]
+ * @param {boolean} [throwError]
  */
 export const handleError = (di, error, throwError = false) => {
   const logger = di.get(DEFINITIONS.LOGGER);
@@ -77,7 +75,6 @@ export const handleError = (di, error, throwError = false) => {
  * Wraps a lambda handler, generating a new function
  * that has access to the dependency injection
  * for the service and handles logging and exceptions.
- *
  * @param configuration
  * @param handler
  * @param throwError

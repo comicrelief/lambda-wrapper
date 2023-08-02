@@ -61,7 +61,6 @@ export default class BaseConfigService extends DependencyAwareClass {
 
   /**
    * Returns an S3 client
-   *
    * @returns {S3}
    */
   static get client() {
@@ -72,7 +71,6 @@ export default class BaseConfigService extends DependencyAwareClass {
 
   /**
    * Returns an S3 client
-   *
    * @returns {S3}
    */
   get client() {
@@ -89,7 +87,6 @@ export default class BaseConfigService extends DependencyAwareClass {
 
   /**
    * Puts the given configuration on S3
-   *
    * @param config
    */
   async put(config) {
@@ -145,7 +142,6 @@ export default class BaseConfigService extends DependencyAwareClass {
    * Patches the existing configuration
    * or the default configuration
    * with the provided partial configuration
-   *
    * @param partialConfig
    */
   async patch(partialConfig) {
@@ -175,7 +171,6 @@ export default class BaseConfigService extends DependencyAwareClass {
    *
    * If currentConfig is not supplied
    * it uses `getOrCreate` to fetch it.
-   *
    * @param currentConfig
    */
   async healthCheck(currentConfig = null) {
@@ -187,7 +182,6 @@ export default class BaseConfigService extends DependencyAwareClass {
   /**
    * Ensures that the application is healthy
    * or throws a LambdaTermination
-   *
    * @param currentConfig
    */
   async ensureHealthy(currentConfig = null) {

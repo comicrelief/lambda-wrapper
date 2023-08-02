@@ -20,7 +20,6 @@ const HIGH_LATENCY_DELAYS = {
 export default class PromisifiedDelay {
   /**
    * PromisifiedDelay constructor
-   *
    * @param highLatency
    */
   constructor(highLatency = true) {
@@ -39,7 +38,6 @@ export default class PromisifiedDelay {
 
   /**
    * Create a promisified delay
-   *
    * @returns {Promise<any>}
    */
   get() {

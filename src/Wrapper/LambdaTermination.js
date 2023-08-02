@@ -7,7 +7,6 @@ export default class LambdaTermination extends Error {
    * Offers developer details (that are logged)
    * an code for the Lambda and a front facing
    * consumer message.
-   *
    * @param {object|string} internal
    * @param {number?} code
    * @param {object|string?} body

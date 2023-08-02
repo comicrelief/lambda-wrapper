@@ -8,7 +8,6 @@ import DependencyInjection from '../DependencyInjection/DependencyInjection.clas
 export default class TimerService extends DependencyAwareClass {
   /**
    * TimerService constructor
-   *
    * @param di
    */
   constructor(di: DependencyInjection) {
@@ -18,7 +17,6 @@ export default class TimerService extends DependencyAwareClass {
 
   /**
    * Start timer
-   *
    * @param identifier
    */
   start(identifier: string) {
@@ -27,11 +25,10 @@ export default class TimerService extends DependencyAwareClass {
 
   /**
    * Stop timer
-   *
    * @param identifier
    */
   stop(identifier: string) {
-    if (typeof this.timers[identifier] !== 'undefined') {
+    if (this.timers[identifier] !== undefined) {
       const duration = Date.now() - this.timers[identifier];
 
       this.getContainer().get(DEFINITIONS.LOGGER).info(`Timing - ${identifier} took ${duration}ms to complete`);
