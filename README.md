@@ -204,6 +204,21 @@ lambdaWrapper.configure<WithSQSServiceConfig & WithOtherServiceConfig>({
 });
 ```
 
+## Notes
+
+Lambda Wrapper's dependency injection relies on class names being preserved. If your build process includes minifying or uglifying your code, you'll need to disable these transformations.
+
+In many of our projects we use `serverless-webpack` to bundle service code prior to deployment. To disable name mangling, set `optimization.minimize` to `false` in your webpack config:
+
+```js
+// webpack.config.js
+module.exports = {
+  // ...
+  optimization: {
+    minimize: false,
+  },
+```
+
 ## Development
 
 ### Testing
