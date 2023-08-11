@@ -5,6 +5,7 @@ import { v4 as uuid } from 'uuid';
 
 import DependencyAwareClass from '../core/DependencyAwareClass';
 import DependencyInjection from '../core/DependencyInjection';
+import { LambdaWrapperConfig } from '../core/config';
 import SQSMessageModel from '../models/SQSMessageModel';
 import StatusModel, { STATUS_TYPES } from '../models/StatusModel';
 import LoggerService from './LoggerService';
@@ -25,7 +26,7 @@ export interface SQSServiceConfig {
    * }
    * ```
    */
-  queues?: Record<string, string>;
+  queues?: object;
   /**
    * Maps short friendly queue names to the queue consumer function name, for
    * use with offline SQS emulation. Example:
@@ -47,6 +48,17 @@ export interface SQSServiceConfig {
 export interface WithSQSServiceConfig {
   sqs?: SQSServiceConfig;
 }
+
+/**
+ * Type of a queue name taken from the Lambda Wrapper config type.
+ *
+ * If the `sqs` config key is absent, the resulting type is `never` (since no
+ * queues are defined).
+ */
+export type QueueName<TConfig extends WithSQSServiceConfig> =
+  TConfig extends { sqs: { queues: Record<infer Key, string> } }
+    ? string & Key
+    : never;
 
 /**
  * Allowed values for `process.env.LAMBDA_WRAPPER_OFFLINE_SQS_MODE`.
@@ -120,21 +132,21 @@ export const SQS_PUBLISH_FAILURE_MODES = {
  * });
  * ```
  */
-export default class SQSService extends DependencyAwareClass {
-  readonly queues: Record<string, string>;
+export default class SQSService<TConfig extends LambdaWrapperConfig & WithSQSServiceConfig> extends DependencyAwareClass {
+  readonly queues: Record<QueueName<TConfig>, string>;
 
-  readonly queueConsumers: Record<string, string>;
+  readonly queueConsumers: Record<QueueName<TConfig>, string>;
 
-  readonly queueUrls: Record<string, string>;
+  readonly queueUrls: Record<QueueName<TConfig>, string>;
 
   private $sqs?: AWS.SQS;
 
   private $lambda?: AWS.Lambda;
 
-  constructor(di: DependencyInjection) {
+  constructor(di: DependencyInjection<TConfig>) {
     super(di);
 
-    const config = (this.di.config as WithSQSServiceConfig).sqs;
+    const config = this.di.config.sqs;
     this.queues = config?.queues || {};
     this.queueConsumers = config?.queueConsumers || {};
 
@@ -161,7 +173,7 @@ export default class SQSService extends DependencyAwareClass {
           ? `http://${offlineHost}:${offlinePort}/queue/${queueName}`
           : `https://sqs.${REGION}.amazonaws.com/${accountId}/${queueName}`]
       )),
-    );
+    ) as Record<QueueName<TConfig>, string>;
   }
 
   /**
@@ -220,7 +232,7 @@ export default class SQSService extends DependencyAwareClass {
    * @param queue
    * @param messageModels
    */
-  batchDelete(queue: string, messageModels: SQSMessageModel[]): Promise<void> {
+  batchDelete(queue: QueueName<TConfig>, messageModels: SQSMessageModel[]): Promise<void> {
     const queueUrl = this.queueUrls[queue];
     const logger = this.di.get(LoggerService);
     const timer = this.di.get(TimerService);
@@ -303,7 +315,7 @@ export default class SQSService extends DependencyAwareClass {
    *
    * @param queue
    */
-  getMessageCount(queue: string): Promise<number> {
+  getMessageCount(queue: QueueName<TConfig>): Promise<number> {
     const queueUrl = this.queueUrls[queue];
     const logger = this.di.get(LoggerService);
     const timer = this.di.get(TimerService);
@@ -346,7 +358,7 @@ export default class SQSService extends DependencyAwareClass {
    *   - `catch`: errors will be caught and logged. This is the default.
    *   - `throw`: errors will be thrown, causing promise to reject.
    */
-  async publish(queue: string, messageObject: object, messageGroupId = null, failureMode: 'catch' | 'throw' = SQS_PUBLISH_FAILURE_MODES.CATCH) {
+  async publish(queue: QueueName<TConfig>, messageObject: object, messageGroupId = null, failureMode: 'catch' | 'throw' = SQS_PUBLISH_FAILURE_MODES.CATCH) {
     if (!Object.values(SQS_PUBLISH_FAILURE_MODES).includes(failureMode)) {
       throw new Error(`Invalid value for 'failureMode': ${failureMode}`);
     }
@@ -394,7 +406,7 @@ export default class SQSService extends DependencyAwareClass {
    * @param queue
    * @param messageParameters
    */
-  async publishOffline(queue: string, messageParameters: AWS.SQS.SendMessageRequest) {
+  async publishOffline(queue: QueueName<TConfig>, messageParameters: AWS.SQS.SendMessageRequest) {
     if (!this.di.isOffline) {
       throw new Error('Can only publishOffline while running serverless offline.');
     }
@@ -429,7 +441,7 @@ export default class SQSService extends DependencyAwareClass {
    * @param queue string
    * @param timeout number
    */
-  receive(queue: string, timeout = 15): Promise<SQSMessageModel[]> {
+  receive(queue: QueueName<TConfig>, timeout = 15): Promise<SQSMessageModel[]> {
     const queueUrl = this.queueUrls[queue];
     const logger = this.di.get(LoggerService);
     const timer = this.di.get(TimerService);
