@@ -46,6 +46,7 @@ export const ERROR_TYPES = {
 export default class RequestService extends DependencyAwareClass {
   /**
    * Get a parameter from the request.
+   *
    * @param parameter
    * @param ifNull
    * @param requestType
@@ -62,6 +63,7 @@ export default class RequestService extends DependencyAwareClass {
 
   /**
    * Get all HTTP headers included in the request.
+   *
    * @returns {object} An object with a key for each header.
    */
   getAllHeaders() {
@@ -72,6 +74,7 @@ export default class RequestService extends DependencyAwareClass {
    * Get an HTTP header from the request.
    *
    * The header name is case-insensitive.
+   *
    * @param {string} name The name of the header.
    * @param {string} [whenMissing] Value to return if the header is missing.
    *   (default: empty string)
@@ -89,6 +92,7 @@ export default class RequestService extends DependencyAwareClass {
 
   /**
    * Get authorization token
+   *
    * @returns {*}
    */
   getAuthorizationToken() {
@@ -109,6 +113,7 @@ export default class RequestService extends DependencyAwareClass {
 
   /**
    * Get a path parameter
+   *
    * @param parameter
    * @param ifNull mixed
    */
@@ -135,6 +140,7 @@ export default class RequestService extends DependencyAwareClass {
 
   /**
    * Get all request parameters
+   *
    * @param requestType
    * @returns {{}}
    */
@@ -188,6 +194,7 @@ export default class RequestService extends DependencyAwareClass {
 
   /**
    * Fetch the request IP address
+   *
    * @returns {*}
    */
   getIp() {
@@ -206,6 +213,7 @@ export default class RequestService extends DependencyAwareClass {
 
   /**
    * Get user agent
+   *
    * @returns {*}
    */
   getUserBrowserAndDevice() {
@@ -234,6 +242,7 @@ export default class RequestService extends DependencyAwareClass {
 
   /**
    * Test a request against validation constraints
+   *
    * @param constraints
    * @returns {Promise<any>}
    */
@@ -257,6 +266,7 @@ export default class RequestService extends DependencyAwareClass {
 
   /**
    * Fetch the request multipart form
+   *
    * @param useBuffer
    * @returns {*}
    */
@@ -286,6 +296,7 @@ export default class RequestService extends DependencyAwareClass {
 
   /**
    * Fetch the request AWS event Records
+   *
    * @returns {*}
    */
   getAWSRecords() {
@@ -301,6 +312,7 @@ export default class RequestService extends DependencyAwareClass {
   /**
    * Gets a value independently from
    * the case of the key
+   *
    * @param object
    * @param key
    */
@@ -312,6 +324,7 @@ export default class RequestService extends DependencyAwareClass {
   /**
    * Returns the content type
    * assoiated with the request
+   *
    * @param event
    */
   getBoundary(event) {

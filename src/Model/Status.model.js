@@ -12,6 +12,7 @@ export const STATUS_TYPES = {
 export default class StatusModel extends Model {
   /**
    * StatusModel constructor
+   *
    * @param service
    * @param status
    */
@@ -24,6 +25,7 @@ export default class StatusModel extends Model {
 
   /**
    * Get Service
+   *
    * @returns {*}
    */
   getService(): string {
@@ -32,6 +34,7 @@ export default class StatusModel extends Model {
 
   /**
    * Set Service
+   *
    * @param service
    */
   setService(service: string) {
@@ -40,6 +43,7 @@ export default class StatusModel extends Model {
 
   /**
    * Set the status
+   *
    * @param status
    */
   setStatus(status: string) {
@@ -52,6 +56,7 @@ export default class StatusModel extends Model {
 
   /**
    * Get status
+   *
    * @returns {string|*}
    */
   getStatus(): string {

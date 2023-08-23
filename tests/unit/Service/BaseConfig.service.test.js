@@ -13,6 +13,7 @@ const createAsyncMock = (returnValue) => {
 
 /**
  * Generates a BaseConfigService
+ *
  * @param {*} param0
  * @returns {BaseConfigService}
  */

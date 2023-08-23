@@ -7,6 +7,7 @@ import validate from 'validate.js/validate';
 export default class Model {
   /**
    * Instantiate a function with a value if defined
+   *
    * @param classFunctionName string
    * @param value             mixed
    */
@@ -18,6 +19,7 @@ export default class Model {
 
   /**
    * Validate values against constraints
+   *
    * @param values      object
    * @param constraints object
    * @returns {boolean}

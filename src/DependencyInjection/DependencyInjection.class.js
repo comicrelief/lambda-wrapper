@@ -6,6 +6,7 @@ import { DEFINITIONS, DEPENDENCIES } from '../Config/Dependencies';
 export default class DependencyInjection {
   /**
    * DependencyInjection constructor
+   *
    * @param configuration
    * @param event
    * @param context
@@ -34,6 +35,7 @@ export default class DependencyInjection {
 
   /**
    * Get Dependency
+   *
    * @param definition
    * @returns {*}
    */
@@ -47,6 +49,7 @@ export default class DependencyInjection {
 
   /**
    * Get Event
+   *
    * @returns {*}
    */
   getEvent() {
@@ -55,6 +58,7 @@ export default class DependencyInjection {
 
   /**
    * Get Context
+   *
    * @returns {*}
    */
   getContext() {
@@ -63,6 +67,7 @@ export default class DependencyInjection {
 
   /**
    * Get Configuration
+   *
    * @param definition string
    * @returns {*}
    */
@@ -80,6 +85,7 @@ export default class DependencyInjection {
   /**
    * Check whether the function
    * is being executed in a serverless-offline context
+   *
    * @returns {boolean}
    */
   get isOffline() {
@@ -101,6 +107,7 @@ export default class DependencyInjection {
    * associated to this DependencyInjection
    * so that services can refer to them
    * without causing circular imports.
+   *
    * @returns {object}
    */
   get definitions() {

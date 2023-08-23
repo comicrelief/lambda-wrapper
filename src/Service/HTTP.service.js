@@ -19,6 +19,7 @@ export default class HTTPService extends DependencyAwareClass {
 
   /**
    * Sets the default timeout
+   *
    * @param {number} ms
    */
   setDefaultTimeout(ms) {
@@ -27,6 +28,7 @@ export default class HTTPService extends DependencyAwareClass {
 
   /**
    * Performs and HTTP Request
+   *
    * @param config
    */
   async request(config: AxiosRequestConfig): Promise<AxiosResponse> {

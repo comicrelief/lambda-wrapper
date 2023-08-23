@@ -16,6 +16,7 @@ export const ERROR_TYPES = {
 export default class MarketingPreference extends Model {
   /**
    * Message constructor
+   *
    * @param data object
    */
   constructor(data = {}) {
@@ -73,6 +74,7 @@ export default class MarketingPreference extends Model {
 
   /**
    * Get First Name
+   *
    * @returns {string|*}
    */
   getFirstName() {
@@ -81,6 +83,7 @@ export default class MarketingPreference extends Model {
 
   /**
    * Set First Name
+   *
    * @param value string
    */
   setFirstName(value: string) {
@@ -89,6 +92,7 @@ export default class MarketingPreference extends Model {
 
   /**
    * Get Last Name
+   *
    * @returns {string|*}
    */
   getLastName() {
@@ -97,6 +101,7 @@ export default class MarketingPreference extends Model {
 
   /**
    * Set Last Name
+   *
    * @param value string
    */
   setLastName(value: string) {
@@ -105,6 +110,7 @@ export default class MarketingPreference extends Model {
 
   /**
    * Get phone
+   *
    * @returns {string|*}
    */
   getPhone() {
@@ -113,6 +119,7 @@ export default class MarketingPreference extends Model {
 
   /**
    * Set phone
+   *
    * @param value string
    */
   setPhone(value: string) {
@@ -121,6 +128,7 @@ export default class MarketingPreference extends Model {
 
   /**
    * Get Mobile
+   *
    * @returns {string|*}
    */
   getMobile() {
@@ -129,6 +137,7 @@ export default class MarketingPreference extends Model {
 
   /**
    * Set Mobile
+   *
    * @param value string
    */
   setMobile(value: string) {
@@ -137,6 +146,7 @@ export default class MarketingPreference extends Model {
 
   /**
    * Get Address Line 1
+   *
    * @returns {string|*}
    */
   getAddress1() {
@@ -145,6 +155,7 @@ export default class MarketingPreference extends Model {
 
   /**
    * Set Address Line 1
+   *
    * @param value string
    */
   setAddress1(value: string) {
@@ -153,6 +164,7 @@ export default class MarketingPreference extends Model {
 
   /**
    * Get Address Line 2
+   *
    * @returns {string|*}
    */
   getAddress2() {
@@ -161,6 +173,7 @@ export default class MarketingPreference extends Model {
 
   /**
    * Set Address Line 2
+   *
    * @param value string
    */
   setAddress2(value: string) {
@@ -169,6 +182,7 @@ export default class MarketingPreference extends Model {
 
   /**
    * Get Address Line 3
+   *
    * @returns {string|*}
    */
   getAddress3() {
@@ -177,6 +191,7 @@ export default class MarketingPreference extends Model {
 
   /**
    * Set Address Line 3
+   *
    * @param value string
    */
   setAddress3(value: string) {
@@ -185,6 +200,7 @@ export default class MarketingPreference extends Model {
 
   /**
    * Get Town
+   *
    * @returns {string|*}
    */
   getTown() {
@@ -193,6 +209,7 @@ export default class MarketingPreference extends Model {
 
   /**
    * Set Town
+   *
    * @param value string
    */
   setTown(value: string) {
@@ -201,6 +218,7 @@ export default class MarketingPreference extends Model {
 
   /**
    * Get Postcode
+   *
    * @returns {string|*}
    */
   getPostcode() {
@@ -209,6 +227,7 @@ export default class MarketingPreference extends Model {
 
   /**
    * Set Postcode
+   *
    * @param value string
    */
   setPostcode(value: string) {
@@ -217,6 +236,7 @@ export default class MarketingPreference extends Model {
 
   /**
    * Get Country
+   *
    * @returns {string|*}
    */
   getCountry() {
@@ -225,6 +245,7 @@ export default class MarketingPreference extends Model {
 
   /**
    * Set Country
+   *
    * @param value string
    */
   setCountry(value: string) {
@@ -233,6 +254,7 @@ export default class MarketingPreference extends Model {
 
   /**
    * Get Campaign
+   *
    * @returns {string|*}
    */
   getCampaign() {
@@ -241,6 +263,7 @@ export default class MarketingPreference extends Model {
 
   /**
    * Set Campaign
+   *
    * @param value string
    */
   setCampaign(value: string) {
@@ -249,6 +272,7 @@ export default class MarketingPreference extends Model {
 
   /**
    * Get Transaction Id
+   *
    * @returns {string|*}
    */
   getTransactionId() {
@@ -257,6 +281,7 @@ export default class MarketingPreference extends Model {
 
   /**
    * Set Transaction Id
+   *
    * @param value string
    */
   setTransactionId(value: string) {
@@ -265,6 +290,7 @@ export default class MarketingPreference extends Model {
 
   /**
    * Get Transaction Source
+   *
    * @returns {string|*}
    */
   getTransSource() {
@@ -273,6 +299,7 @@ export default class MarketingPreference extends Model {
 
   /**
    * Set Transaction Source
+   *
    * @param value string
    */
   setTransSource(value: string) {
@@ -281,6 +308,7 @@ export default class MarketingPreference extends Model {
 
   /**
    * Get Transaction Source URL
+   *
    * @returns {string|*}
    */
   getTransSourceUrl() {
@@ -289,6 +317,7 @@ export default class MarketingPreference extends Model {
 
   /**
    * Set Transaction Source URL
+   *
    * @param value string
    */
   setTransSourceUrl(value: string) {
@@ -297,6 +326,7 @@ export default class MarketingPreference extends Model {
 
   /**
    * Get Transaction Type
+   *
    * @returns {string|*}
    */
   getTransType() {
@@ -305,6 +335,7 @@ export default class MarketingPreference extends Model {
 
   /**
    * Set Transaction Type
+   *
    * @param value string
    */
   setTransType(value: string) {
@@ -313,6 +344,7 @@ export default class MarketingPreference extends Model {
 
   /**
    * Get Email
+   *
    * @returns {string|*}
    */
   getEmail() {
@@ -321,6 +353,7 @@ export default class MarketingPreference extends Model {
 
   /**
    * Set Email
+   *
    * @param value string
    */
   setEmail(value: string) {
@@ -329,6 +362,7 @@ export default class MarketingPreference extends Model {
 
   /**
    * Get Email Permission
+   *
    * @returns {string|*}
    */
   getPermissionEmail() {
@@ -337,6 +371,7 @@ export default class MarketingPreference extends Model {
 
   /**
    * Set Email Permission
+   *
    * @param value string
    */
   setPermissionEmail(value: string) {
@@ -345,6 +380,7 @@ export default class MarketingPreference extends Model {
 
   /**
    * Get Post Permission
+   *
    * @returns {string|*}
    */
   getPermissionPost() {
@@ -353,6 +389,7 @@ export default class MarketingPreference extends Model {
 
   /**
    * Set Post Permission
+   *
    * @param value string
    */
   setPermissionPost(value: string) {
@@ -361,6 +398,7 @@ export default class MarketingPreference extends Model {
 
   /**
    * Get Phone Permission
+   *
    * @returns {string|*}
    */
   getPermissionPhone() {
@@ -369,6 +407,7 @@ export default class MarketingPreference extends Model {
 
   /**
    * Set Phone Permission
+   *
    * @param value string
    */
   setPermissionPhone(value: string) {
@@ -377,6 +416,7 @@ export default class MarketingPreference extends Model {
 
   /**
    * Get SMS Permission
+   *
    * @returns {string|*}
    */
   getPermissionSMS() {
@@ -385,6 +425,7 @@ export default class MarketingPreference extends Model {
 
   /**
    * Set SMS Permission
+   *
    * @param value string
    */
   setPermissionSMS(value: string) {
@@ -393,6 +434,7 @@ export default class MarketingPreference extends Model {
 
   /**
    * Get Timestamp
+   *
    * @returns {string|*}
    */
   getTimestamp() {
@@ -401,6 +443,7 @@ export default class MarketingPreference extends Model {
 
   /**
    * Set Timestamp
+   *
    * @param value string
    */
   setTimestamp(value: string) {
@@ -416,6 +459,7 @@ export default class MarketingPreference extends Model {
 
   /**
    * Get Base entity mappings
+   *
    * @returns {object}
    */
   getEntityMappings() {
@@ -446,6 +490,7 @@ export default class MarketingPreference extends Model {
 
   /**
    * Check if any permission is set
+   *
    * @returns {boolean}
    */
   isPermissionSet() {
@@ -459,6 +504,7 @@ export default class MarketingPreference extends Model {
 
   /**
    * Validate the model
+   *
    * @returns {Promise<any>}
    */
   validate() {

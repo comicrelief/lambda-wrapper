@@ -25,6 +25,7 @@ export default class CloudEventModel extends Model {
 
   /**
    * Get Cloud Events Version
+   *
    * @returns {number}
    */
   getCloudEventsVersion(): string {
@@ -33,6 +34,7 @@ export default class CloudEventModel extends Model {
 
   /**
    * Get event type
+   *
    * @returns {string|*}
    */
   getEventType() {
@@ -41,6 +43,7 @@ export default class CloudEventModel extends Model {
 
   /**
    * Set event type
+   *
    * @param value string
    */
   setEventType(value: string) {
@@ -49,6 +52,7 @@ export default class CloudEventModel extends Model {
 
   /**
    * Get source
+   *
    * @returns {string|*}
    */
   getSource() {
@@ -57,6 +61,7 @@ export default class CloudEventModel extends Model {
 
   /**
    * Set source
+   *
    * @param value string
    */
   setSource(value: string) {
@@ -65,6 +70,7 @@ export default class CloudEventModel extends Model {
 
   /**
    * Get event id
+   *
    * @returns {*|string}
    */
   getEventID() {
@@ -73,6 +79,7 @@ export default class CloudEventModel extends Model {
 
   /**
    * Get event time
+   *
    * @returns {*|string}
    */
   getEventTime() {
@@ -81,6 +88,7 @@ export default class CloudEventModel extends Model {
 
   /**
    * Get extensions
+   *
    * @returns {{}|*}
    */
   getExtensions() {
@@ -89,6 +97,7 @@ export default class CloudEventModel extends Model {
 
   /**
    * Set extensions
+   *
    * @param value object
    */
   setExtensions(value: object) {
@@ -97,6 +106,7 @@ export default class CloudEventModel extends Model {
 
   /**
    * Get content type
+   *
    * @returns {string}
    */
   getContentType() {
@@ -105,6 +115,7 @@ export default class CloudEventModel extends Model {
 
   /**
    * Get data
+   *
    * @returns {{}|*}
    */
   getData() {
@@ -113,6 +124,7 @@ export default class CloudEventModel extends Model {
 
   /**
    * Set data
+   *
    * @param value object
    */
   setData(value: object) {

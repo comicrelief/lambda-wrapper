@@ -6,6 +6,7 @@ import Model from '../Model.model';
 export default class Message extends Model {
   /**
    * Message constructor
+   *
    * @param message
    */
   constructor(message) {
@@ -21,6 +22,7 @@ export default class Message extends Model {
 
   /**
    * Get Message ID
+   *
    * @returns {*}
    */
   getMessageId() {
@@ -29,6 +31,7 @@ export default class Message extends Model {
 
   /**
    * Get Receipt Handle
+   *
    * @returns {*}
    */
   getReceiptHandle() {
@@ -37,6 +40,7 @@ export default class Message extends Model {
 
   /**
    * Get Body
+   *
    * @returns {any | *}
    */
   getBody() {
@@ -45,6 +49,7 @@ export default class Message extends Model {
 
   /**
    * Set for deletion status
+   *
    * @param forDeletion
    */
   setForDeletion(forDeletion: boolean) {
@@ -53,6 +58,7 @@ export default class Message extends Model {
 
   /**
    * Whether message is for deletion
+   *
    * @returns {boolean|*}
    */
   isForDeletion() {
@@ -61,6 +67,7 @@ export default class Message extends Model {
 
   /**
    * Get all of the message metadata
+   *
    * @returns {{}}
    */
   getMetaData() {
@@ -69,6 +76,7 @@ export default class Message extends Model {
 
   /**
    * Set message metadata value
+   *
    * @param key
    * @param value
    */
