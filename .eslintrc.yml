@@ -14,3 +14,4 @@ ignorePatterns:
 
 rules:
   unicorn/prefer-node-protocol: off
+  jsdoc/tag-lines: [ 'error', 'any', {  startLines: 1 } ]
