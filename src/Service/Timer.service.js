@@ -31,7 +31,7 @@ export default class TimerService extends DependencyAwareClass {
    * @param identifier
    */
   stop(identifier: string) {
-    if (this.timers[identifier] !== undefined) {
+    if (typeof this.timers[identifier] !== 'undefined') {
       const duration = Date.now() - this.timers[identifier];
 
       this.getContainer().get(DEFINITIONS.LOGGER).info(`Timing - ${identifier} took ${duration}ms to complete`);

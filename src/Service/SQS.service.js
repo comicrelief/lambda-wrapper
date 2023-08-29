@@ -233,7 +233,7 @@ export default class SQSService extends DependencyAwareClass {
           statusModel.setStatus(STATUS_TYPES.APPLICATION_FAILURE);
         }
 
-        if (data.QueueUrls === undefined || data.QueueUrls.length === 0) {
+        if (typeof data.QueueUrls === 'undefined' || data.QueueUrls.length === 0) {
           statusModel.setStatus(STATUS_TYPES.APPLICATION_FAILURE);
         }
 
@@ -311,7 +311,7 @@ export default class SQSService extends DependencyAwareClass {
 
     if (queueUrl.includes('.fifo')) {
       messageParameters.MessageDeduplicationId = UUID();
-      messageParameters.MessageGroupId = messageGroupId === null ? UUID() : messageGroupId;
+      messageParameters.MessageGroupId = messageGroupId !== null ? messageGroupId : UUID();
     }
 
     try {
@@ -401,7 +401,7 @@ export default class SQSService extends DependencyAwareClass {
             return reject(error);
           }
 
-          if (data.Messages === undefined) {
+          if (typeof data.Messages === 'undefined') {
             return resolve([]);
           }
 

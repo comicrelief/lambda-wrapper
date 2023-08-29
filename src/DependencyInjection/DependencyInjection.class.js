@@ -25,7 +25,7 @@ export default class DependencyInjection {
       });
 
       // Iterate over child dependencies and add to container
-      if (configuration.DEPENDENCIES !== undefined) {
+      if (typeof configuration.DEPENDENCIES !== 'undefined') {
         Object.keys(configuration.DEPENDENCIES).forEach((dependencyKey) => {
           this.dependencies[dependencyKey] = new configuration.DEPENDENCIES[dependencyKey](this);
         });
@@ -40,7 +40,7 @@ export default class DependencyInjection {
    * @returns {*}
    */
   get(definition) {
-    if (this.dependencies[definition] === undefined) {
+    if (typeof this.dependencies[definition] === 'undefined') {
       throw new TypeError(`${definition} does not exist in di container`);
     }
 
@@ -72,10 +72,10 @@ export default class DependencyInjection {
    * @returns {*}
    */
   getConfiguration(definition = null) {
-    if (definition !== null && this.configuration[definition] === undefined) {
+    if (definition !== null && typeof this.configuration[definition] === 'undefined') {
       return null;
     }
-    if (this.configuration[definition] !== undefined) {
+    if (typeof this.configuration[definition] !== 'undefined') {
       return this.configuration[definition];
     }
 

@@ -1,9 +1,9 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import validate from 'validate.js';
 
-import requestConstraints from './MarketingPreference.constraints.json';
 import Model from '../Model.model';
 import ResponseModel from '../Response.model';
+import requestConstraints from './MarketingPreference.constraints.json';
 
 // Define action specific error types
 export const ERROR_TYPES = {
@@ -65,7 +65,7 @@ export default class MarketingPreference extends Model {
     this.instantiateFunctionWithDefinedValue('setPermissionEmail', data.permissionEmail);
     this.instantiateFunctionWithDefinedValue('setPermissionPhone', data.permissionPhone);
     this.instantiateFunctionWithDefinedValue('setPermissionSMS', data.permissionSMS);
-    if (data.timestamp !== undefined && data.timestamp !== '' && data.timestamp !== null) {
+    if (typeof data.timestamp !== 'undefined' && data.timestamp !== '' && data.timestamp !== null) {
       this.instantiateFunctionWithDefinedValue('setTimestamp', data.timestamp);
     } else {
       this.generateTimestamp();
@@ -177,7 +177,7 @@ export default class MarketingPreference extends Model {
    * @param value string
    */
   setAddress2(value: string) {
-    this.address2 = value === undefined || value === '' ? null : value;
+    this.address2 = typeof value === 'undefined' || value === '' ? null : value;
   }
 
   /**
@@ -195,7 +195,7 @@ export default class MarketingPreference extends Model {
    * @param value string
    */
   setAddress3(value: string) {
-    this.address3 = value === undefined || value === '' ? null : value;
+    this.address3 = typeof value === 'undefined' || value === '' ? null : value;
   }
 
   /**
@@ -375,7 +375,7 @@ export default class MarketingPreference extends Model {
    * @param value string
    */
   setPermissionEmail(value: string) {
-    this.permissionEmail = value === undefined || value === '' ? null : value;
+    this.permissionEmail = typeof value === 'undefined' || value === '' ? null : value;
   }
 
   /**
@@ -393,7 +393,7 @@ export default class MarketingPreference extends Model {
    * @param value string
    */
   setPermissionPost(value: string) {
-    this.permissionPost = value === undefined || value === '' ? null : value;
+    this.permissionPost = typeof value === 'undefined' || value === '' ? null : value;
   }
 
   /**
@@ -411,7 +411,7 @@ export default class MarketingPreference extends Model {
    * @param value string
    */
   setPermissionPhone(value: string) {
-    this.permissionPhone = value === undefined || value === '' ? null : value;
+    this.permissionPhone = typeof value === 'undefined' || value === '' ? null : value;
   }
 
   /**
@@ -429,7 +429,7 @@ export default class MarketingPreference extends Model {
    * @param value string
    */
   setPermissionSMS(value: string) {
-    this.permissionSMS = value === undefined || value === '' ? null : value;
+    this.permissionSMS = typeof value === 'undefined' || value === '' ? null : value;
   }
 
   /**
@@ -545,7 +545,7 @@ export default class MarketingPreference extends Model {
 
       const validation = validate(this.getEntityMappings(), requestConstraintsClone);
 
-      if (validation === undefined) {
+      if (typeof validation === 'undefined') {
         resolve();
         return;
       }

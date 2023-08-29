@@ -6,7 +6,7 @@ import DependencyAwareClass from '../DependencyInjection/DependencyAware.class';
 import DependencyInjection from '../DependencyInjection/DependencyInjection.class';
 
 // Instantiate the sentry client
-const sentryIsAvailable = process.env.RAVEN_DSN !== undefined && typeof process.env.RAVEN_DSN === 'string' && process.env.RAVEN_DSN !== 'undefined';
+const sentryIsAvailable = typeof process.env.RAVEN_DSN !== 'undefined' && typeof process.env.RAVEN_DSN === 'string' && process.env.RAVEN_DSN !== 'undefined';
 
 if (sentryIsAvailable) {
   Sentry.init({

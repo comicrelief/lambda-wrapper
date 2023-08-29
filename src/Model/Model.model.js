@@ -12,7 +12,7 @@ export default class Model {
    * @param value             mixed
    */
   instantiateFunctionWithDefinedValue(classFunctionName, value) {
-    if (value !== undefined) {
+    if (typeof value !== 'undefined') {
       this[classFunctionName](value);
     }
   }
@@ -26,6 +26,6 @@ export default class Model {
    */
   validateAgainstConstraints(values: object, constraints: object): boolean {
     const validation = validate(values, constraints);
-    return validation === undefined;
+    return typeof validation === 'undefined';
   }
 }

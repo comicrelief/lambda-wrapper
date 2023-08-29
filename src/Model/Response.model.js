@@ -32,10 +32,10 @@ export default class ResponseModel extends Model {
     super();
 
     this.body = {
-      data: data === null ? {} : data,
-      message: message === null ? DEFAULT_MESSAGE : message,
+      data: data !== null ? data : {},
+      message: message !== null ? message : DEFAULT_MESSAGE,
     };
-    this.code = code === null ? {} : code;
+    this.code = code !== null ? code : {};
   }
 
   /**

@@ -37,7 +37,7 @@ export const handleSuccess = (di, outcome) => {
  *
  * @param {DependencyInjection} di
  * @param {Error} error
- * @param {boolean} [throwError]
+ * @param {boolean} [throwError=false]
  */
 export const handleError = (di, error, throwError = false) => {
   const logger = di.get(DEFINITIONS.LOGGER);

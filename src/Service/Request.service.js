@@ -58,7 +58,7 @@ export default class RequestService extends DependencyAwareClass {
       return ifNull;
     }
 
-    return queryParameters[parameter] === undefined ? ifNull : queryParameters[parameter];
+    return typeof queryParameters[parameter] !== 'undefined' ? queryParameters[parameter] : ifNull;
   }
 
   /**
@@ -130,7 +130,7 @@ export default class RequestService extends DependencyAwareClass {
       typeof parameter === 'string'
       && typeof event.pathParameters === 'object'
       && event.pathParameters !== null
-      && event.pathParameters[parameter] !== undefined
+      && typeof event.pathParameters[parameter] !== 'undefined'
     ) {
       return event.pathParameters[parameter];
     }
@@ -186,7 +186,7 @@ export default class RequestService extends DependencyAwareClass {
         queryParameters = this.parseForm(true);
       }
 
-      return queryParameters === undefined ? {} : queryParameters;
+      return typeof queryParameters !== 'undefined' ? queryParameters : {};
     }
 
     return null;
@@ -201,9 +201,9 @@ export default class RequestService extends DependencyAwareClass {
     const event = this.getContainer().getEvent();
 
     if (
-      event.requestContext !== undefined
-      && event.requestContext.identity !== undefined
-      && event.requestContext.identity.sourceIp !== undefined
+      typeof event.requestContext !== 'undefined'
+      && typeof event.requestContext.identity !== 'undefined'
+      && typeof event.requestContext.identity.sourceIp !== 'undefined'
     ) {
       return event.requestContext.identity.sourceIp;
     }
@@ -252,7 +252,7 @@ export default class RequestService extends DependencyAwareClass {
     return new Promise((resolve, reject) => {
       const validation = validate(this.getAll(), constraints);
 
-      if (validation === undefined) {
+      if (typeof validation === 'undefined') {
         resolve();
       } else {
         Logger.label('request-validation-failed');
@@ -303,7 +303,7 @@ export default class RequestService extends DependencyAwareClass {
     const event = this.getContainer().getEvent();
     const eventRecord = event.Records && event.Records[0];
 
-    if (event.Records !== undefined && event.Records[0] !== undefined && eventRecord.eventSource !== undefined) {
+    if (typeof event.Records !== 'undefined' && typeof event.Records[0] !== 'undefined' && typeof eventRecord.eventSource !== 'undefined') {
       return eventRecord;
     }
     return null;
