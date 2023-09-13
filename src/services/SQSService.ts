@@ -198,7 +198,9 @@ export const SQS_PUBLISH_FAILURE_MODES = {
  * type `string | undefined`. In the first example at the top of this page, a
  * type assertion was used to coerce this to `string`.
  */
-export default class SQSService<TConfig extends LambdaWrapperConfig & WithSQSServiceConfig> extends DependencyAwareClass {
+export default class SQSService<
+  TConfig extends LambdaWrapperConfig & WithSQSServiceConfig = any,
+> extends DependencyAwareClass {
   readonly queues: Record<QueueName<TConfig>, string>;
 
   readonly queueConsumers: Record<QueueName<TConfig>, string>;
