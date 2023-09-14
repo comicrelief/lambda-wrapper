@@ -4,7 +4,7 @@ import DependencyAwareClass from './DependencyAwareClass';
 import { LambdaWrapperConfig } from './config';
 
 // eslint-disable-next-line no-use-before-define
-type Class<T> = new (di: DependencyInjection) => T;
+type Class<TInstance, TConfig extends LambdaWrapperConfig> = new (di: DependencyInjection<TConfig>) => TInstance;
 
 /**
  * Dependency injection container.
@@ -12,7 +12,7 @@ type Class<T> = new (di: DependencyInjection) => T;
  * Dependencies (singleton instances of dependency-aware classes) are provided
  * to the main Lambda handler and other dependencies via this class.
  */
-export default class DependencyInjection {
+export default class DependencyInjection<TConfig extends LambdaWrapperConfig = any> {
   /**
    * Instantiated dependencies.
    */
@@ -24,7 +24,7 @@ export default class DependencyInjection {
   private isConstructing = true;
 
   constructor(
-    readonly config: LambdaWrapperConfig,
+    readonly config: TConfig,
     readonly event: any,
     readonly context: Context,
   ) {
@@ -41,7 +41,7 @@ export default class DependencyInjection {
    *
    * @param dependency
    */
-  get<T extends DependencyAwareClass>(dependency: Class<T>): T {
+  get<T extends DependencyAwareClass>(dependency: Class<T, TConfig>): T {
     if (this.isConstructing) {
       throw new Error(
         'Dependencies are not available in dependency class constructors.\n\n'
