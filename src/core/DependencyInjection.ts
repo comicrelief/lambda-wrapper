@@ -45,7 +45,7 @@ export default class DependencyInjection<TConfig extends LambdaWrapperConfig = a
     if (this.isConstructing) {
       throw new Error(
         'Dependencies are not available in dependency class constructors.\n\n'
-        + 'To fix this, call `di.get` in the function where the dependency is'
+        + 'To fix this, call `di.get` in the function where the dependency is '
         + 'used instead of inside your constructor.',
       );
     }
