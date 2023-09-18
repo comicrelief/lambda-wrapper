@@ -1,17 +1,15 @@
 import {
   Context,
   DependencyInjection,
-  LambdaWrapperConfig,
   LoggerService,
   SQSService,
   SQS_PUBLISH_FAILURE_MODES,
   TimerService,
-  WithSQSServiceConfig,
 } from '@/src';
 
 const TEST_QUEUE = 'TEST_QUEUE';
 
-const config: LambdaWrapperConfig & WithSQSServiceConfig = {
+const config = {
   dependencies: {
     SQSService,
     LoggerService,
@@ -35,6 +33,15 @@ const createAsyncMock = (returnValue: any) => {
   return jest.fn().mockReturnValue({ promise: () => mockedValue });
 };
 
+type MockSQSService = SQSService<typeof config> & {
+  sqs: {
+    sendMessage: jest.Mock;
+  };
+  lambda: {
+    invoke: jest.Mock;
+  }
+};
+
 /**
  * Generates a SQSService
  *
@@ -47,7 +54,7 @@ const getService = (
     invoke = null,
   }: any = {},
   isOffline = false,
-): SQSService & { sqs: { sendMessage: jest.Mock }; lambda: { invoke: jest.Mock } } => {
+): MockSQSService => {
   const di = new DependencyInjection(config, {}, {
     invokedFunctionArn: isOffline ? 'offline' : 'arn:aws:lambda:eu-west-1:0123456789:test',
   } as Context);

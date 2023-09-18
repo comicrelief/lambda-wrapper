@@ -13,7 +13,7 @@ export default lambdaWrapper.configure<WithSQSServiceConfig>({
   sqs: {
     queues: {
       // add an entry for each queue mapping to its AWS name
-      submissions: process.env.SQS_QUEUE_SUBMISSIONS,
+      submissions: process.env.SQS_QUEUE_SUBMISSIONS as string,
     },
   },
 });
@@ -34,6 +34,60 @@ export default lambdaWrapper.wrap(async (di) => {
   await sqs.publish('submissions', message);
 });
 ```
+
+## In TypeScript
+
+When using TypeScript, queue names are inferred from your Lambda Wrapper config so that IntelliSense can provide hints and TypeScript will tell you at compile-time if you try to publish to an undefined queue.
+
+```ts
+// ok
+await sqs.publish('submissions', message);
+
+// error: Argument of type '"submission"' is not assignable to parameter of
+// type '"submissions"'.
+await sqs.publish('submission', message);
+```
+
+Note that if you're passing the queue name in as a variable, you'll need to ensure the variable type is specific enough and not simply `string`. If you have a list of queue names you will need to declare it `as const`. Otherwise, use string literal types, or the `QueueName` generic type which extracts the type of all queue names from your Lambda Wrapper config.
+
+```ts
+const myQueues = ['queue1', 'queue2'];
+for (const queue of myQueues) {
+  // won't compile because `queue` is of type `string`
+  await sqs.publish(queue, message);
+}
+
+const myQueues = ['queue1', 'queue2'] as const;
+for (const queue of myQueues) {
+  // ok now because `queue` is of type `"queue1" | "queue2"`
+  await sqs.publish(queue, message);
+}
+
+// you can also simply use string literal types
+let queue: "queue1" | "queue2";
+
+// or accept any queue defined in the config using `QueueName`
+let queue: QueueName<typeof lambdaWrapper.config>;
+```
+
+This is all pretty cool, but the current implementation has a caveat: the `WithSQSServiceConfig` type has to be a little vague about `sqs.queues` in order to get TypeScript to infer its keys. The following config will not raise any errors itself, but is invalid and will make the `QueueName` type `never`.
+
+```ts
+lambdaWrapper.configure<WithSQSServiceConfig>({
+  sqs: {
+    queues: {
+      good: 'good-queue',
+      bad: 0, // oops, not a string, but no errors here!
+    },
+  },
+});
+
+// even though this is queue has valid config, the invalid one breaks it:
+// Argument of type 'string' is not assignable to parameter of type 'never'.
+await sqs.publish('good', message);
+```
+
+If you start getting _not assignable to parameter of type 'never'_ errors on all your `SQSService` method calls, double-check that your config is correct. Be particularly careful with environment variables – by default they have type `string | undefined`. In the first example at the top of this page, a type assertion was used to coerce this to `string`.
 
 ## Serverless Offline & SQS Emulation
 
