@@ -58,6 +58,7 @@ export {
 } from './services/RequestService';
 export {
   default as SQSService,
+  QueueName,
   SQS_OFFLINE_MODES,
   SQS_PUBLISH_FAILURE_MODES,
   SQSServiceConfig,
