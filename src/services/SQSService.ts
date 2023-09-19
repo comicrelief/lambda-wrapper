@@ -16,12 +16,15 @@ export interface SQSServiceConfig {
    * Maps short friendly queue names to the full SQS queue name.
    *
    * Usually we define queue names in our `serverless.yml` and provide them to
-   * the application via environment variables. Example:
+   * the application via environment variables. If you haven't defined types
+   * for your env vars, you'll need to coerce them to `string`.
+   *
+   * Example:
    *
    * ```ts
    * {
    *   queues: {
-   *     submissions: process.env.SQS_QUEUE_SUBMISSIONS,
+   *     submissions: process.env.SQS_QUEUE_SUBMISSIONS as string,
    *   }
    * }
    * ```

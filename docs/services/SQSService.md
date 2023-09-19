@@ -119,8 +119,9 @@ To take advantage of SQS emulation, you will need to do the following in your pr
       queues: {
         // Add an entry for each queue with its AWS name.
         // Usually we define queue names in our serverless.yml and provide them
-        // to the application via environment variables.
-        submissions: process.env.SQS_QUEUE_SUBMISSIONS,
+        // to the application via environment variables. If you haven't defined
+        // types for your env vars, you'll need to coerce them to `string`.
+        submissions: process.env.SQS_QUEUE_SUBMISSIONS as string,
       },
       queueConsumers: {
         // See section below about offline SQS emulation.
