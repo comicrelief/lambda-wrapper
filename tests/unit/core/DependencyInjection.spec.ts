@@ -48,6 +48,19 @@ describe('unit.core.DependencyInjection', () => {
           () => new DependencyInjection(clashConfig, mockEvent, mockContext),
         ).toThrowError('your bundler may be minifying your code');
       });
+
+      it('should not throw if the same dependency is included twice', () => {
+        const okayConfig = {
+          dependencies: {
+            A,
+            again: A,
+          },
+        };
+
+        expect(
+          () => new DependencyInjection(okayConfig, mockEvent, mockContext),
+        ).not.toThrow();
+      });
     });
   });
 

@@ -31,7 +31,7 @@ export default class DependencyInjection<TConfig extends LambdaWrapperConfig = a
     const classes = Object.values(config.dependencies);
 
     // guard against duplicate keys
-    const countByName = classes
+    const countByName = Array.from(new Set(classes))
       .map((Constructor) => Constructor.name)
       .reduce(
         (counts, name) => ({ ...counts, [name]: (counts[name] || 0) + 1 }),
