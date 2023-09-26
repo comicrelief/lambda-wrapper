@@ -28,10 +28,12 @@ export default class DependencyInjection<TConfig extends LambdaWrapperConfig = a
     readonly event: any,
     readonly context: Context,
   ) {
-    const classes = Object.values(config.dependencies);
+    // get unique dependency classes -- a class may be included several times,
+    // but should be instantiated only once
+    const classes = Array.from(new Set(Object.values(config.dependencies)));
 
     // guard against duplicate keys
-    const countByName = Array.from(new Set(classes))
+    const countByName = classes
       .map((Constructor) => Constructor.name)
       .reduce(
         (counts, name) => ({ ...counts, [name]: (counts[name] || 0) + 1 }),
