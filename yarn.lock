@@ -3084,9 +3084,9 @@ available-typed-arrays@^1.0.5:
   integrity sha512-DMD0KiN46eipeziST1LPP/STfDU0sufISXmjSgvVsoU2tqxctQeASejWcfNtxYKqETM1UxQ8sp2OrSBWpHY6sw==
 
 aws-sdk@^2.1427.0:
-  version "2.1446.0"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.1446.0.tgz#589cacd8a241ea0d3516fe329d3c9166279ceda9"
-  integrity sha512-QaIyQz9csPSgujM+asHNWHh6uw1FDh+SxpUERLbePDYwqycQha/0BkOxTciGh/Jhp26tKMnHL7rwrYl37H6RYA==
+  version "2.1467.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.1467.0.tgz#e3f2217ca8592b06021286bac304a58d2635fdb2"
+  integrity sha512-XJNbV2ORQB6XanyBLPJBjvm6axWlblFdyFHa+ZaUK4Kp3cZBggy53+0PMxS3bAGJKcP6h2pZQio9xZMCoebAKQ==
   dependencies:
     buffer "4.9.2"
     events "1.1.1"
