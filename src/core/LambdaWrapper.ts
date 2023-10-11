@@ -1,6 +1,6 @@
-import Epsagon from 'epsagon';
+import * as lumigo from '@lumigo/tracer';
 
-import { Context } from '../index';
+import { Context, Handler } from '../index';
 import ResponseModel from '../models/ResponseModel';
 import LoggerService from '../services/LoggerService';
 import RequestService from '../services/RequestService';
@@ -39,7 +39,7 @@ export default class LambdaWrapper<TConfig extends LambdaWrapperConfig = LambdaW
       handleUncaughtErrors = true,
     } = options || {};
 
-    let wrapper = async (event: any, context: Context) => {
+    let wrapper: Handler = async (event: any, context: Context) => {
       const di = new DependencyInjection(this.config, event, context);
       const request = di.get(RequestService);
       const logger = di.get(LoggerService);
@@ -83,14 +83,11 @@ export default class LambdaWrapper<TConfig extends LambdaWrapperConfig = LambdaW
       }
     };
 
-    // If Epsagon is enabled, wrap the instance in the Epsagon wrapper
-    if (process.env.EPSAGON_TOKEN && process.env.EPSAGON_SERVICE_NAME) {
-      Epsagon.init({
-        token: process.env.EPSAGON_TOKEN,
-        appName: process.env.EPSAGON_SERVICE_NAME,
-      });
+    // If Lumigo is enabled, wrap the handler in the Lumigo wrapper
+    if (process.env.LUMIGO_TOKEN) {
+      const tracer = lumigo.initTracer({ token: process.env.LUMIGO_TOKEN });
 
-      wrapper = Epsagon.lambdaWrapper(wrapper);
+      wrapper = tracer.trace(wrapper);
     }
 
     return wrapper;

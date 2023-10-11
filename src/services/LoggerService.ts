@@ -1,6 +1,6 @@
+import * as lumigo from '@lumigo/tracer';
 import * as Sentry from '@sentry/node';
 import { AxiosError } from 'axios';
-import Epsagon from 'epsagon';
 import Winston from 'winston';
 
 import DependencyAwareClass from '../core/DependencyAwareClass';
@@ -170,14 +170,9 @@ export default class LoggerService extends DependencyAwareClass {
       Sentry.captureException(error);
     }
 
-    if (
-      typeof process.env.EPSAGON_TOKEN === 'string'
-      && process.env.EPSAGON_TOKEN !== 'undefined'
-      && typeof process.env.EPSAGON_SERVICE_NAME === 'string'
-      && process.env.EPSAGON_SERVICE_NAME !== 'undefined'
-      && error instanceof Error
-    ) {
-      Epsagon.setError(error);
+    if (process.env.LUMIGO_TOKEN && error instanceof Error) {
+      // todo: find out what the equivalent is in Lumigo
+      // Epsagon.setError(error);
     }
 
     this.logger.log('error', message, { error: LoggerService.processMessage(error) });
@@ -221,13 +216,9 @@ export default class LoggerService extends DependencyAwareClass {
    * @param silent If `false`, the label will also be logged. (default: false)
    */
   label(descriptor: string, silent = false) {
-    if (
-      typeof process.env.EPSAGON_TOKEN === 'string'
-      && process.env.EPSAGON_TOKEN !== 'undefined'
-      && typeof process.env.EPSAGON_SERVICE_NAME === 'string'
-      && process.env.EPSAGON_SERVICE_NAME !== 'undefined'
-    ) {
-      Epsagon.label(descriptor, true);
+    if (process.env.LUMIGO_TOKEN) {
+      // todo: do we need to use our `tracer` instance here?
+      lumigo.addExecutionTag(descriptor, true);
     }
 
     if (!silent) {
@@ -243,13 +234,9 @@ export default class LoggerService extends DependencyAwareClass {
    * @param silent If `false`, the metric will also be logged. (default: false)
    */
   metric(descriptor: string, stat: number | string, silent = false) {
-    if (
-      typeof process.env.EPSAGON_TOKEN === 'string'
-      && process.env.EPSAGON_TOKEN !== 'undefined'
-      && typeof process.env.EPSAGON_SERVICE_NAME === 'string'
-      && process.env.EPSAGON_SERVICE_NAME !== 'undefined'
-    ) {
-      Epsagon.label(descriptor, stat);
+    if (process.env.LUMIGO_TOKEN) {
+      // todo: do we need to use our `tracer` instance here?
+      lumigo.addExecutionTag(descriptor, stat);
     }
 
     if (silent === false) {
