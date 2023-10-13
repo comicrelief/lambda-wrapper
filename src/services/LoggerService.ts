@@ -170,7 +170,7 @@ export default class LoggerService extends DependencyAwareClass {
       Sentry.captureException(error);
     }
 
-    if (process.env.LUMIGO_TOKEN && error instanceof Error) {
+    if (process.env.LUMIGO_TRACER_TOKEN && error instanceof Error) {
       lumigo.error(message || error.message, { err: error });
     }
 
@@ -215,7 +215,7 @@ export default class LoggerService extends DependencyAwareClass {
    * @param silent If `false`, the label will also be logged. (default: false)
    */
   label(descriptor: string, silent = false) {
-    if (process.env.LUMIGO_TOKEN) {
+    if (process.env.LUMIGO_TRACER_TOKEN) {
       lumigo.addExecutionTag(descriptor, true);
     }
 
@@ -232,7 +232,7 @@ export default class LoggerService extends DependencyAwareClass {
    * @param silent If `false`, the metric will also be logged. (default: false)
    */
   metric(descriptor: string, stat: number | string, silent = false) {
-    if (process.env.LUMIGO_TOKEN) {
+    if (process.env.LUMIGO_TRACER_TOKEN) {
       lumigo.addExecutionTag(descriptor, stat);
     }
 

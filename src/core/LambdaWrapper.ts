@@ -84,8 +84,8 @@ export default class LambdaWrapper<TConfig extends LambdaWrapperConfig = LambdaW
     };
 
     // If Lumigo is enabled, wrap the handler in the Lumigo wrapper
-    if (process.env.LUMIGO_TOKEN) {
-      const tracer = lumigo.initTracer({ token: process.env.LUMIGO_TOKEN });
+    if (process.env.LUMIGO_TRACER_TOKEN) {
+      const tracer = lumigo.initTracer({ token: process.env.LUMIGO_TRACER_TOKEN });
 
       wrapper = tracer.trace(wrapper);
     }
