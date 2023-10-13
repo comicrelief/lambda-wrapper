@@ -216,7 +216,6 @@ export default class LoggerService extends DependencyAwareClass {
    */
   label(descriptor: string, silent = false) {
     if (process.env.LUMIGO_TOKEN) {
-      // todo: do we need to use our `tracer` instance here?
       lumigo.addExecutionTag(descriptor, true);
     }
 
@@ -234,7 +233,6 @@ export default class LoggerService extends DependencyAwareClass {
    */
   metric(descriptor: string, stat: number | string, silent = false) {
     if (process.env.LUMIGO_TOKEN) {
-      // todo: do we need to use our `tracer` instance here?
       lumigo.addExecutionTag(descriptor, stat);
     }
 
