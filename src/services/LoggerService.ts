@@ -171,8 +171,7 @@ export default class LoggerService extends DependencyAwareClass {
     }
 
     if (process.env.LUMIGO_TOKEN && error instanceof Error) {
-      // todo: find out what the equivalent is in Lumigo
-      // Epsagon.setError(error);
+      lumigo.error(message || error.message, { err: error });
     }
 
     this.logger.log('error', message, { error: LoggerService.processMessage(error) });
