@@ -1,6 +1,6 @@
 import * as lumigo from '@lumigo/tracer';
 
-import { Context, Handler } from '../index';
+import { Context } from '../index';
 import ResponseModel from '../models/ResponseModel';
 import LoggerService from '../services/LoggerService';
 import RequestService from '../services/RequestService';
@@ -39,7 +39,7 @@ export default class LambdaWrapper<TConfig extends LambdaWrapperConfig = LambdaW
       handleUncaughtErrors = true,
     } = options || {};
 
-    let wrapper: Handler = async (event: any, context: Context) => {
+    let wrapper = async (event: any, context: Context) => {
       const di = new DependencyInjection(this.config, event, context);
       const request = di.get(RequestService);
       const logger = di.get(LoggerService);
@@ -87,7 +87,10 @@ export default class LambdaWrapper<TConfig extends LambdaWrapperConfig = LambdaW
     if (process.env.LUMIGO_TRACER_TOKEN) {
       const tracer = lumigo.initTracer({ token: process.env.LUMIGO_TRACER_TOKEN });
 
-      wrapper = tracer.trace(wrapper);
+      // Lumigo's wrapper works with both callbacks or promises handlers, and
+      // the returned function behaves the same way as the original. For our
+      // promise-based handler we can safely coerce the type.
+      wrapper = tracer.trace(wrapper) as (event: any, context: Context) => Promise<any>;
     }
 
     return wrapper;
