@@ -112,11 +112,10 @@ export default class LambdaWrapper<TConfig extends LambdaWrapperConfig = LambdaW
   }
 
   /**
-   * Gracefully handles an error, logging in Epsagon and generating a response
+   * Gracefully handles an error, logging in Lumigo and generating a response
    * reflecting the `code` of the error, if defined.
    *
-   * Note about Epsagon:
-   * Epsagon generates alerts for logs on level ERROR. This means that
+   * Lumigo generates alerts for logs on level ERROR. This means that
    * `logger.error` will produce an alert. To avoid meaningless notifications,
    * most likely coming from tests, we log INFO unless either:
    *
