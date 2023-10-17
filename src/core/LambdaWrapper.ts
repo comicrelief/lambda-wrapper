@@ -34,7 +34,10 @@ export default class LambdaWrapper<TConfig extends LambdaWrapperConfig = LambdaW
   /**
    * Wrap the given function.
    */
-  wrap<T>(handler: (di: DependencyInjection<TConfig>) => Promise<T>, options?: WrapOptions) {
+  wrap<T>(
+    handler: (di: DependencyInjection<TConfig>) => T | Promise<T>,
+    options?: WrapOptions,
+  ) {
     const {
       handleUncaughtErrors = true,
     } = options || {};
