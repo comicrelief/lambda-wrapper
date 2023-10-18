@@ -7,7 +7,7 @@ import DependencyAwareClass from '../core/DependencyAwareClass';
 import DependencyInjection from '../core/DependencyInjection';
 import { LambdaWrapperConfig } from '../core/config';
 import SQSMessageModel from '../models/SQSMessageModel';
-import { ServiceStatus, Status } from '../models/StatusModel';
+import { ServiceStatus, Status } from '../types/Status';
 import LoggerService from './LoggerService';
 import TimerService from './TimerService';
 

@@ -36,10 +36,6 @@ export {
 export {
   default as SQSMessageModel,
 } from './models/SQSMessageModel';
-export {
-  ServiceStatus,
-  Status,
-} from './models/StatusModel';
 
 export {
   default as BaseConfigService,
@@ -67,6 +63,11 @@ export {
 export {
   default as TimerService,
 } from './services/TimerService';
+
+export {
+  ServiceStatus,
+  Status,
+} from './types/Status';
 
 export { default as LambdaTermination } from './utils/LambdaTermination';
 export { default as PromisifiedDelay } from './utils/PromisifiedDelay';
