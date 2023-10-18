@@ -5,6 +5,7 @@ import Winston from 'winston';
 
 import DependencyAwareClass from '../core/DependencyAwareClass';
 import DependencyInjection from '../core/DependencyInjection';
+import LambdaWrapper from '../core/LambdaWrapper';
 
 const sentryIsAvailable = typeof process.env.RAVEN_DSN !== 'undefined' && typeof process.env.RAVEN_DSN === 'string' && process.env.RAVEN_DSN !== 'undefined';
 
@@ -170,7 +171,7 @@ export default class LoggerService extends DependencyAwareClass {
       Sentry.captureException(error);
     }
 
-    if (process.env.LUMIGO_TRACER_TOKEN && error instanceof Error) {
+    if (LambdaWrapper.isLumigoEnabled && error instanceof Error) {
       lumigo.error(message || error.message, { err: error });
     }
 
@@ -215,7 +216,7 @@ export default class LoggerService extends DependencyAwareClass {
    * @param silent If `false`, the label will also be logged. (default: false)
    */
   label(descriptor: string, silent = false) {
-    if (process.env.LUMIGO_TRACER_TOKEN) {
+    if (LambdaWrapper.isLumigoEnabled) {
       lumigo.addExecutionTag(descriptor, true);
     }
 
@@ -232,7 +233,7 @@ export default class LoggerService extends DependencyAwareClass {
    * @param silent If `false`, the metric will also be logged. (default: false)
    */
   metric(descriptor: string, stat: number | string, silent = false) {
-    if (process.env.LUMIGO_TRACER_TOKEN) {
+    if (LambdaWrapper.isLumigoEnabled) {
       lumigo.addExecutionTag(descriptor, stat);
     }
 

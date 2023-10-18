@@ -87,9 +87,7 @@ export default class LambdaWrapper<TConfig extends LambdaWrapperConfig = LambdaW
     };
 
     // If Lumigo is enabled, wrap the handler in the Lumigo wrapper
-    // (note that `LUMIGO_TRACER_TOKEN` will be present in both auto-traced and
-    // manually traced functions)
-    if (process.env.LUMIGO_TRACER_TOKEN) {
+    if (LambdaWrapper.isLumigoEnabled) {
       const tracer = lumigo.initTracer({ token: process.env.LUMIGO_TRACER_TOKEN });
 
       // Lumigo's wrapper works with both callbacks or promises handlers, and
@@ -99,6 +97,16 @@ export default class LambdaWrapper<TConfig extends LambdaWrapperConfig = LambdaW
     }
 
     return wrapper;
+  }
+
+  /**
+   * `true` if we will send traces to Lumigo.
+   *
+   * The `LUMIGO_TRACER_TOKEN` env var is present in both manually traced and
+   * auto-traced functions.
+   */
+  static get isLumigoEnabled(): boolean {
+    return !!process.env.LUMIGO_TRACER_TOKEN;
   }
 
   /**
