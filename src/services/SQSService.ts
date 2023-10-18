@@ -7,7 +7,7 @@ import DependencyAwareClass from '../core/DependencyAwareClass';
 import DependencyInjection from '../core/DependencyInjection';
 import { LambdaWrapperConfig } from '../core/config';
 import SQSMessageModel from '../models/SQSMessageModel';
-import StatusModel, { STATUS_TYPES } from '../models/StatusModel';
+import { ServiceStatus, Status } from '../models/StatusModel';
 import LoggerService from './LoggerService';
 import TimerService from './TimerService';
 
@@ -354,7 +354,7 @@ export default class SQSService<
   /**
    * Check SQS status.
    */
-  checkStatus() {
+  checkStatus(): Promise<ServiceStatus> {
     const logger = this.di.get(LoggerService);
     const timer = this.di.get(TimerService);
     const timerId = `sqs-list-queues-${uuid()}`;
@@ -365,18 +365,21 @@ export default class SQSService<
       this.sqs.listQueues({}, (error, data) => {
         timer.stop(timerId);
 
-        const statusModel = new StatusModel('SQS', STATUS_TYPES.OK);
+        let status: Status = 'OK';
 
         if (error) {
           logger.error(error);
-          statusModel.setStatus(STATUS_TYPES.APPLICATION_FAILURE);
+          status = 'APPLICATION_FAILURE';
         }
 
         if (typeof data.QueueUrls === 'undefined' || data.QueueUrls.length === 0) {
-          statusModel.setStatus(STATUS_TYPES.APPLICATION_FAILURE);
+          status = 'APPLICATION_FAILURE';
         }
 
-        resolve(statusModel);
+        resolve({
+          service: 'SQS',
+          status,
+        });
       });
     });
   }

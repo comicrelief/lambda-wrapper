@@ -37,8 +37,8 @@ export {
   default as SQSMessageModel,
 } from './models/SQSMessageModel';
 export {
-  default as StatusModel,
-  STATUS_TYPES,
+  ServiceStatus,
+  Status,
 } from './models/StatusModel';
 
 export {
