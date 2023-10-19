@@ -204,6 +204,14 @@ lambdaWrapper.configure<WithSQSServiceConfig & WithOtherServiceConfig>({
 });
 ```
 
+## Monitoring
+
+At Comic Relief we use [Lumigo](https://lumigo.io/) for monitoring and observability of our deployed services. Lambda Wrapper includes the Lumigo tracer to allow us to tag traces with custom labels and metrics ([execution tags](https://docs.lumigo.io/docs/execution-tags)).
+
+Lumigo integration works out-of-the-box with Lumigo's [auto-trace feature](https://docs.lumigo.io/docs/serverless-applications#automatic-instrumentation). If you prefer manual tracing, enable it by setting `LUMIGO_TRACER_TOKEN` in your Lambda environment variables.
+
+And if you don't use Lumigo, don't worry, their tracer will not be instantiated in your functions and no calls will be made to their servers unless `LUMIGO_TRACER_TOKEN` is set.
+
 ## Notes
 
 Lambda Wrapper's dependency injection relies on class names being preserved. If your build process includes minifying or uglifying your code, you'll need to disable these transformations.
