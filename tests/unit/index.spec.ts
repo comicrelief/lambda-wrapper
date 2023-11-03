@@ -3,7 +3,6 @@ import DependencyInjection from '@/src/core/DependencyInjection';
 import LambdaWrapper from '@/src/core/LambdaWrapper';
 import ResponseModel, { RESPONSE_HEADERS } from '@/src/models/ResponseModel';
 import SQSMessageModel from '@/src/models/SQSMessageModel';
-import StatusModel from '@/src/models/StatusModel';
 import BaseConfigService from '@/src/services/BaseConfigService';
 import HTTPService, { COMICRELIEF_TEST_METADATA_HEADER } from '@/src/services/HTTPService';
 import LoggerService from '@/src/services/LoggerService';
@@ -50,10 +49,6 @@ describe('unit.index', () => {
 
   it('should export SQSMessageModel', () => {
     expect(lib.SQSMessageModel).toBe(SQSMessageModel);
-  });
-
-  it('should export StatusModel', () => {
-    expect(lib.StatusModel).toBe(StatusModel);
   });
 
   // services

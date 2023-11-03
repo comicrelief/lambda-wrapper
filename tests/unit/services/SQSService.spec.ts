@@ -33,6 +33,16 @@ const createAsyncMock = (returnValue: any) => {
   return jest.fn().mockReturnValue({ promise: () => mockedValue });
 };
 
+const createCallbackMock = (returnValue: any) => jest.fn()
+  .mockImplementation((...args: any[]) => {
+    const callback = args.pop();
+    if (returnValue instanceof Error) {
+      callback(returnValue, {});
+    } else {
+      callback(null, returnValue);
+    }
+  });
+
 type MockSQSService = SQSService<typeof config> & {
   sqs: {
     sendMessage: jest.Mock;
@@ -50,6 +60,7 @@ type MockSQSService = SQSService<typeof config> & {
  */
 const getService = (
   {
+    listQueues = null,
     sendMessage = null,
     invoke = null,
   }: any = {},
@@ -64,6 +75,7 @@ const getService = (
 
   const service = di.get(SQSService);
   const sqs = {
+    listQueues: createCallbackMock(listQueues),
     sendMessage: createAsyncMock(sendMessage),
   } as unknown as AWS.SQS;
   const lambda = {
@@ -108,6 +120,54 @@ describe('unit.services.SQSService', () => {
 
     expect(sqs.queues).toEqual(config.sqs?.queues);
     expect(sqs.queueConsumers).toEqual(config.sqs?.queueConsumers);
+  });
+
+  describe('checkStatus', () => {
+    describe('when SQS is available', () => {
+      it('should return status "OK"', async () => {
+        const service = getService({
+          listQueues: {
+            QueueUrls: [config.sqs.queues[TEST_QUEUE]],
+          },
+        }, false);
+
+        const result = await service.checkStatus();
+        expect(result).toEqual({
+          service: 'SQS',
+          status: 'OK',
+        });
+      });
+    });
+
+    describe('when SQS is unavailable', () => {
+      it('should return status "APPLICATION_FAILURE"', async () => {
+        const service = getService({
+          listQueues: new Error('service unavailable'),
+        }, false);
+
+        const result = await service.checkStatus();
+        expect(result).toEqual({
+          service: 'SQS',
+          status: 'APPLICATION_FAILURE',
+        });
+      });
+    });
+
+    describe('when `listQueues` returns no queues', () => {
+      it('should return status "APPLICATION_FAILURE"', async () => {
+        const service = getService({
+          listQueues: {
+            QueueUrls: [],
+          },
+        }, false);
+
+        const result = await service.checkStatus();
+        expect(result).toEqual({
+          service: 'SQS',
+          status: 'APPLICATION_FAILURE',
+        });
+      });
+    });
   });
 
   describe('publish', () => {
