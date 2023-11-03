@@ -28,7 +28,38 @@ export default class DependencyInjection<TConfig extends LambdaWrapperConfig = a
     readonly event: any,
     readonly context: Context,
   ) {
-    const classes = Object.values(config.dependencies);
+    // get unique dependency classes -- a class may be included several times,
+    // but should be instantiated only once
+    const classes = Array.from(new Set(Object.values(config.dependencies)));
+
+    // guard against duplicate keys
+    const countByName = classes
+      .map((Constructor) => Constructor.name)
+      .reduce(
+        (counts, name) => ({ ...counts, [name]: (counts[name] || 0) + 1 }),
+        {} as Record<string, number>,
+      );
+    if (Object.values(countByName).some((count) => count > 1)) {
+      const duplicateNames = Object.entries(countByName)
+        .filter(([, count]) => count > 1)
+        .map(([name]) => name);
+
+      // if all class names are single-letter, they're probably minified -- in
+      // this case, give a hint about how to fix it
+      const action = duplicateNames.every((it) => it.length === 1)
+        ? "If you don't recognise the single-letter names listed above, your "
+          + "bundler may be minifying your code. You'll need to disable this "
+          + 'for Lambda Wrapper to work correctly. Please refer to the Notes '
+          + 'section of the Lambda Wrapper readme:\n\n'
+          + '  https://github.com/comicrelief/lambda-wrapper/tree/beta#notes'
+        : 'Please ensure that all dependency classes have a unique name.';
+
+      throw new Error(
+        `Dependency names are not unique: ${duplicateNames.join(', ')}\n\n${action}`,
+      );
+    }
+
+    // instantiate all dependencies
     this.dependencies = Object.fromEntries(
       classes.map((Constructor) => [Constructor.name, new Constructor(this)]),
     );

@@ -1,11 +1,15 @@
-import { DependencyAwareClass, DependencyInjection } from '@/src';
+import { DependencyInjection } from '@/src';
 import { mockContext, mockEvent } from '@/tests/mocks/aws';
-
-class A extends DependencyAwareClass {}
-
-class B extends DependencyAwareClass {}
-
-class C extends DependencyAwareClass {}
+import {
+  A,
+  B,
+  C,
+  ServiceA,
+} from '@/tests/mocks/dependencies';
+import {
+  A as AClash,
+  ServiceA as ServiceAClash,
+} from '@/tests/mocks/dependencies2';
 
 describe('unit.core.DependencyInjection', () => {
   const mockConfig = {
@@ -16,6 +20,49 @@ describe('unit.core.DependencyInjection', () => {
   };
 
   const di = new DependencyInjection(mockConfig, mockEvent, mockContext);
+
+  describe('constructor', () => {
+    describe('dependency conflicts', () => {
+      it('should throw if dependencies have conflicting names', () => {
+        const clashConfig = {
+          dependencies: {
+            ServiceA,
+            ServiceAClash,
+          },
+        };
+
+        expect(
+          () => new DependencyInjection(clashConfig, mockEvent, mockContext),
+        ).toThrowError('ensure that all dependency classes have a unique name');
+      });
+
+      it('should suggest turning off minification if names are single-letter', () => {
+        const clashConfig = {
+          dependencies: {
+            A,
+            AClash,
+          },
+        };
+
+        expect(
+          () => new DependencyInjection(clashConfig, mockEvent, mockContext),
+        ).toThrowError('your bundler may be minifying your code');
+      });
+
+      it('should not throw if the same dependency is included twice', () => {
+        const okayConfig = {
+          dependencies: {
+            A,
+            again: A,
+          },
+        };
+
+        expect(
+          () => new DependencyInjection(okayConfig, mockEvent, mockContext),
+        ).not.toThrow();
+      });
+    });
+  });
 
   describe('event', () => {
     it('should expose the event', () => {
