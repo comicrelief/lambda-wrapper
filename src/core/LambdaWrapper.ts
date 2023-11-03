@@ -1,4 +1,4 @@
-import Epsagon from 'epsagon';
+import * as lumigo from '@lumigo/tracer';
 
 import { Context } from '../index';
 import ResponseModel from '../models/ResponseModel';
@@ -34,7 +34,10 @@ export default class LambdaWrapper<TConfig extends LambdaWrapperConfig = LambdaW
   /**
    * Wrap the given function.
    */
-  wrap<T>(handler: (di: DependencyInjection<TConfig>) => Promise<T>, options?: WrapOptions) {
+  wrap<T>(
+    handler: (di: DependencyInjection<TConfig>) => T | Promise<T>,
+    options?: WrapOptions,
+  ) {
     const {
       handleUncaughtErrors = true,
     } = options || {};
@@ -83,17 +86,43 @@ export default class LambdaWrapper<TConfig extends LambdaWrapperConfig = LambdaW
       }
     };
 
-    // If Epsagon is enabled, wrap the instance in the Epsagon wrapper
-    if (process.env.EPSAGON_TOKEN && process.env.EPSAGON_SERVICE_NAME) {
-      Epsagon.init({
-        token: process.env.EPSAGON_TOKEN,
-        appName: process.env.EPSAGON_SERVICE_NAME,
-      });
+    // If Lumigo is enabled, wrap the handler in the Lumigo wrapper
+    if (LambdaWrapper.isLumigoEnabled && !LambdaWrapper.isLumigoWrappingUs) {
+      const tracer = lumigo.initTracer({ token: process.env.LUMIGO_TRACER_TOKEN });
 
-      wrapper = Epsagon.lambdaWrapper(wrapper);
+      // Lumigo's wrapper works with both callbacks or promises handlers, and
+      // the returned function behaves the same way as the original. For our
+      // promise-based handler we can safely coerce the type.
+      wrapper = tracer.trace(wrapper) as (event: any, context: Context) => Promise<any>;
     }
 
     return wrapper;
+  }
+
+  /**
+   * `true` if we will send traces to Lumigo.
+   *
+   * The `LUMIGO_TRACER_TOKEN` env var is present in both manually traced and
+   * auto-traced functions.
+   */
+  static get isLumigoEnabled(): boolean {
+    return !!process.env.LUMIGO_TRACER_TOKEN;
+  }
+
+  /**
+   * `true` if the Lambda function is already being traced by a higher-level
+   * Lumigo wrapper, in which case we don't need to manually wrap our handlers.
+   *
+   * There are two ways that this can be done, based on the documentation
+   * [here](https://docs.lumigo.io/docs/lambda-layers): using a Lambda runtime
+   * wrapper, or handler redirection. Each method can be detected via its
+   * environment variables. Auto-trace uses the runtime wrapper.
+   */
+  static get isLumigoWrappingUs(): boolean {
+    return this.isLumigoEnabled && (
+      process.env.AWS_LAMBDA_EXEC_WRAPPER === '/opt/lumigo_wrapper'
+      || !!process.env.LUMIGO_ORIGINAL_HANDLER
+    );
   }
 
   /**
@@ -112,11 +141,10 @@ export default class LambdaWrapper<TConfig extends LambdaWrapperConfig = LambdaW
   }
 
   /**
-   * Gracefully handles an error, logging in Epsagon and generating a response
+   * Gracefully handles an error, logging in Lumigo and generating a response
    * reflecting the `code` of the error, if defined.
    *
-   * Note about Epsagon:
-   * Epsagon generates alerts for logs on level ERROR. This means that
+   * Lumigo generates alerts for logs on level ERROR. This means that
    * `logger.error` will produce an alert. To avoid meaningless notifications,
    * most likely coming from tests, we log INFO unless either:
    *

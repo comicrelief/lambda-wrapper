@@ -1,10 +1,11 @@
+import * as lumigo from '@lumigo/tracer';
 import * as Sentry from '@sentry/node';
 import { AxiosError } from 'axios';
-import Epsagon from 'epsagon';
 import Winston from 'winston';
 
 import DependencyAwareClass from '../core/DependencyAwareClass';
 import DependencyInjection from '../core/DependencyInjection';
+import LambdaWrapper from '../core/LambdaWrapper';
 
 const sentryIsAvailable = typeof process.env.RAVEN_DSN !== 'undefined' && typeof process.env.RAVEN_DSN === 'string' && process.env.RAVEN_DSN !== 'undefined';
 
@@ -170,14 +171,8 @@ export default class LoggerService extends DependencyAwareClass {
       Sentry.captureException(error);
     }
 
-    if (
-      typeof process.env.EPSAGON_TOKEN === 'string'
-      && process.env.EPSAGON_TOKEN !== 'undefined'
-      && typeof process.env.EPSAGON_SERVICE_NAME === 'string'
-      && process.env.EPSAGON_SERVICE_NAME !== 'undefined'
-      && error instanceof Error
-    ) {
-      Epsagon.setError(error);
+    if (LambdaWrapper.isLumigoEnabled && error instanceof Error) {
+      lumigo.error(message || error.message, { err: error });
     }
 
     this.logger.log('error', message, { error: LoggerService.processMessage(error) });
@@ -221,13 +216,8 @@ export default class LoggerService extends DependencyAwareClass {
    * @param silent If `false`, the label will also be logged. (default: false)
    */
   label(descriptor: string, silent = false) {
-    if (
-      typeof process.env.EPSAGON_TOKEN === 'string'
-      && process.env.EPSAGON_TOKEN !== 'undefined'
-      && typeof process.env.EPSAGON_SERVICE_NAME === 'string'
-      && process.env.EPSAGON_SERVICE_NAME !== 'undefined'
-    ) {
-      Epsagon.label(descriptor, true);
+    if (LambdaWrapper.isLumigoEnabled) {
+      lumigo.addExecutionTag(descriptor, true);
     }
 
     if (!silent) {
@@ -243,13 +233,8 @@ export default class LoggerService extends DependencyAwareClass {
    * @param silent If `false`, the metric will also be logged. (default: false)
    */
   metric(descriptor: string, stat: number | string, silent = false) {
-    if (
-      typeof process.env.EPSAGON_TOKEN === 'string'
-      && process.env.EPSAGON_TOKEN !== 'undefined'
-      && typeof process.env.EPSAGON_SERVICE_NAME === 'string'
-      && process.env.EPSAGON_SERVICE_NAME !== 'undefined'
-    ) {
-      Epsagon.label(descriptor, stat);
+    if (LambdaWrapper.isLumigoEnabled) {
+      lumigo.addExecutionTag(descriptor, stat);
     }
 
     if (silent === false) {
