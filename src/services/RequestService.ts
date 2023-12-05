@@ -72,7 +72,7 @@ export default class RequestService extends DependencyAwareClass {
    *
    * @returns An object with a key for each header.
    */
-  getAllHeaders() {
+  getAllHeaders(): Record<string, string | undefined> {
     const event = this.di.event as APIGatewayProxyEvent;
     if (!event.headers) {
       return {};
