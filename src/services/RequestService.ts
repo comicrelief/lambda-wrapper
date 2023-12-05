@@ -94,9 +94,6 @@ export default class RequestService extends DependencyAwareClass {
    */
   getHeader(name: string, whenMissing = ''): string {
     const headers = this.getAllHeaders();
-    if (!headers) {
-      return whenMissing;
-    }
     const lowerName = name.toLowerCase();
     return headers[lowerName] ?? whenMissing;
   }
