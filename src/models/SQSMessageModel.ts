@@ -8,7 +8,7 @@ export default class Message {
 
   readonly receiptHandle: string;
 
-  readonly body: string;
+  readonly body: unknown;
 
   readonly metadata: Record<string, any> = {};
 
