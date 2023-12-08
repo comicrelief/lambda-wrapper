@@ -4,15 +4,15 @@ import { SQS } from 'aws-sdk';
  * Message model for SQS.
  */
 export default class Message {
-  messageId: string;
+  readonly messageId: string;
 
-  receiptHandle: string;
+  readonly receiptHandle: string;
 
-  body: string;
+  readonly body: string;
+
+  readonly metadata: Record<string, any> = {};
 
   forDeletion = false;
-
-  metadata: Record<string, any> = {};
 
   constructor(message: SQS.Message) {
     // todo: validate rather than assert the type
