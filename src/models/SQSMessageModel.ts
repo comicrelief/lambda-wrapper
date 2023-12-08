@@ -15,10 +15,24 @@ export default class Message {
   metadata: Record<string, any> = {};
 
   constructor(message: SQS.Message) {
-    // todo: validate rather than assert the type
-    this.messageId = message.MessageId!;
-    this.receiptHandle = message.ReceiptHandle!;
-    this.body = JSON.parse(message.Body!);
+    if (!message.MessageId) {
+      throw new TypeError('Message does not have a MessageId');
+    }
+    if (!message.ReceiptHandle) {
+      throw new TypeError('Message does not have a ReceiptHandle');
+    }
+    if (!message.Body) {
+      throw new TypeError('Message does not have a Body');
+    }
+
+    this.messageId = message.MessageId;
+    this.receiptHandle = message.ReceiptHandle;
+
+    try {
+      this.body = JSON.parse(message.Body);
+    } catch (error) {
+      throw new TypeError('Message body is not valid JSON');
+    }
   }
 
   /**
