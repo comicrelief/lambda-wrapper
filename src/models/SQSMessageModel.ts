@@ -1,7 +1,17 @@
 import { SQS } from 'aws-sdk';
 
 /**
- * Message model for SQS.
+ * Model for message received from SQS.
+ *
+ * This model is used to return messages from `SQSService#receive`, and
+ * provides access to the message body (parsed from JSON) and everything needed
+ * for deletion (message ID and receipt handle).
+ *
+ * Once you've successfully processed a message, flag it for deletion using
+ * `setForDeletion(true)`. You can then batch-delete messages using
+ * `SQSService#batchDelete`. This will _not_ delete messages that have
+ * not had the `forDeletion` flag set, allowing them to remain in the queue and
+ * be processed again at a later time.
  */
 export default class Message {
   messageId: string;
