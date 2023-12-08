@@ -1,3 +1,5 @@
+import type { SQS } from 'aws-sdk';
+
 import { SQSMessageModel as Message } from '@/src';
 
 describe('unit.models.SQSMessageModel', () => {
@@ -12,6 +14,38 @@ describe('unit.models.SQSMessageModel', () => {
   };
 
   const messageModel = new Message(mockedMessage);
+
+  describe('constructor', () => {
+    it('should throw if message is missing MessageId', () => {
+      const message: SQS.Message = { ...mockedMessage };
+      delete message.MessageId;
+
+      expect(() => new Message(message)).toThrowError(TypeError);
+    });
+
+    it('should throw if message is missing ReceiptHandle', () => {
+      const message: SQS.Message = { ...mockedMessage };
+      delete message.ReceiptHandle;
+
+      expect(() => new Message(message)).toThrowError(TypeError);
+    });
+
+    it('should throw if message is missing Body', () => {
+      const message: SQS.Message = { ...mockedMessage };
+      delete message.Body;
+
+      expect(() => new Message(message)).toThrowError(TypeError);
+    });
+
+    it('should throw if message body is not valid JSON', () => {
+      const message: SQS.Message = {
+        ...mockedMessage,
+        Body: 'This is not JSON!',
+      };
+
+      expect(() => new Message(message)).toThrowError(TypeError);
+    });
+  });
 
   describe('getMessageId', () => {
     it('should return the message ID', () => {
