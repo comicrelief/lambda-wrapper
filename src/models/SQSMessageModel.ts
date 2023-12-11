@@ -4,15 +4,15 @@ import { SQS } from 'aws-sdk';
  * Message model for SQS.
  */
 export default class Message {
-  messageId: string;
+  readonly messageId: string;
 
-  receiptHandle: string;
+  readonly receiptHandle: string;
 
-  body: string;
+  readonly body: unknown;
+
+  readonly metadata: Record<string, any> = {};
 
   forDeletion = false;
-
-  metadata: Record<string, any> = {};
 
   constructor(message: SQS.Message) {
     if (!message.MessageId) {
@@ -38,21 +38,21 @@ export default class Message {
   /**
    * Get message ID.
    */
-  getMessageId() {
+  getMessageId(): string {
     return this.messageId;
   }
 
   /**
    * Get message receipt handle.
    */
-  getReceiptHandle() {
+  getReceiptHandle(): string {
     return this.receiptHandle;
   }
 
   /**
    * Get message body.
    */
-  getBody() {
+  getBody(): unknown {
     return this.body;
   }
 
@@ -61,21 +61,21 @@ export default class Message {
    *
    * @param forDeletion
    */
-  setForDeletion(forDeletion: boolean) {
+  setForDeletion(forDeletion: boolean): void {
     this.forDeletion = forDeletion;
   }
 
   /**
    * Whether message is for deletion.
    */
-  isForDeletion() {
+  isForDeletion(): boolean {
     return this.forDeletion;
   }
 
   /**
    * Get all of the message metadata.
    */
-  getMetaData() {
+  getMetaData(): Record<string, any> {
     return this.metadata;
   }
 
@@ -85,7 +85,7 @@ export default class Message {
    * @param key
    * @param value
    */
-  setMetaData(key: string, value: any) {
+  setMetaData(key: string, value: any): this {
     this.metadata[key] = value;
 
     return this;
