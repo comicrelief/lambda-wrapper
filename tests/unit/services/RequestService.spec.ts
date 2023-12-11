@@ -230,7 +230,35 @@ describe('unit.services.RequestService', () => {
     const request = getRequestService(event);
 
     it('should return all headers from the event', () => {
-      expect(request.getAllHeaders()).toStrictEqual(event.headers);
+      const result = request.getAllHeaders();
+      expect(result).toEqual({
+        /* eslint-disable quote-props */
+        'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'accept-encoding': 'gzip, deflate',
+        'accept-language': 'en-us',
+        'cloudfront-forwarded-proto': 'https',
+        'cloudfront-is-desktop-viewer': 'true',
+        'cloudfront-is-mobile-viewer': 'false',
+        'cloudfront-is-smarttv-viewer': 'false',
+        'cloudfront-is-tablet-viewer': 'false',
+        'cloudfront-viewer-country': 'US',
+        'cookie': '__gads=ID=d51d609e5753330d:T=1443694116:S=ALNI_MbjWKzLwdEpWZ5wR5WXRI2dtjIpHw; __qca=P0-179798513-1443694132017; _ga=GA1.2.344061584.1441769647',
+        'host': 'xxx.execute-api.us-east-1.amazonaws.com',
+        'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/601.6.17 (KHTML, like Gecko) Version/9.1.1 Safari/601.6.17',
+        'via': '1.1 c8a5bb0e20655459eaam174e5c41443b.cloudfront.net (CloudFront)',
+        'x-amz-cf-id': 'z7Ds7oXaY8hgUn7lcedZjoIoxyvnzF6ycVzBdQmhn3QnOPEjJz4BrQ==',
+        'x-forwarded-for': '221.24.103.21, 54.242.148.216',
+        'x-forwarded-port': '443',
+        'x-forwarded-proto': 'https',
+        /* eslint-enable quote-props */
+      });
+    });
+
+    it('should convert header names to lowercase', () => {
+      const result = request.getAllHeaders();
+      Object.keys(result).forEach((name) => {
+        expect(name).toEqual(name.toLowerCase());
+      });
     });
   });
 

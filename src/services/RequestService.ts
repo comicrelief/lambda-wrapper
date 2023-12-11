@@ -68,11 +68,19 @@ export default class RequestService extends DependencyAwareClass {
   /**
    * Get all HTTP headers included in the request.
    *
+   * Header names are converted to lowercase.
+   *
    * @returns An object with a key for each header.
    */
-  getAllHeaders() {
-    const event = this.getContainer().getEvent() as APIGatewayProxyEvent;
-    return { ...event.headers };
+  getAllHeaders(): Record<string, string | undefined> {
+    const event = this.di.event as APIGatewayProxyEvent;
+    if (!event.headers) {
+      return {};
+    }
+    return Object.fromEntries(
+      Object.entries(event.headers)
+        .map(([key, value]) => [key.toLowerCase(), value]),
+    );
   }
 
   /**
@@ -86,12 +94,8 @@ export default class RequestService extends DependencyAwareClass {
    */
   getHeader(name: string, whenMissing = ''): string {
     const headers = this.getAllHeaders();
-    if (!headers) {
-      return whenMissing;
-    }
     const lowerName = name.toLowerCase();
-    const key = Object.keys(headers).find((k) => k.toLowerCase() === lowerName);
-    return (key && headers[key]) || whenMissing;
+    return headers[lowerName] ?? whenMissing;
   }
 
   /**
