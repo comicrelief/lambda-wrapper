@@ -4,41 +4,55 @@ import { SQS } from 'aws-sdk';
  * Message model for SQS.
  */
 export default class SQSMessageModel {
-  messageId: string;
+  readonly messageId: string;
 
-  receiptHandle: string;
+  readonly receiptHandle: string;
 
-  body: string;
+  readonly body: unknown;
+
+  readonly metadata: Record<string, any> = {};
 
   forDeletion = false;
 
-  metadata: Record<string, any> = {};
-
   constructor(message: SQS.Message) {
-    // todo: validate rather than assert the type
-    this.messageId = message.MessageId!;
-    this.receiptHandle = message.ReceiptHandle!;
-    this.body = JSON.parse(message.Body!);
+    if (!message.MessageId) {
+      throw new TypeError('Message does not have a MessageId');
+    }
+    if (!message.ReceiptHandle) {
+      throw new TypeError('Message does not have a ReceiptHandle');
+    }
+    if (!message.Body) {
+      throw new TypeError('Message does not have a Body');
+    }
+
+    this.messageId = message.MessageId;
+    this.receiptHandle = message.ReceiptHandle;
+
+    try {
+      this.body = JSON.parse(message.Body);
+    } catch (error) {
+      throw new TypeError('Message body is not valid JSON');
+    }
   }
 
   /**
    * Get message ID.
    */
-  getMessageId() {
+  getMessageId(): string {
     return this.messageId;
   }
 
   /**
    * Get message receipt handle.
    */
-  getReceiptHandle() {
+  getReceiptHandle(): string {
     return this.receiptHandle;
   }
 
   /**
    * Get message body.
    */
-  getBody() {
+  getBody(): unknown {
     return this.body;
   }
 
@@ -47,21 +61,21 @@ export default class SQSMessageModel {
    *
    * @param forDeletion
    */
-  setForDeletion(forDeletion: boolean) {
+  setForDeletion(forDeletion: boolean): void {
     this.forDeletion = forDeletion;
   }
 
   /**
    * Whether message is for deletion.
    */
-  isForDeletion() {
+  isForDeletion(): boolean {
     return this.forDeletion;
   }
 
   /**
    * Get all of the message metadata.
    */
-  getMetaData() {
+  getMetaData(): Record<string, any> {
     return this.metadata;
   }
 
@@ -71,7 +85,7 @@ export default class SQSMessageModel {
    * @param key
    * @param value
    */
-  setMetaData(key: string, value: any) {
+  setMetaData(key: string, value: any): this {
     this.metadata[key] = value;
 
     return this;

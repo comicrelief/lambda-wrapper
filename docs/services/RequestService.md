@@ -19,8 +19,8 @@ export default lambdaWrapper.wrap(async (di) => {
 
 ### Headers
 
-- `getAllHeaders` returns an object containing all headers
-- `getHeader` returns the value of an HTTP header
+- `getAllHeaders` returns an object containing all HTTP headers, with all keys lowercase
+- `getHeader` returns the value of a single HTTP header
 - `getAuthorizationToken` extracts a Bearer token from the `Authorization` header
 
 ### Body
