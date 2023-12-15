@@ -3,7 +3,7 @@ import { SQS } from 'aws-sdk';
 /**
  * Message model for SQS.
  */
-export default class Message {
+export default class SQSMessageModel {
   readonly messageId: string;
 
   readonly receiptHandle: string;
