@@ -318,6 +318,16 @@ describe('unit.services.SQSService', () => {
     });
 
     describe('failure modes', () => {
+      it('throws the error if publish fails with failureMode omitted', async () => {
+        const service = getService({
+          sendMessage: new Error('SQS is down!'),
+        }, false);
+
+        const promise = service.publish(TEST_QUEUE, { test: 1 }, null);
+
+        await expect(promise).rejects.toThrowError('SQS is down!');
+      });
+
       it(`catches the error if publish fails with failureMode === ${SQS_PUBLISH_FAILURE_MODES.CATCH}`, async () => {
         const service = getService({
           sendMessage: new Error('SQS is down!'),
@@ -334,16 +344,6 @@ describe('unit.services.SQSService', () => {
         }, false);
 
         const promise = service.publish(TEST_QUEUE, { test: 1 }, null, SQS_PUBLISH_FAILURE_MODES.THROW);
-
-        await expect(promise).rejects.toThrowError('SQS is down!');
-      });
-
-      it('throws the error if publish fails with failureMode omitted', async () => {
-        const service = getService({
-          sendMessage: new Error('SQS is down!'),
-        }, false);
-
-        const promise = service.publish(TEST_QUEUE, { test: 1 }, null);
 
         await expect(promise).rejects.toThrowError('SQS is down!');
       });
