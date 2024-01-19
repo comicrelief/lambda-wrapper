@@ -429,10 +429,11 @@ export default class SQSService<
    * @param messageObject  object
    * @param messageGroupId string
    * @param failureMode Choose how failures are handled:
-   *   - `catch`: errors will be caught and logged. This is the default.
-   *   - `throw`: errors will be thrown, causing promise to reject.
+   *   - `throw`: errors will be thrown, causing promise to reject. (default)
+   *   - `catch`: errors will be caught and logged. Useful for non-critical
+   *     messages.
    */
-  async publish(queue: QueueName<TConfig>, messageObject: object, messageGroupId = null, failureMode: 'catch' | 'throw' = SQS_PUBLISH_FAILURE_MODES.CATCH) {
+  async publish(queue: QueueName<TConfig>, messageObject: object, messageGroupId = null, failureMode: 'catch' | 'throw' = SQS_PUBLISH_FAILURE_MODES.THROW) {
     if (!Object.values(SQS_PUBLISH_FAILURE_MODES).includes(failureMode)) {
       throw new Error(`Invalid value for 'failureMode': ${failureMode}`);
     }
