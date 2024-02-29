@@ -48,7 +48,7 @@
   },
   "dependencies": {
     "@lumigo/tracer": "^1.87.0",
-    "@sentry/node": "^6.0.1",
+    "@sentry/node": "^6.19.7",
     "@types/aws-lambda": "^8.10.120",
     "alai": "1.0.3",
     "async": "^3.2.4",
