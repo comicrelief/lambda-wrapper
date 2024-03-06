@@ -27,7 +27,7 @@ export default class LambdaWrapper<TConfig extends LambdaWrapperConfig = LambdaW
    *
    * @param config
    */
-  configure<TMoreConfig>(config: Partial<TConfig> & TMoreConfig): LambdaWrapper<TConfig & TMoreConfig> {
+  configure<TMoreConfig extends Partial<LambdaWrapperConfig>>(config: Partial<TConfig> & TMoreConfig): LambdaWrapper<TConfig & TMoreConfig> {
     return new LambdaWrapper(mergeConfig(this.config, config));
   }
 
