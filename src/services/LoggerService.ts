@@ -23,7 +23,7 @@ if (sentryIsAvailable) {
  *
  * For logging we use [Winston](https://github.com/winstonjs/winston).
  * Errors will also be sent to [Sentry](https://sentry.io/) and
- * [Epsagon](https://epsagon.com/) if those are available.
+ * [Lumigo](https://lumigo.io/) if those are configured.
  */
 export default class LoggerService extends DependencyAwareClass {
   private sentry: typeof Sentry | null;

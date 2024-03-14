@@ -2,7 +2,7 @@
 
 Provides logging and integrations with our monitoring tools.
 
-For logging we use [Winston](https://github.com/winstonjs/winston). Errors will also be sent to [Sentry](https://sentry.io/) and [Epsagon](https://epsagon.com/) if those are configured.
+For logging we use [Winston](https://github.com/winstonjs/winston). Errors will also be sent to [Sentry](https://sentry.io/) and [Lumigo](https://lumigo.io/) if those are configured.
 
 ## Usage
 
@@ -42,12 +42,9 @@ The `warning` method is equivalent to `error` by default, but can be switched to
 
 This is handy for muting certain errors in staging, where we expect our integration tests to cause a lot of errors deliberately that would otherwise spam us with Epsagon alerts.
 
-### Epsagon
+### Lumigo
 
-To configure Epsagon, set the following environment variables:
-
-- `EPSAGON_TOKEN` – your access token
-- `EPSAGON_SERVICE_NAME` – the application name (including stage) to record traces under
+To configure Lumigo, either [enable auto-tracing](https://docs.lumigo.io/docs/serverless-applications#automatic-instrumentation), or set the `LUMIGO_TRACER_TOKEN` environment variable.
 
 ### Sentry
 
