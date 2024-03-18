@@ -18,6 +18,7 @@
     "clean": "rm -rf dist",
     "lint": "eslint src tests",
     "test": "jest",
+    "test:types": "tsc --noEmit --strict --skipLibCheck tests/type/*.spec.ts",
     "coverage": "yarn test --coverage"
   },
   "devDependencies": {
