@@ -1,10 +1,11 @@
+import { expectTypeOf } from 'expect-type';
+
 import lambdaWrapper, {
   DependencyInjection,
   QueueName,
   SQSService,
 } from '../../src/index';
 import { mockContext, mockEvent } from '../mocks/aws';
-import { Equal, Expect } from './helpers';
 
 describe('types.SQSService', () => {
   const lwWithQueues = lambdaWrapper.configure({
@@ -23,24 +24,19 @@ describe('types.SQSService', () => {
     it('should infer queue names from config', () => {
       type queueName = QueueName<typeof lwWithQueues.config>;
 
-      type test = Expect<Equal<queueName, 'test1' | 'test2'>>;
+      expectTypeOf<queueName>().toEqualTypeOf<'test1' | 'test2'>();
     });
 
     it('should infer `never` if no queues are configured', () => {
       type queueName = QueueName<typeof lambdaWrapper.config>;
 
-      type test = Expect<Equal<queueName, never>>;
+      expectTypeOf<queueName>().toBeNever();
     });
   });
 
   describe('publish', () => {
-    it('should accept a configured queue name', () => {
-      sqs.publish('test1', { message: 'test' });
-    });
-
-    it('should not accept any other string', () => {
-      // @ts-expect-error
-      sqs.publish('bad', { message: 'test' });
+    it('should accept only configured queue names', () => {
+      expectTypeOf(sqs.publish).parameter(0).toEqualTypeOf<'test1' | 'test2'>();
     });
   });
 });

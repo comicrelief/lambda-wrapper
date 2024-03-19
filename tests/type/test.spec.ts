@@ -1,10 +1,9 @@
-import { Equal, Expect } from './helpers';
+import { expectTypeOf } from 'expect-type';
 
 it('should pass', () => {
-  type test = Expect<Equal<string, string>>;
+  expectTypeOf<string>().toEqualTypeOf<string>();
 });
 
 it('should fail', () => {
-  // @ts-expect-error
-  type test = Expect<Equal<string, number>>;
+  expectTypeOf<string>().not.toEqualTypeOf<number>();
 });
