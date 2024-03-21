@@ -4,6 +4,7 @@ import { Context } from '../index';
 import ResponseModel from '../models/ResponseModel';
 import LoggerService from '../services/LoggerService';
 import RequestService from '../services/RequestService';
+import DependencyAwareClass from './DependencyAwareClass';
 import DependencyInjection from './DependencyInjection';
 import { LambdaWrapperConfig, mergeConfig } from './config';
 
@@ -20,7 +21,29 @@ export interface WrapOptions {
 }
 
 export default class LambdaWrapper<TConfig extends LambdaWrapperConfig = LambdaWrapperConfig> {
-  constructor(readonly config: TConfig) {}
+  constructor(readonly config: TConfig) {
+    LambdaWrapper.validateConfiguration(config);
+  }
+
+  /**
+   * Validate the given config object.
+   *
+   * This is mainly to benefit projects that are not using TypeScript, where
+   * missing properties or incorrect types would not otherwise be flagged up.
+   *
+   * @param config
+   */
+  static validateConfiguration(config: LambdaWrapperConfig): void {
+    if (!config.dependencies) {
+      throw new TypeError("config is missing the 'dependencies' key");
+    }
+
+    Object.values(config.dependencies).forEach((dep) => {
+      if (!(dep.prototype instanceof DependencyAwareClass)) {
+        throw new TypeError(`dependency '${dep.name}' does not extend DependencyAwareClass`);
+      }
+    });
+  }
 
   /**
    * Returns a new Lambda Wrapper with the given configuration applied.
