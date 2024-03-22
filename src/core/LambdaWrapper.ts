@@ -22,7 +22,7 @@ export interface WrapOptions {
 
 export default class LambdaWrapper<TConfig extends LambdaWrapperConfig = LambdaWrapperConfig> {
   constructor(readonly config: TConfig) {
-    LambdaWrapper.validateConfiguration(config);
+    LambdaWrapper.validateConfig(config);
   }
 
   /**
@@ -33,7 +33,7 @@ export default class LambdaWrapper<TConfig extends LambdaWrapperConfig = LambdaW
    *
    * @param config
    */
-  static validateConfiguration(config: LambdaWrapperConfig): void {
+  static validateConfig(config: LambdaWrapperConfig): void {
     if (!config.dependencies) {
       throw new TypeError("config is missing the 'dependencies' key");
     }

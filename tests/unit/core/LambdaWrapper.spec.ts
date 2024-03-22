@@ -34,7 +34,7 @@ describe('unit.core.LambdaWrapper', () => {
 
   afterEach(() => jest.resetAllMocks());
 
-  describe('validateConfiguration', () => {
+  describe('validateConfig', () => {
     describe('valid config', () => {
       ([
         {
@@ -61,7 +61,7 @@ describe('unit.core.LambdaWrapper', () => {
         },
       ] as const).forEach(({ name, input }) => {
         it(`should pass on valid config: ${name}`, () => {
-          expect(() => LambdaWrapper.validateConfiguration(input)).not.toThrow();
+          expect(() => LambdaWrapper.validateConfig(input)).not.toThrow();
         });
       });
     });
