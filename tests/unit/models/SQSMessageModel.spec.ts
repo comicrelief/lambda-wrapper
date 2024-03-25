@@ -1,6 +1,6 @@
-import type { SQS } from 'aws-sdk';
+import type { Message } from '@aws-sdk/client-sqs';
 
-import { SQSMessageModel as Message } from '@/src';
+import { SQSMessageModel } from '@/src';
 
 describe('unit.models.SQSMessageModel', () => {
   const messageData = {
@@ -13,37 +13,37 @@ describe('unit.models.SQSMessageModel', () => {
     Body: JSON.stringify(messageData),
   };
 
-  const messageModel = new Message(mockedMessage);
+  const messageModel = new SQSMessageModel(mockedMessage);
 
   describe('constructor', () => {
     it('should throw if message is missing MessageId', () => {
-      const message: SQS.Message = { ...mockedMessage };
+      const message: Message = { ...mockedMessage };
       delete message.MessageId;
 
-      expect(() => new Message(message)).toThrowError(TypeError);
+      expect(() => new SQSMessageModel(message)).toThrowError(TypeError);
     });
 
     it('should throw if message is missing ReceiptHandle', () => {
-      const message: SQS.Message = { ...mockedMessage };
+      const message: Message = { ...mockedMessage };
       delete message.ReceiptHandle;
 
-      expect(() => new Message(message)).toThrowError(TypeError);
+      expect(() => new SQSMessageModel(message)).toThrowError(TypeError);
     });
 
     it('should throw if message is missing Body', () => {
-      const message: SQS.Message = { ...mockedMessage };
+      const message: Message = { ...mockedMessage };
       delete message.Body;
 
-      expect(() => new Message(message)).toThrowError(TypeError);
+      expect(() => new SQSMessageModel(message)).toThrowError(TypeError);
     });
 
     it('should throw if message body is not valid JSON', () => {
-      const message: SQS.Message = {
+      const message: Message = {
         ...mockedMessage,
         Body: 'This is not JSON!',
       };
 
-      expect(() => new Message(message)).toThrowError(TypeError);
+      expect(() => new SQSMessageModel(message)).toThrowError(TypeError);
     });
   });
 

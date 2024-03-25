@@ -1,4 +1,4 @@
-import { SQS } from 'aws-sdk';
+import type { Message } from '@aws-sdk/client-sqs';
 
 /**
  * Model for message received from SQS.
@@ -24,7 +24,7 @@ export default class SQSMessageModel {
 
   forDeletion = false;
 
-  constructor(message: SQS.Message) {
+  constructor(message: Message) {
     if (!message.MessageId) {
       throw new TypeError('Message does not have a MessageId');
     }

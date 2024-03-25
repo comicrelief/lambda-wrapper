@@ -1,4 +1,9 @@
-import { S3 } from 'aws-sdk';
+import {
+  DeleteObjectCommand,
+  GetObjectCommand,
+  PutObjectCommand,
+  S3Client,
+} from '@aws-sdk/client-s3';
 
 import {
   S3_NO_SUCH_KEY_ERROR_CODE,
@@ -13,14 +18,6 @@ import {
 } from '@/src';
 
 type ErrorWithCode = Error & { code?: any };
-
-const createAsyncMock = (returnValue: any) => {
-  const mockedValue = returnValue instanceof Error
-    ? Promise.reject(returnValue)
-    : Promise.resolve(returnValue);
-
-  return jest.fn().mockReturnValue({ promise: () => mockedValue });
-};
 
 /**
  * Generate a BaseConfigService with mock S3 client.
@@ -41,10 +38,22 @@ const getService = (
   const service = di.get(BaseConfigService);
 
   const client = {
-    getObject: createAsyncMock(getObject),
-    putObject: createAsyncMock(putObject),
-    deleteObject: createAsyncMock(deleteObject),
-  } as unknown as S3;
+    send: jest.fn().mockImplementation((command) => {
+      let result;
+      if (command instanceof GetObjectCommand) {
+        result = getObject;
+      } else if (command instanceof PutObjectCommand) {
+        result = putObject;
+      } else if (command instanceof DeleteObjectCommand) {
+        result = deleteObject;
+      } else {
+        throw new Error(`Unmocked S3 command: ${command.prototype.constructor.name}`);
+      }
+      return result instanceof Error
+        ? Promise.reject(result)
+        : Promise.resolve(result);
+    }),
+  } as unknown as S3Client;
 
   jest.spyOn(service, 'client', 'get').mockReturnValue(client);
 
@@ -94,7 +103,8 @@ describe('unit.services.BaseConfigService', () => {
       const service = getService();
       await service.delete();
 
-      expect(service.client.deleteObject).toHaveBeenCalledTimes(1);
+      expect(service.client.send).toHaveBeenCalledTimes(1);
+      expect(service.client.send).toHaveBeenCalledWith(expect.any(DeleteObjectCommand));
     });
   });
 
@@ -104,7 +114,8 @@ describe('unit.services.BaseConfigService', () => {
       const service = getService();
       await service.put(expected);
 
-      expect(service.client.putObject).toHaveBeenCalledTimes(1);
+      expect(service.client.send).toHaveBeenCalledTimes(1);
+      expect(service.client.send).toHaveBeenCalledWith(expect.any(PutObjectCommand));
     });
 
     it('returns the provided config unchanged', async () => {
@@ -273,7 +284,7 @@ describe('unit.services.BaseConfigService', () => {
 
   describe('client', () => {
     it('should return an S3 instance (static method)', () => {
-      expect(BaseConfigService.client).toBeInstanceOf(S3);
+      expect(BaseConfigService.client).toBeInstanceOf(S3Client);
     });
 
     it('should return an S3 instance (instance method)', () => {
@@ -284,7 +295,7 @@ describe('unit.services.BaseConfigService', () => {
       }, {}, {} as Context);
       const service = di.get(BaseConfigService);
 
-      expect(service.client).toBeInstanceOf(S3);
+      expect(service.client).toBeInstanceOf(S3Client);
     });
   });
 });
