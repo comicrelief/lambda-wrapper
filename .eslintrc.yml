@@ -1,10 +1,8 @@
 root: true
 
 extends:
-  - '@comicrelief/eslint-config'
-  - '@comicrelief/eslint-config/mixins/jsdoc'
-
-parser: '@babel/eslint-parser'
+  - '@comicrelief/eslint-config/mixins/base'
+  - '@comicrelief/eslint-config/mixins/ts'
 
 ignorePatterns:
   - node_modules
@@ -14,3 +12,4 @@ ignorePatterns:
 
 rules:
   unicorn/prefer-node-protocol: off
+  '@typescript-eslint/no-explicit-any': off
