@@ -1,6 +1,7 @@
 import { RESPONSE_HEADERS } from '@/src/models/ResponseModel';
 
 import {
+  DependencyAwareClass,
   DependencyInjection,
   LambdaTermination,
   LambdaWrapper,
@@ -32,6 +33,55 @@ describe('unit.core.LambdaWrapper', () => {
   });
 
   afterEach(() => jest.resetAllMocks());
+
+  describe('validateConfig', () => {
+    describe('valid config', () => {
+      ([
+        {
+          name: 'empty',
+          input: {
+            dependencies: {},
+          },
+        },
+        {
+          name: 'good dependency',
+          input: {
+            dependencies: {
+              Good: class Good extends DependencyAwareClass {},
+            },
+          },
+        },
+        {
+          name: 'extra keys',
+          input: {
+            dependencies: {},
+            sqs: {},
+            extra: {},
+          },
+        },
+      ] as const).forEach(({ name, input }) => {
+        it(`should pass on valid config: ${name}`, () => {
+          expect(() => LambdaWrapper.validateConfig(input)).not.toThrow();
+        });
+      });
+    });
+
+    describe('invalid config', () => {
+      // these scenarios are prevented by TypeScript, but may happen in plain JS
+
+      it('should throw if config is missing dependencies', () => {
+        expect(() => new LambdaWrapper({} as any)).toThrow(TypeError);
+      });
+
+      it('should throw if a dependency does not extend DependencyAwareClass', () => {
+        expect(() => new LambdaWrapper({
+          dependencies: {
+            Bad: class Bad {},
+          },
+        } as any)).toThrow(TypeError);
+      });
+    });
+  });
 
   describe('config', () => {
     it('should expose the config object', () => {

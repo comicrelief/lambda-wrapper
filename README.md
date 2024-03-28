@@ -96,6 +96,17 @@ export default class MyService extends DependencyAwareClass {
 }
 ```
 
+If you need to override the constructor, it must take a `DependencyInjection` instance and pass it to `super`.
+
+```ts
+export default class MyService extends DependencyAwareClass {
+  constructor(di: DependencyInjection) {
+    super(di);
+    // now do your other constructor stuff
+  }
+}
+```
+
 Then add it to your Lambda Wrapper configuration in the `dependencies` key.
 
 ```ts
