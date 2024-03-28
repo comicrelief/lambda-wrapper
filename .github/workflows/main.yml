@@ -49,6 +49,27 @@ jobs:
         env:
           CI: true
 
+  type-test:
+    name: Type test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 14
+
+      - name: Restore cache
+        uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+
+      - run: yarn install
+
+      - run: yarn test:types
+
   publish:
     name: Publish
     runs-on: ubuntu-latest
