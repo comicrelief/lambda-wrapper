@@ -231,7 +231,7 @@ module.exports = {
 
 ### Testing
 
-Run `yarn test` to run the unit tests.
+Run `yarn test` to run the unit tests, and `yarn test:types` to run the type tests.
 
 When writing a bugfix, start by writing a test that reproduces the problem. It should fail with the current version of Lambda Wrapper, and pass once you've implemented the fix.
 
