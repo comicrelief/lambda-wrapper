@@ -51,7 +51,7 @@ export default class DependencyInjection<TConfig extends LambdaWrapperConfig = a
           + "bundler may be minifying your code. You'll need to disable this "
           + 'for Lambda Wrapper to work correctly. Please refer to the Notes '
           + 'section of the Lambda Wrapper readme:\n\n'
-          + '  https://github.com/comicrelief/lambda-wrapper/tree/beta#notes'
+          + '  https://github.com/comicrelief/lambda-wrapper#notes'
         : 'Please ensure that all dependency classes have a unique name.';
 
       throw new Error(
