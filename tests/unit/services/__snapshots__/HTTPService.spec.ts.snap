@@ -1,0 +1,298 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`unit.services.HTTPService request DELETE request: config 1`] = `
+[
+  [
+    {
+      "headers": {},
+      "method": "DELETE",
+      "timeout": 10000,
+      "url": "/",
+    },
+  ],
+]
+`;
+
+exports[`unit.services.HTTPService request GET request: config 1`] = `
+[
+  [
+    {
+      "headers": {},
+      "method": "GET",
+      "timeout": 10000,
+      "url": "/",
+    },
+  ],
+]
+`;
+
+exports[`unit.services.HTTPService request HEAD request: config 1`] = `
+[
+  [
+    {
+      "headers": {},
+      "method": "HEAD",
+      "timeout": 10000,
+      "url": "/",
+    },
+  ],
+]
+`;
+
+exports[`unit.services.HTTPService request PATCH request: config 1`] = `
+[
+  [
+    {
+      "headers": {},
+      "method": "PATCH",
+      "timeout": 10000,
+      "url": "/",
+    },
+  ],
+]
+`;
+
+exports[`unit.services.HTTPService request POST request: config 1`] = `
+[
+  [
+    {
+      "headers": {},
+      "method": "POST",
+      "timeout": 10000,
+      "url": "/",
+    },
+  ],
+]
+`;
+
+exports[`unit.services.HTTPService request PUT request: config 1`] = `
+[
+  [
+    {
+      "headers": {},
+      "method": "PUT",
+      "timeout": 10000,
+      "url": "/",
+    },
+  ],
+]
+`;
+
+exports[`unit.services.HTTPService request adds the test header, DELETE request: config 1`] = `
+[
+  [
+    {
+      "headers": {
+        "x-comicrelief-test-metadata": "{"user":"Dante Alighieri"}",
+      },
+      "method": "DELETE",
+      "timeout": 10000,
+      "url": "/",
+    },
+  ],
+]
+`;
+
+exports[`unit.services.HTTPService request adds the test header, GET request: config 1`] = `
+[
+  [
+    {
+      "headers": {
+        "x-comicrelief-test-metadata": "{"user":"Dante Alighieri"}",
+      },
+      "method": "GET",
+      "timeout": 10000,
+      "url": "/",
+    },
+  ],
+]
+`;
+
+exports[`unit.services.HTTPService request adds the test header, HEAD request: config 1`] = `
+[
+  [
+    {
+      "headers": {
+        "x-comicrelief-test-metadata": "{"user":"Dante Alighieri"}",
+      },
+      "method": "HEAD",
+      "timeout": 10000,
+      "url": "/",
+    },
+  ],
+]
+`;
+
+exports[`unit.services.HTTPService request adds the test header, PATCH request: config 1`] = `
+[
+  [
+    {
+      "headers": {
+        "x-comicrelief-test-metadata": "{"user":"Dante Alighieri"}",
+      },
+      "method": "PATCH",
+      "timeout": 10000,
+      "url": "/",
+    },
+  ],
+]
+`;
+
+exports[`unit.services.HTTPService request adds the test header, POST request: config 1`] = `
+[
+  [
+    {
+      "headers": {
+        "x-comicrelief-test-metadata": "{"user":"Dante Alighieri"}",
+      },
+      "method": "POST",
+      "timeout": 10000,
+      "url": "/",
+    },
+  ],
+]
+`;
+
+exports[`unit.services.HTTPService request adds the test header, PUT request: config 1`] = `
+[
+  [
+    {
+      "headers": {
+        "x-comicrelief-test-metadata": "{"user":"Dante Alighieri"}",
+      },
+      "method": "PUT",
+      "timeout": 10000,
+      "url": "/",
+    },
+  ],
+]
+`;
+
+exports[`unit.services.HTTPService request adds the test header, overriding timeout: config 1`] = `
+[
+  [
+    {
+      "headers": {
+        "x-comicrelief-test-metadata": "{"user":"Dante Alighieri"}",
+      },
+      "timeout": 99,
+    },
+  ],
+]
+`;
+
+exports[`unit.services.HTTPService request adds the test header, with URL: config 1`] = `
+[
+  [
+    {
+      "headers": {
+        "x-comicrelief-test-metadata": "{"user":"Dante Alighieri"}",
+      },
+      "timeout": 10000,
+      "url": "/some/nested/path",
+    },
+  ],
+]
+`;
+
+exports[`unit.services.HTTPService request adds the test header, with baseURL: config 1`] = `
+[
+  [
+    {
+      "baseUrl": "https://comicrelief.com/test",
+      "headers": {
+        "x-comicrelief-test-metadata": "{"user":"Dante Alighieri"}",
+      },
+      "timeout": 10000,
+      "url": "/additional/url",
+    },
+  ],
+]
+`;
+
+exports[`unit.services.HTTPService request adds the test header, with headers: config 1`] = `
+[
+  [
+    {
+      "headers": {
+        "Authorization": "Bearer test",
+        "x-comicrelief-test-metadata": "{"user":"Dante Alighieri"}",
+      },
+      "timeout": 10000,
+    },
+  ],
+]
+`;
+
+exports[`unit.services.HTTPService request adds the test header, with undefined headers: config 1`] = `
+[
+  [
+    {
+      "headers": {
+        "x-comicrelief-test-metadata": "{"user":"Dante Alighieri"}",
+      },
+      "timeout": 10000,
+    },
+  ],
+]
+`;
+
+exports[`unit.services.HTTPService request overriding timeout: config 1`] = `
+[
+  [
+    {
+      "headers": {},
+      "timeout": 99,
+    },
+  ],
+]
+`;
+
+exports[`unit.services.HTTPService request with URL: config 1`] = `
+[
+  [
+    {
+      "headers": {},
+      "timeout": 10000,
+      "url": "/some/nested/path",
+    },
+  ],
+]
+`;
+
+exports[`unit.services.HTTPService request with baseURL: config 1`] = `
+[
+  [
+    {
+      "baseUrl": "https://comicrelief.com/test",
+      "headers": {},
+      "timeout": 10000,
+      "url": "/additional/url",
+    },
+  ],
+]
+`;
+
+exports[`unit.services.HTTPService request with headers: config 1`] = `
+[
+  [
+    {
+      "headers": {
+        "Authorization": "Bearer test",
+      },
+      "timeout": 10000,
+    },
+  ],
+]
+`;
+
+exports[`unit.services.HTTPService request with undefined headers: config 1`] = `
+[
+  [
+    {
+      "headers": undefined,
+      "timeout": 10000,
+    },
+  ],
+]
+`;
