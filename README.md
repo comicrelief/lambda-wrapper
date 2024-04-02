@@ -13,9 +13,9 @@ If you're coming from v1 and updating to v2, check out the [v2 migration guide](
 Install via npm or Yarn:
 
 ```bash
-npm i @comicrelief/lambda-wrapper@beta
+npm i @comicrelief/lambda-wrapper
 # or
-yarn add @comicrelief/lambda-wrapper@beta
+yarn add @comicrelief/lambda-wrapper
 ```
 
 You can then wrap your Lambda handler functions like this:
