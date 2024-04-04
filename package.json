@@ -50,6 +50,7 @@
     "@aws-sdk/client-sqs": "^3.540.0",
     "@lumigo/tracer": "^1.91.0",
     "@sentry/node": "^6.19.7",
+    "@smithy/node-http-handler": "^2.5.0",
     "@types/aws-lambda": "^8.10.134",
     "alai": "1.0.3",
     "async": "^3.2.5",

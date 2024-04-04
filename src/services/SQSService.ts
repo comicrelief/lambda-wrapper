@@ -11,6 +11,7 @@ import {
   SendMessageCommand,
   SendMessageCommandInput,
 } from '@aws-sdk/client-sqs';
+import { NodeHttpHandler } from '@smithy/node-http-handler';
 import alai from 'alai';
 import { each } from 'async';
 import { v4 as uuid } from 'uuid';
@@ -266,6 +267,12 @@ export default class SQSService<
     if (!this.$sqs) {
       this.$sqs = new SQSClient({
         region: process.env.REGION,
+        requestHandler: new NodeHttpHandler({
+          // longest publish on NOTV took 5 seconds
+          connectionTimeout: 8 * 1000,
+          socketTimeout: 8 * 1000,
+        }),
+        maxAttempts: 4, // default from AWS SDK v2 was 3 retries for SQS
       });
     }
 
