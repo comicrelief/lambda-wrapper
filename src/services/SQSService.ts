@@ -335,34 +335,30 @@ export default class SQSService<
   /**
    * Check SQS status.
    */
-  checkStatus(): Promise<ServiceStatus> {
+  async checkStatus(): Promise<ServiceStatus> {
     const logger = this.di.get(LoggerService);
     const timer = this.di.get(TimerService);
+
     const timerId = `sqs-list-queues-${uuid()}`;
+    timer.start(timerId);
 
-    return new Promise((resolve) => {
-      timer.start(timerId);
+    let status: Status = 'OK';
+    try {
+      const result = await this.sqs.listQueues({}).promise();
+      if (typeof result.QueueUrls === 'undefined' || result.QueueUrls.length === 0) {
+        status = 'APPLICATION_FAILURE';
+      }
+    } catch (error) {
+      logger.error(error);
+      status = 'APPLICATION_FAILURE';
+    } finally {
+      timer.stop(timerId);
+    }
 
-      this.sqs.listQueues({}, (error, data) => {
-        timer.stop(timerId);
-
-        let status: Status = 'OK';
-
-        if (error) {
-          logger.error(error);
-          status = 'APPLICATION_FAILURE';
-        }
-
-        if (typeof data.QueueUrls === 'undefined' || data.QueueUrls.length === 0) {
-          status = 'APPLICATION_FAILURE';
-        }
-
-        resolve({
-          service: 'SQS',
-          status,
-        });
-      });
-    });
+    return {
+      service: 'SQS',
+      status,
+    };
   }
 
   /**
