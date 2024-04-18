@@ -1,5 +1,4 @@
 import alai from 'alai';
-import { each } from 'async';
 import AWS from 'aws-sdk';
 import { v4 as uuid } from 'uuid';
 
@@ -303,52 +302,34 @@ export default class SQSService<
    * @param queue
    * @param messageModels
    */
-  batchDelete(queue: QueueName<TConfig>, messageModels: SQSMessageModel[]): Promise<void> {
+  async batchDelete(queue: QueueName<TConfig>, messageModels: SQSMessageModel[]): Promise<void> {
     const queueUrl = this.queueUrls[queue];
     const logger = this.di.get(LoggerService);
     const timer = this.di.get(TimerService);
+
     const timerId = `sqs-batch-delete-${uuid()} - Queue: '${queueUrl}'`;
+    timer.start(timerId);
 
-    return new Promise<void>((resolve) => {
-      const messagesForDeletion: { Id: string; ReceiptHandle: string }[] = [];
+    const messagesForDeletion = messageModels
+      .filter((messageModel) => (
+        messageModel instanceof SQSMessageModel
+        && messageModel.isForDeletion()
+      ))
+      .map((messageModel) => ({
+        Id: messageModel.getMessageId(),
+        ReceiptHandle: messageModel.getReceiptHandle(),
+      }));
 
-      timer.start(timerId);
-      // assuming openFiles is an array of file names
-      each(
-        messageModels,
-        (messageModel, callback) => {
-          if (messageModel instanceof SQSMessageModel && messageModel.isForDeletion() === true) {
-            messagesForDeletion.push({
-              Id: messageModel.getMessageId(),
-              ReceiptHandle: messageModel.getReceiptHandle(),
-            });
-          }
-          callback();
-        },
-        (loopError) => {
-          if (loopError) {
-            logger.error(loopError);
-            resolve();
-          }
-
-          this.sqs.deleteMessageBatch(
-            {
-              Entries: messagesForDeletion,
-              QueueUrl: queueUrl,
-            },
-            (error) => {
-              timer.stop(timerId);
-
-              if (error) {
-                logger.error(error);
-              }
-
-              resolve();
-            },
-          );
-        },
-      );
-    });
+    try {
+      await this.sqs.deleteMessageBatch({
+        Entries: messagesForDeletion,
+        QueueUrl: queueUrl,
+      }).promise();
+    } catch (error) {
+      logger.error(error);
+    } finally {
+      timer.stop(timerId);
+    }
   }
 
   /**
