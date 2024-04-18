@@ -259,18 +259,15 @@ export default class RequestService extends DependencyAwareClass {
   validateAgainstConstraints(constraints: object): Promise<void> {
     const logger = this.di.get(LoggerService);
 
-    return new Promise((resolve, reject) => {
-      const validation = validate(this.getAll(), constraints);
+    const validation = validate(this.getAll(), constraints);
+    if (typeof validation === 'undefined') {
+      return Promise.resolve();
+    }
 
-      if (typeof validation === 'undefined') {
-        resolve();
-      } else {
-        logger.label('request-validation-failed');
-        const validationErrorResponse = ERROR_TYPES.VALIDATION_ERROR;
-        validationErrorResponse.setBodyVariable('validation_errors', validation);
-        reject(validationErrorResponse);
-      }
-    });
+    logger.label('request-validation-failed');
+    const validationErrorResponse = ERROR_TYPES.VALIDATION_ERROR;
+    validationErrorResponse.setBodyVariable('validation_errors', validation);
+    return Promise.reject(validationErrorResponse);
   }
 
   /**

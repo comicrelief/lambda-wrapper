@@ -33,18 +33,9 @@ const createAsyncMock = (returnValue: any) => {
   return jest.fn().mockReturnValue({ promise: () => mockedValue });
 };
 
-const createCallbackMock = (returnValue: any) => jest.fn()
-  .mockImplementation((...args: any[]) => {
-    const callback = args.pop();
-    if (returnValue instanceof Error) {
-      callback(returnValue, {});
-    } else {
-      callback(null, returnValue);
-    }
-  });
-
 type MockSQSService = SQSService<typeof config> & {
   sqs: {
+    listQueues: jest.Mock;
     sendMessage: jest.Mock;
   };
   lambda: {
@@ -75,7 +66,7 @@ const getService = (
 
   const service = di.get(SQSService);
   const sqs = {
-    listQueues: createCallbackMock(listQueues),
+    listQueues: createAsyncMock(listQueues),
     sendMessage: createAsyncMock(sendMessage),
   } as unknown as AWS.SQS;
   const lambda = {
