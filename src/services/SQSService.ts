@@ -488,36 +488,31 @@ export default class SQSService<
    * @param queue string
    * @param timeout number
    */
-  receive(queue: QueueName<TConfig>, timeout = 15): Promise<SQSMessageModel[]> {
+  async receive(queue: QueueName<TConfig>, timeout = 15): Promise<SQSMessageModel[]> {
     const queueUrl = this.queueUrls[queue];
     const logger = this.di.get(LoggerService);
     const timer = this.di.get(TimerService);
+
     const timerId = `sqs-receive-message-${uuid()} - Queue: '${queueUrl}'`;
+    timer.start(timerId);
 
-    return new Promise((resolve, reject) => {
-      timer.start(timerId);
+    try {
+      const result = await this.sqs.receiveMessage({
+        QueueUrl: queueUrl,
+        VisibilityTimeout: timeout,
+        MaxNumberOfMessages: 10,
+      }).promise();
 
-      this.sqs.receiveMessage(
-        {
-          QueueUrl: queueUrl,
-          VisibilityTimeout: timeout,
-          MaxNumberOfMessages: 10,
-        },
-        (error, data) => {
-          timer.stop(timerId);
+      if (typeof result.Messages === 'undefined') {
+        return [];
+      }
 
-          if (error) {
-            logger.error(error);
-            return reject(error);
-          }
-
-          if (typeof data.Messages === 'undefined') {
-            return resolve([]);
-          }
-
-          return resolve(data.Messages.map((message) => new SQSMessageModel(message)));
-        },
-      );
-    });
+      return result.Messages.map((message) => new SQSMessageModel(message));
+    } catch (error) {
+      logger.error(error);
+      throw error;
+    } finally {
+      timer.stop(timerId);
+    }
   }
 }
