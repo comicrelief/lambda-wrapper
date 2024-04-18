@@ -366,33 +366,28 @@ export default class SQSService<
    *
    * @param queue
    */
-  getMessageCount(queue: QueueName<TConfig>): Promise<number> {
+  async getMessageCount(queue: QueueName<TConfig>): Promise<number> {
     const queueUrl = this.queueUrls[queue];
     const logger = this.di.get(LoggerService);
     const timer = this.di.get(TimerService);
+
     const timerId = `sqs-get-queue-attributes-${uuid()} - Queue: '${queueUrl}'`;
+    timer.start(timerId);
 
-    return new Promise((resolve) => {
-      timer.start(timerId);
+    try {
+      const result = await this.sqs.getQueueAttributes({
+        AttributeNames: ['ApproximateNumberOfMessages'],
+        QueueUrl: queueUrl,
+      }).promise();
 
-      this.sqs.getQueueAttributes(
-        {
-          AttributeNames: ['ApproximateNumberOfMessages'],
-          QueueUrl: queueUrl,
-        },
-        (error, data) => {
-          timer.stop(timerId);
-
-          if (error) {
-            logger.error(error);
-            resolve(0);
-          }
-
-          const messageCount = data.Attributes?.ApproximateNumberOfMessages || '0';
-          resolve(Number.parseInt(messageCount, 10));
-        },
-      );
-    });
+      const messageCount = result.Attributes?.ApproximateNumberOfMessages || '0';
+      return Number.parseInt(messageCount, 10);
+    } catch (error) {
+      logger.error(error);
+      return 0;
+    } finally {
+      timer.stop(timerId);
+    }
   }
 
   /**
