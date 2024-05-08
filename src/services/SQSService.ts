@@ -1,6 +1,19 @@
+import {
+  InvokeCommand,
+  LambdaClient,
+} from '@aws-sdk/client-lambda';
+import {
+  DeleteMessageBatchCommand,
+  GetQueueAttributesCommand,
+  ListQueuesCommand,
+  ReceiveMessageCommand,
+  SQSClient,
+  SendMessageCommand,
+  SendMessageCommandInput,
+} from '@aws-sdk/client-sqs';
+import { NodeHttpHandler } from '@smithy/node-http-handler';
 import alai from 'alai';
 import { each } from 'async';
-import AWS from 'aws-sdk';
 import { v4 as uuid } from 'uuid';
 
 import DependencyAwareClass from '../core/DependencyAwareClass';
@@ -210,9 +223,9 @@ export default class SQSService<
 
   readonly queueUrls: Record<QueueName<TConfig>, string>;
 
-  private $sqs?: AWS.SQS;
+  private $sqs?: SQSClient;
 
-  private $lambda?: AWS.Lambda;
+  private $lambda?: LambdaClient;
 
   constructor(di: DependencyInjection<TConfig>) {
     super(di);
@@ -252,14 +265,14 @@ export default class SQSService<
    */
   get sqs() {
     if (!this.$sqs) {
-      this.$sqs = new AWS.SQS({
+      this.$sqs = new SQSClient({
         region: process.env.REGION,
-        httpOptions: {
+        requestHandler: new NodeHttpHandler({
           // longest publish on NOTV took 5 seconds
-          connectTimeout: 8 * 1000,
-          timeout: 8 * 1000,
-        },
-        maxRetries: 3, // default is 3, we can change that
+          connectionTimeout: 8 * 1000,
+          socketTimeout: 8 * 1000,
+        }),
+        maxAttempts: 4, // default from AWS SDK v2 was 3 retries for SQS
       });
     }
 
@@ -278,7 +291,7 @@ export default class SQSService<
       }
 
       // move to subprocess
-      this.$lambda = new AWS.Lambda({
+      this.$lambda = new LambdaClient({
         region: process.env.AWS_REGION,
         endpoint,
       });
@@ -331,21 +344,16 @@ export default class SQSService<
             resolve();
           }
 
-          this.sqs.deleteMessageBatch(
-            {
-              Entries: messagesForDeletion,
-              QueueUrl: queueUrl,
-            },
-            (error) => {
-              timer.stop(timerId);
-
-              if (error) {
-                logger.error(error);
-              }
-
-              resolve();
-            },
-          );
+          this.sqs.send(new DeleteMessageBatchCommand({
+            Entries: messagesForDeletion,
+            QueueUrl: queueUrl,
+          })).finally(() => {
+            timer.stop(timerId);
+          }).catch((error) => {
+            logger.error(error);
+          }).then(() => {
+            resolve();
+          });
         },
       );
     });
@@ -362,25 +370,27 @@ export default class SQSService<
     return new Promise((resolve) => {
       timer.start(timerId);
 
-      this.sqs.listQueues({}, (error, data) => {
-        timer.stop(timerId);
+      let status: Status = 'OK';
 
-        let status: Status = 'OK';
-
-        if (error) {
+      this.sqs.send(new ListQueuesCommand())
+        .finally(() => {
+          timer.stop(timerId);
+        })
+        .then((data) => {
+          if (typeof data.QueueUrls === 'undefined' || data.QueueUrls.length === 0) {
+            status = 'APPLICATION_FAILURE';
+          }
+        })
+        .catch((error) => {
           logger.error(error);
           status = 'APPLICATION_FAILURE';
-        }
-
-        if (typeof data.QueueUrls === 'undefined' || data.QueueUrls.length === 0) {
-          status = 'APPLICATION_FAILURE';
-        }
-
-        resolve({
-          service: 'SQS',
-          status,
+        })
+        .then(() => {
+          resolve({
+            service: 'SQS',
+            status,
+          });
         });
-      });
     });
   }
 
@@ -398,23 +408,18 @@ export default class SQSService<
     return new Promise((resolve) => {
       timer.start(timerId);
 
-      this.sqs.getQueueAttributes(
-        {
-          AttributeNames: ['ApproximateNumberOfMessages'],
-          QueueUrl: queueUrl,
-        },
-        (error, data) => {
-          timer.stop(timerId);
-
-          if (error) {
-            logger.error(error);
-            resolve(0);
-          }
-
-          const messageCount = data.Attributes?.ApproximateNumberOfMessages || '0';
-          resolve(Number.parseInt(messageCount, 10));
-        },
-      );
+      this.sqs.send(new GetQueueAttributesCommand({
+        AttributeNames: ['ApproximateNumberOfMessages'],
+        QueueUrl: queueUrl,
+      })).finally(() => {
+        timer.stop(timerId);
+      }).then((data) => {
+        const messageCount = data.Attributes?.ApproximateNumberOfMessages || '0';
+        resolve(Number.parseInt(messageCount, 10));
+      }).catch((error) => {
+        logger.error(error);
+        resolve(0);
+      });
     });
   }
 
@@ -444,7 +449,7 @@ export default class SQSService<
 
     timer.start(timerId);
 
-    const messageParameters: AWS.SQS.SendMessageRequest = {
+    const messageParameters: SendMessageCommandInput = {
       MessageBody: JSON.stringify(messageObject),
       QueueUrl: queueUrl,
     };
@@ -458,7 +463,7 @@ export default class SQSService<
       if (this.di.isOffline && SQSService.offlineMode === SQS_OFFLINE_MODES.DIRECT) {
         await this.publishOffline(queue, messageParameters);
       } else {
-        await this.sqs.sendMessage(messageParameters).promise();
+        await this.sqs.send(new SendMessageCommand(messageParameters));
       }
     } catch (error) {
       if (failureMode === SQS_PUBLISH_FAILURE_MODES.CATCH) {
@@ -481,7 +486,7 @@ export default class SQSService<
    * @param queue
    * @param messageParameters
    */
-  async publishOffline(queue: QueueName<TConfig>, messageParameters: AWS.SQS.SendMessageRequest) {
+  async publishOffline(queue: QueueName<TConfig>, messageParameters: SendMessageCommandInput) {
     if (!this.di.isOffline) {
       throw new Error('Can only publishOffline while running serverless offline.');
     }
@@ -505,9 +510,11 @@ export default class SQSService<
       ],
     });
 
-    const parameters = { FunctionName, InvocationType, Payload };
-
-    await this.lambda.invoke(parameters).promise();
+    await this.lambda.send(new InvokeCommand({
+      FunctionName,
+      InvocationType,
+      Payload,
+    }));
   }
 
   /**
@@ -525,27 +532,22 @@ export default class SQSService<
     return new Promise((resolve, reject) => {
       timer.start(timerId);
 
-      this.sqs.receiveMessage(
-        {
-          QueueUrl: queueUrl,
-          VisibilityTimeout: timeout,
-          MaxNumberOfMessages: 10,
-        },
-        (error, data) => {
-          timer.stop(timerId);
-
-          if (error) {
-            logger.error(error);
-            return reject(error);
-          }
-
-          if (typeof data.Messages === 'undefined') {
-            return resolve([]);
-          }
-
-          return resolve(data.Messages.map((message) => new SQSMessageModel(message)));
-        },
-      );
+      this.sqs.send(new ReceiveMessageCommand({
+        QueueUrl: queueUrl,
+        VisibilityTimeout: timeout,
+        MaxNumberOfMessages: 10,
+      })).finally(() => {
+        timer.stop(timerId);
+      }).then((data) => {
+        if (typeof data.Messages === 'undefined') {
+          resolve([]);
+        } else {
+          resolve(data.Messages.map((message) => new SQSMessageModel(message)));
+        }
+      }).catch((error) => {
+        logger.error(error);
+        reject(error);
+      });
     });
   }
 }
