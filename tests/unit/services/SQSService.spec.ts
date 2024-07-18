@@ -344,7 +344,7 @@ describe('unit.services.SQSService', () => {
           sendMessage: new Error('SQS is down!'),
         }, false);
 
-        const promise = service.publish(TEST_QUEUE, { test: 1 }, null);
+        const promise = service.publish(TEST_QUEUE, { test: 1 }, undefined);
 
         await expect(promise).rejects.toThrowError('SQS is down!');
       });
@@ -354,7 +354,7 @@ describe('unit.services.SQSService', () => {
           sendMessage: new Error('SQS is down!'),
         }, false);
 
-        const promise = service.publish(TEST_QUEUE, { test: 1 }, null, SQS_PUBLISH_FAILURE_MODES.CATCH);
+        const promise = service.publish(TEST_QUEUE, { test: 1 }, undefined, SQS_PUBLISH_FAILURE_MODES.CATCH);
 
         await expect(promise).resolves.toEqual(null);
       });
@@ -364,7 +364,7 @@ describe('unit.services.SQSService', () => {
           sendMessage: new Error('SQS is down!'),
         }, false);
 
-        const promise = service.publish(TEST_QUEUE, { test: 1 }, null, SQS_PUBLISH_FAILURE_MODES.THROW);
+        const promise = service.publish(TEST_QUEUE, { test: 1 }, undefined, SQS_PUBLISH_FAILURE_MODES.THROW);
 
         await expect(promise).rejects.toThrowError('SQS is down!');
       });
@@ -377,7 +377,7 @@ describe('unit.services.SQSService', () => {
         it(`throws an error with the invalid value: ${invalidValue}`, async () => {
           const service = getService();
 
-          const promise = service.publish(TEST_QUEUE, { test: 1 }, null, invalidValue);
+          const promise = service.publish(TEST_QUEUE, { test: 1 }, undefined, invalidValue);
 
           await expect(promise).rejects.toThrowErrorMatchingSnapshot();
         });
