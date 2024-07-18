@@ -435,12 +435,17 @@ export default class SQSService<
    * @param messageObject Message body to put in the queue.
    * @param messageGroupId For FIFO queues, the message group ID. If omitted or
    *   undefined, a random message group ID will be used.
+   *
+   *   In v1 we encouraged use of `null` if this field was unused. This is now
+   *   deprecated in favour of `undefined`. Types will still permit `null`,
+   *   however they will change in v3 to require `string | undefined`.
+   *
    * @param failureMode Choose how failures are handled:
    *   - `throw`: errors will be thrown, causing promise to reject. (default)
    *   - `catch`: errors will be caught and logged. Useful for non-critical
    *     messages.
    */
-  async publish(queue: QueueName<TConfig>, messageObject: object, messageGroupId?: string, failureMode: 'catch' | 'throw' = SQS_PUBLISH_FAILURE_MODES.THROW) {
+  async publish(queue: QueueName<TConfig>, messageObject: object, messageGroupId?: string | null, failureMode: 'catch' | 'throw' = SQS_PUBLISH_FAILURE_MODES.THROW) {
     if (!Object.values(SQS_PUBLISH_FAILURE_MODES).includes(failureMode)) {
       throw new Error(`Invalid value for 'failureMode': ${failureMode}`);
     }
