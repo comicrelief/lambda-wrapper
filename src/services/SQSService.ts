@@ -430,9 +430,11 @@ export default class SQSService<
    * local Lambda or SQS service instead of to AWS, depending on the offline
    * mode specified by `process.env.LAMBDA_WRAPPER_OFFLINE_SQS_MODE`.
    *
-   * @param queue          string
-   * @param messageObject  object
-   * @param messageGroupId string
+   * @param queue Which queue to send to. This should be one of the queue names
+   *   configured in your Lambda Wrapper config.
+   * @param messageObject Message body to put in the queue.
+   * @param messageGroupId For FIFO queues, the message group ID. If omitted or
+   *   undefined, a random message group ID will be used.
    * @param failureMode Choose how failures are handled:
    *   - `throw`: errors will be thrown, causing promise to reject. (default)
    *   - `catch`: errors will be caught and logged. Useful for non-critical
