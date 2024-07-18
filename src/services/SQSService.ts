@@ -438,7 +438,7 @@ export default class SQSService<
    *   - `catch`: errors will be caught and logged. Useful for non-critical
    *     messages.
    */
-  async publish(queue: QueueName<TConfig>, messageObject: object, messageGroupId = null, failureMode: 'catch' | 'throw' = SQS_PUBLISH_FAILURE_MODES.THROW) {
+  async publish(queue: QueueName<TConfig>, messageObject: object, messageGroupId?: string, failureMode: 'catch' | 'throw' = SQS_PUBLISH_FAILURE_MODES.THROW) {
     if (!Object.values(SQS_PUBLISH_FAILURE_MODES).includes(failureMode)) {
       throw new Error(`Invalid value for 'failureMode': ${failureMode}`);
     }
@@ -456,7 +456,7 @@ export default class SQSService<
 
     if (queueUrl.includes('.fifo')) {
       messageParameters.MessageDeduplicationId = uuid();
-      messageParameters.MessageGroupId = messageGroupId !== null ? messageGroupId : uuid();
+      messageParameters.MessageGroupId = messageGroupId ?? uuid();
     }
 
     try {
