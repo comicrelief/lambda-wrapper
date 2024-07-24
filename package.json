@@ -53,7 +53,6 @@
     "@smithy/node-http-handler": "^2.5.0",
     "@types/aws-lambda": "^8.10.134",
     "alai": "1.0.3",
-    "async": "^3.2.5",
     "axios": "^1.6.7",
     "useragent": "2.3.0",
     "uuid": "^9.0.1",

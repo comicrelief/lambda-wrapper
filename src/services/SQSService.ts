@@ -13,7 +13,6 @@ import {
 } from '@aws-sdk/client-sqs';
 import { NodeHttpHandler } from '@smithy/node-http-handler';
 import alai from 'alai';
-import { each } from 'async';
 import { v4 as uuid } from 'uuid';
 
 import DependencyAwareClass from '../core/DependencyAwareClass';
@@ -316,82 +315,63 @@ export default class SQSService<
    * @param queue
    * @param messageModels
    */
-  batchDelete(queue: QueueName<TConfig>, messageModels: SQSMessageModel[]): Promise<void> {
+  async batchDelete(queue: QueueName<TConfig>, messageModels: SQSMessageModel[]): Promise<void> {
     const queueUrl = this.queueUrls[queue];
     const logger = this.di.get(LoggerService);
     const timer = this.di.get(TimerService);
+
     const timerId = `sqs-batch-delete-${uuid()} - Queue: '${queueUrl}'`;
+    timer.start(timerId);
 
-    return new Promise<void>((resolve) => {
-      const messagesForDeletion: { Id: string; ReceiptHandle: string }[] = [];
+    const messagesForDeletion = messageModels
+      .filter((messageModel) => (
+        messageModel instanceof SQSMessageModel
+        && messageModel.isForDeletion()
+      ))
+      .map((messageModel) => ({
+        Id: messageModel.getMessageId(),
+        ReceiptHandle: messageModel.getReceiptHandle(),
+      }));
 
-      timer.start(timerId);
-      // assuming openFiles is an array of file names
-      each(
-        messageModels,
-        (messageModel, callback) => {
-          if (messageModel instanceof SQSMessageModel && messageModel.isForDeletion() === true) {
-            messagesForDeletion.push({
-              Id: messageModel.getMessageId(),
-              ReceiptHandle: messageModel.getReceiptHandle(),
-            });
-          }
-          callback();
-        },
-        (loopError) => {
-          if (loopError) {
-            logger.error(loopError);
-            resolve();
-          }
-
-          this.sqs.send(new DeleteMessageBatchCommand({
-            Entries: messagesForDeletion,
-            QueueUrl: queueUrl,
-          })).finally(() => {
-            timer.stop(timerId);
-          }).catch((error) => {
-            logger.error(error);
-          }).then(() => {
-            resolve();
-          });
-        },
-      );
-    });
+    try {
+      await this.sqs.send(new DeleteMessageBatchCommand({
+        Entries: messagesForDeletion,
+        QueueUrl: queueUrl,
+      }));
+    } catch (error) {
+      logger.error(error);
+    } finally {
+      timer.stop(timerId);
+    }
   }
 
   /**
    * Check SQS status.
    */
-  checkStatus(): Promise<ServiceStatus> {
+  async checkStatus(): Promise<ServiceStatus> {
     const logger = this.di.get(LoggerService);
     const timer = this.di.get(TimerService);
+
     const timerId = `sqs-list-queues-${uuid()}`;
+    timer.start(timerId);
 
-    return new Promise((resolve) => {
-      timer.start(timerId);
+    let status: Status = 'OK';
+    try {
+      const result = await this.sqs.send(new ListQueuesCommand());
+      if (typeof result.QueueUrls === 'undefined' || result.QueueUrls.length === 0) {
+        status = 'APPLICATION_FAILURE';
+      }
+    } catch (error) {
+      logger.error(error);
+      status = 'APPLICATION_FAILURE';
+    } finally {
+      timer.stop(timerId);
+    }
 
-      let status: Status = 'OK';
-
-      this.sqs.send(new ListQueuesCommand())
-        .finally(() => {
-          timer.stop(timerId);
-        })
-        .then((data) => {
-          if (typeof data.QueueUrls === 'undefined' || data.QueueUrls.length === 0) {
-            status = 'APPLICATION_FAILURE';
-          }
-        })
-        .catch((error) => {
-          logger.error(error);
-          status = 'APPLICATION_FAILURE';
-        })
-        .then(() => {
-          resolve({
-            service: 'SQS',
-            status,
-          });
-        });
-    });
+    return {
+      service: 'SQS',
+      status,
+    };
   }
 
   /**
@@ -399,28 +379,28 @@ export default class SQSService<
    *
    * @param queue
    */
-  getMessageCount(queue: QueueName<TConfig>): Promise<number> {
+  async getMessageCount(queue: QueueName<TConfig>): Promise<number> {
     const queueUrl = this.queueUrls[queue];
     const logger = this.di.get(LoggerService);
     const timer = this.di.get(TimerService);
+
     const timerId = `sqs-get-queue-attributes-${uuid()} - Queue: '${queueUrl}'`;
+    timer.start(timerId);
 
-    return new Promise((resolve) => {
-      timer.start(timerId);
-
-      this.sqs.send(new GetQueueAttributesCommand({
+    try {
+      const result = await this.sqs.send(new GetQueueAttributesCommand({
         AttributeNames: ['ApproximateNumberOfMessages'],
         QueueUrl: queueUrl,
-      })).finally(() => {
-        timer.stop(timerId);
-      }).then((data) => {
-        const messageCount = data.Attributes?.ApproximateNumberOfMessages || '0';
-        resolve(Number.parseInt(messageCount, 10));
-      }).catch((error) => {
-        logger.error(error);
-        resolve(0);
-      });
-    });
+      }));
+
+      const messageCount = result.Attributes?.ApproximateNumberOfMessages || '0';
+      return Number.parseInt(messageCount, 10);
+    } catch (error) {
+      logger.error(error);
+      return 0;
+    } finally {
+      timer.stop(timerId);
+    }
   }
 
   /**
@@ -530,31 +510,31 @@ export default class SQSService<
    * @param queue string
    * @param timeout number
    */
-  receive(queue: QueueName<TConfig>, timeout = 15): Promise<SQSMessageModel[]> {
+  async receive(queue: QueueName<TConfig>, timeout = 15): Promise<SQSMessageModel[]> {
     const queueUrl = this.queueUrls[queue];
     const logger = this.di.get(LoggerService);
     const timer = this.di.get(TimerService);
+
     const timerId = `sqs-receive-message-${uuid()} - Queue: '${queueUrl}'`;
+    timer.start(timerId);
 
-    return new Promise((resolve, reject) => {
-      timer.start(timerId);
-
-      this.sqs.send(new ReceiveMessageCommand({
+    try {
+      const result = await this.sqs.send(new ReceiveMessageCommand({
         QueueUrl: queueUrl,
         VisibilityTimeout: timeout,
         MaxNumberOfMessages: 10,
-      })).finally(() => {
-        timer.stop(timerId);
-      }).then((data) => {
-        if (typeof data.Messages === 'undefined') {
-          resolve([]);
-        } else {
-          resolve(data.Messages.map((message) => new SQSMessageModel(message)));
-        }
-      }).catch((error) => {
-        logger.error(error);
-        reject(error);
-      });
-    });
+      }));
+
+      if (typeof result.Messages === 'undefined') {
+        return [];
+      }
+
+      return result.Messages.map((message) => new SQSMessageModel(message));
+    } catch (error) {
+      logger.error(error);
+      throw error;
+    } finally {
+      timer.stop(timerId);
+    }
   }
 }
