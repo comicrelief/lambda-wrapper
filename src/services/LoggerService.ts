@@ -210,7 +210,7 @@ export default class LoggerService extends DependencyAwareClass {
   }
 
   /**
-   * Add a label to the function's Epsagon trace.
+   * Add a label to the function's Lumigo trace.
    *
    * @param descriptor
    * @param silent If `false`, the label will also be logged. (default: false)
@@ -226,7 +226,7 @@ export default class LoggerService extends DependencyAwareClass {
   }
 
   /**
-   * Add a metric to the function's Epsagon trace.
+   * Add a metric to the function's Lumigo trace.
    *
    * @param descriptor
    * @param stat

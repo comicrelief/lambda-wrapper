@@ -1,4 +1,14 @@
 import {
+  InvokeCommand,
+  LambdaClient,
+} from '@aws-sdk/client-lambda';
+import {
+  ListQueuesCommand,
+  SQSClient,
+  SendMessageCommand,
+} from '@aws-sdk/client-sqs';
+
+import {
   Context,
   DependencyInjection,
   LoggerService,
@@ -25,21 +35,12 @@ const config = {
   },
 };
 
-const createAsyncMock = (returnValue: any) => {
-  const mockedValue = returnValue instanceof Error
-    ? Promise.reject(returnValue)
-    : Promise.resolve(returnValue);
-
-  return jest.fn().mockReturnValue({ promise: () => mockedValue });
-};
-
 type MockSQSService = SQSService<typeof config> & {
   sqs: {
-    listQueues: jest.Mock;
-    sendMessage: jest.Mock;
+    send: jest.Mock;
   };
   lambda: {
-    invoke: jest.Mock;
+    send: jest.Mock;
   }
 };
 
@@ -65,13 +66,37 @@ const getService = (
   jest.spyOn(logger, 'error').mockImplementation();
 
   const service = di.get(SQSService);
+
   const sqs = {
-    listQueues: createAsyncMock(listQueues),
-    sendMessage: createAsyncMock(sendMessage),
-  } as unknown as AWS.SQS;
+    send: jest.fn().mockImplementation((command) => {
+      let result;
+      if (command instanceof ListQueuesCommand) {
+        result = listQueues;
+      } else if (command instanceof SendMessageCommand) {
+        result = sendMessage;
+      } else {
+        throw new Error(`Unmocked SQS command: ${command.prototype.constructor.name}`);
+      }
+      return result instanceof Error
+        ? Promise.reject(result)
+        : Promise.resolve(result);
+    }),
+  } as unknown as SQSClient;
+
   const lambda = {
-    invoke: createAsyncMock(invoke),
-  } as unknown as AWS.Lambda;
+    send: jest.fn().mockImplementation((command) => {
+      let result;
+      if (command instanceof InvokeCommand) {
+        result = invoke;
+      } else {
+        throw new Error(`Unmocked Lambda command: ${command.prototype.constructor.name}`);
+      }
+      return result instanceof Error
+        ? Promise.reject(result)
+        : Promise.resolve(result);
+    }),
+  } as unknown as LambdaClient;
+
   jest.spyOn(service, 'sqs', 'get').mockReturnValue(sqs);
   jest.spyOn(service, 'lambda', 'get').mockReturnValue(lambda);
 
@@ -176,11 +201,12 @@ describe('unit.services.SQSService', () => {
 
           await service.publish(TEST_QUEUE, { test: 1 });
 
-          expect(service.sqs.sendMessage).toHaveBeenCalledTimes(1);
-          expect(service.lambda.invoke).toHaveBeenCalledTimes(0);
+          expect(service.sqs.send).toHaveBeenCalledTimes(1);
+          expect(service.sqs.send).toHaveBeenCalledWith(expect.any(SendMessageCommand));
+          expect(service.lambda.send).not.toHaveBeenCalled();
 
-          const params = service.sqs.sendMessage.mock.calls[0][0];
-          expect(params.QueueUrl).not.toContain('localhost');
+          const command = service.sqs.send.mock.calls[0][0];
+          expect(command.input.QueueUrl).not.toContain('localhost');
         });
       });
     });
@@ -192,8 +218,9 @@ describe('unit.services.SQSService', () => {
 
         await service.publish(TEST_QUEUE, { test: 1 });
 
-        expect(service.sqs.sendMessage).toHaveBeenCalledTimes(0);
-        expect(service.lambda.invoke).toHaveBeenCalledTimes(1);
+        expect(service.sqs.send).not.toHaveBeenCalled();
+        expect(service.lambda.send).toHaveBeenCalledTimes(1);
+        expect(service.lambda.send).toHaveBeenCalledWith(expect.any(InvokeCommand));
       });
 
       it('sends a lambda request in "direct" mode', async () => {
@@ -202,8 +229,9 @@ describe('unit.services.SQSService', () => {
 
         await service.publish(TEST_QUEUE, { test: 1 });
 
-        expect(service.sqs.sendMessage).toHaveBeenCalledTimes(0);
-        expect(service.lambda.invoke).toHaveBeenCalledTimes(1);
+        expect(service.sqs.send).not.toHaveBeenCalled();
+        expect(service.lambda.send).toHaveBeenCalledTimes(1);
+        expect(service.lambda.send).toHaveBeenCalledWith(expect.any(InvokeCommand));
       });
 
       it('sends a local SQS request in "local" mode', async () => {
@@ -214,12 +242,13 @@ describe('unit.services.SQSService', () => {
 
         await service.publish(TEST_QUEUE, { test: 1 });
 
-        expect(service.sqs.sendMessage).toHaveBeenCalledTimes(1);
-        expect(service.lambda.invoke).toHaveBeenCalledTimes(0);
+        expect(service.sqs.send).toHaveBeenCalledTimes(1);
+        expect(service.sqs.send).toHaveBeenCalledWith(expect.any(SendMessageCommand));
+        expect(service.lambda.send).not.toHaveBeenCalled();
 
-        const params = service.sqs.sendMessage.mock.calls[0][0];
-        expect(params.QueueUrl).toContain('localhost');
-        expect(params.QueueUrl).toContain('4576');
+        const command = service.sqs.send.mock.calls[0][0];
+        expect(command.input.QueueUrl).toContain('localhost');
+        expect(command.input.QueueUrl).toContain('4576');
       });
 
       it('sends a normal SQS request in "aws" mode', async () => {
@@ -228,12 +257,13 @@ describe('unit.services.SQSService', () => {
 
         await service.publish(TEST_QUEUE, { test: 1 });
 
-        expect(service.sqs.sendMessage).toHaveBeenCalledTimes(1);
-        expect(service.lambda.invoke).toHaveBeenCalledTimes(0);
+        expect(service.sqs.send).toHaveBeenCalledTimes(1);
+        expect(service.sqs.send).toHaveBeenCalledWith(expect.any(SendMessageCommand));
+        expect(service.lambda.send).not.toHaveBeenCalled();
 
-        const params = service.sqs.sendMessage.mock.calls[0][0];
-        expect(params.QueueUrl).not.toContain('localhost');
-        expect(params.QueueUrl).not.toContain('4576');
+        const command = service.sqs.send.mock.calls[0][0];
+        expect(command.input.QueueUrl).not.toContain('localhost');
+        expect(command.input.QueueUrl).not.toContain('4576');
       });
 
       it('throws an error for any other mode', async () => {
@@ -251,8 +281,8 @@ describe('unit.services.SQSService', () => {
 
           await service.publish(TEST_QUEUE, { test: 1 });
 
-          const params = service.sqs.sendMessage.mock.calls[0][0];
-          expect(params.QueueUrl).toEqual('https://sqs.eu-west-1.amazonaws.com/0123456789/QueueName');
+          const command = service.sqs.send.mock.calls[0][0];
+          expect(command.input.QueueUrl).toEqual('https://sqs.eu-west-1.amazonaws.com/0123456789/QueueName');
         });
       });
 
@@ -265,8 +295,8 @@ describe('unit.services.SQSService', () => {
 
           await service.publish(TEST_QUEUE, { test: 1 });
 
-          const params = service.sqs.sendMessage.mock.calls[0][0];
-          expect(params.QueueUrl).toEqual('http://localhost:4576/queue/QueueName');
+          const command = service.sqs.send.mock.calls[0][0];
+          expect(command.input.QueueUrl).toEqual('http://localhost:4576/queue/QueueName');
         });
 
         it('should use a custom host in "local" mode', async () => {
@@ -277,8 +307,8 @@ describe('unit.services.SQSService', () => {
 
           await service.publish(TEST_QUEUE, { test: 1 });
 
-          const params = service.sqs.sendMessage.mock.calls[0][0];
-          expect(params.QueueUrl).toEqual('http://custom-host:4576/queue/QueueName');
+          const command = service.sqs.send.mock.calls[0][0];
+          expect(command.input.QueueUrl).toEqual('http://custom-host:4576/queue/QueueName');
         });
 
         it('should use a custom port in "local" mode', async () => {
@@ -289,8 +319,8 @@ describe('unit.services.SQSService', () => {
 
           await service.publish(TEST_QUEUE, { test: 1 });
 
-          const params = service.sqs.sendMessage.mock.calls[0][0];
-          expect(params.QueueUrl).toEqual('http://localhost:4566/queue/QueueName');
+          const command = service.sqs.send.mock.calls[0][0];
+          expect(command.input.QueueUrl).toEqual('http://localhost:4566/queue/QueueName');
         });
 
         it('should use a correctly formed AWS queue URL in "aws" mode', async () => {
@@ -302,8 +332,8 @@ describe('unit.services.SQSService', () => {
 
           await service.publish(TEST_QUEUE, { test: 1 });
 
-          const params = service.sqs.sendMessage.mock.calls[0][0];
-          expect(params.QueueUrl).toEqual('https://sqs.eu-west-1.amazonaws.com/0123456789/QueueName');
+          const command = service.sqs.send.mock.calls[0][0];
+          expect(command.input.QueueUrl).toEqual('https://sqs.eu-west-1.amazonaws.com/0123456789/QueueName');
         });
       });
     });
@@ -314,7 +344,7 @@ describe('unit.services.SQSService', () => {
           sendMessage: new Error('SQS is down!'),
         }, false);
 
-        const promise = service.publish(TEST_QUEUE, { test: 1 }, null);
+        const promise = service.publish(TEST_QUEUE, { test: 1 }, undefined);
 
         await expect(promise).rejects.toThrowError('SQS is down!');
       });
@@ -324,7 +354,7 @@ describe('unit.services.SQSService', () => {
           sendMessage: new Error('SQS is down!'),
         }, false);
 
-        const promise = service.publish(TEST_QUEUE, { test: 1 }, null, SQS_PUBLISH_FAILURE_MODES.CATCH);
+        const promise = service.publish(TEST_QUEUE, { test: 1 }, undefined, SQS_PUBLISH_FAILURE_MODES.CATCH);
 
         await expect(promise).resolves.toEqual(null);
       });
@@ -334,7 +364,7 @@ describe('unit.services.SQSService', () => {
           sendMessage: new Error('SQS is down!'),
         }, false);
 
-        const promise = service.publish(TEST_QUEUE, { test: 1 }, null, SQS_PUBLISH_FAILURE_MODES.THROW);
+        const promise = service.publish(TEST_QUEUE, { test: 1 }, undefined, SQS_PUBLISH_FAILURE_MODES.THROW);
 
         await expect(promise).rejects.toThrowError('SQS is down!');
       });
@@ -347,7 +377,7 @@ describe('unit.services.SQSService', () => {
         it(`throws an error with the invalid value: ${invalidValue}`, async () => {
           const service = getService();
 
-          const promise = service.publish(TEST_QUEUE, { test: 1 }, null, invalidValue);
+          const promise = service.publish(TEST_QUEUE, { test: 1 }, undefined, invalidValue);
 
           await expect(promise).rejects.toThrowErrorMatchingSnapshot();
         });

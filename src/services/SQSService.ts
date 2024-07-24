@@ -1,5 +1,18 @@
+import {
+  InvokeCommand,
+  LambdaClient,
+} from '@aws-sdk/client-lambda';
+import {
+  DeleteMessageBatchCommand,
+  GetQueueAttributesCommand,
+  ListQueuesCommand,
+  ReceiveMessageCommand,
+  SQSClient,
+  SendMessageCommand,
+  SendMessageCommandInput,
+} from '@aws-sdk/client-sqs';
+import { NodeHttpHandler } from '@smithy/node-http-handler';
 import alai from 'alai';
-import AWS from 'aws-sdk';
 import { v4 as uuid } from 'uuid';
 
 import DependencyAwareClass from '../core/DependencyAwareClass';
@@ -209,9 +222,9 @@ export default class SQSService<
 
   readonly queueUrls: Record<QueueName<TConfig>, string>;
 
-  private $sqs?: AWS.SQS;
+  private $sqs?: SQSClient;
 
-  private $lambda?: AWS.Lambda;
+  private $lambda?: LambdaClient;
 
   constructor(di: DependencyInjection<TConfig>) {
     super(di);
@@ -251,14 +264,14 @@ export default class SQSService<
    */
   get sqs() {
     if (!this.$sqs) {
-      this.$sqs = new AWS.SQS({
+      this.$sqs = new SQSClient({
         region: process.env.REGION,
-        httpOptions: {
+        requestHandler: new NodeHttpHandler({
           // longest publish on NOTV took 5 seconds
-          connectTimeout: 8 * 1000,
-          timeout: 8 * 1000,
-        },
-        maxRetries: 3, // default is 3, we can change that
+          connectionTimeout: 8 * 1000,
+          socketTimeout: 8 * 1000,
+        }),
+        maxAttempts: 4, // default from AWS SDK v2 was 3 retries for SQS
       });
     }
 
@@ -277,7 +290,7 @@ export default class SQSService<
       }
 
       // move to subprocess
-      this.$lambda = new AWS.Lambda({
+      this.$lambda = new LambdaClient({
         region: process.env.AWS_REGION,
         endpoint,
       });
@@ -321,10 +334,10 @@ export default class SQSService<
       }));
 
     try {
-      await this.sqs.deleteMessageBatch({
+      await this.sqs.send(new DeleteMessageBatchCommand({
         Entries: messagesForDeletion,
         QueueUrl: queueUrl,
-      }).promise();
+      }));
     } catch (error) {
       logger.error(error);
     } finally {
@@ -344,7 +357,7 @@ export default class SQSService<
 
     let status: Status = 'OK';
     try {
-      const result = await this.sqs.listQueues({}).promise();
+      const result = await this.sqs.send(new ListQueuesCommand());
       if (typeof result.QueueUrls === 'undefined' || result.QueueUrls.length === 0) {
         status = 'APPLICATION_FAILURE';
       }
@@ -375,10 +388,10 @@ export default class SQSService<
     timer.start(timerId);
 
     try {
-      const result = await this.sqs.getQueueAttributes({
+      const result = await this.sqs.send(new GetQueueAttributesCommand({
         AttributeNames: ['ApproximateNumberOfMessages'],
         QueueUrl: queueUrl,
-      }).promise();
+      }));
 
       const messageCount = result.Attributes?.ApproximateNumberOfMessages || '0';
       return Number.parseInt(messageCount, 10);
@@ -397,15 +410,22 @@ export default class SQSService<
    * local Lambda or SQS service instead of to AWS, depending on the offline
    * mode specified by `process.env.LAMBDA_WRAPPER_OFFLINE_SQS_MODE`.
    *
-   * @param queue          string
-   * @param messageObject  object
-   * @param messageGroupId string
+   * @param queue Which queue to send to. This should be one of the queue names
+   *   configured in your Lambda Wrapper config.
+   * @param messageObject Message body to put in the queue.
+   * @param messageGroupId For FIFO queues, the message group ID. If omitted or
+   *   undefined, a random message group ID will be used.
+   *
+   *   In v1 we encouraged use of `null` if this field was unused. This is now
+   *   deprecated in favour of `undefined`. Types will still permit `null`,
+   *   however they will change in v3 to require `string | undefined`.
+   *
    * @param failureMode Choose how failures are handled:
    *   - `throw`: errors will be thrown, causing promise to reject. (default)
    *   - `catch`: errors will be caught and logged. Useful for non-critical
    *     messages.
    */
-  async publish(queue: QueueName<TConfig>, messageObject: object, messageGroupId = null, failureMode: 'catch' | 'throw' = SQS_PUBLISH_FAILURE_MODES.THROW) {
+  async publish(queue: QueueName<TConfig>, messageObject: object, messageGroupId?: string | null, failureMode: 'catch' | 'throw' = SQS_PUBLISH_FAILURE_MODES.THROW) {
     if (!Object.values(SQS_PUBLISH_FAILURE_MODES).includes(failureMode)) {
       throw new Error(`Invalid value for 'failureMode': ${failureMode}`);
     }
@@ -416,21 +436,21 @@ export default class SQSService<
 
     timer.start(timerId);
 
-    const messageParameters: AWS.SQS.SendMessageRequest = {
+    const messageParameters: SendMessageCommandInput = {
       MessageBody: JSON.stringify(messageObject),
       QueueUrl: queueUrl,
     };
 
     if (queueUrl.includes('.fifo')) {
       messageParameters.MessageDeduplicationId = uuid();
-      messageParameters.MessageGroupId = messageGroupId !== null ? messageGroupId : uuid();
+      messageParameters.MessageGroupId = messageGroupId ?? uuid();
     }
 
     try {
       if (this.di.isOffline && SQSService.offlineMode === SQS_OFFLINE_MODES.DIRECT) {
         await this.publishOffline(queue, messageParameters);
       } else {
-        await this.sqs.sendMessage(messageParameters).promise();
+        await this.sqs.send(new SendMessageCommand(messageParameters));
       }
     } catch (error) {
       if (failureMode === SQS_PUBLISH_FAILURE_MODES.CATCH) {
@@ -453,7 +473,7 @@ export default class SQSService<
    * @param queue
    * @param messageParameters
    */
-  async publishOffline(queue: QueueName<TConfig>, messageParameters: AWS.SQS.SendMessageRequest) {
+  async publishOffline(queue: QueueName<TConfig>, messageParameters: SendMessageCommandInput) {
     if (!this.di.isOffline) {
       throw new Error('Can only publishOffline while running serverless offline.');
     }
@@ -477,9 +497,11 @@ export default class SQSService<
       ],
     });
 
-    const parameters = { FunctionName, InvocationType, Payload };
-
-    await this.lambda.invoke(parameters).promise();
+    await this.lambda.send(new InvokeCommand({
+      FunctionName,
+      InvocationType,
+      Payload,
+    }));
   }
 
   /**
@@ -497,11 +519,11 @@ export default class SQSService<
     timer.start(timerId);
 
     try {
-      const result = await this.sqs.receiveMessage({
+      const result = await this.sqs.send(new ReceiveMessageCommand({
         QueueUrl: queueUrl,
         VisibilityTimeout: timeout,
         MaxNumberOfMessages: 10,
-      }).promise();
+      }));
 
       if (typeof result.Messages === 'undefined') {
         return [];

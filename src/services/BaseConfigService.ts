@@ -1,4 +1,9 @@
-import { S3 } from 'aws-sdk';
+import {
+  DeleteObjectCommand,
+  GetObjectCommand,
+  PutObjectCommand,
+  S3Client,
+} from '@aws-sdk/client-s3';
 
 import DependencyAwareClass from '../core/DependencyAwareClass';
 import LambdaTermination from '../utils/LambdaTermination';
@@ -64,7 +69,7 @@ export default class BaseConfigService extends DependencyAwareClass {
    * Returns an S3 client.
    */
   static get client() {
-    return new S3({
+    return new S3Client({
       region: process.env.REGION,
     });
   }
@@ -80,9 +85,9 @@ export default class BaseConfigService extends DependencyAwareClass {
    * Deletes the configuration stored on S3. Helpful in feature tests.
    */
   async delete() {
-    return this.client.deleteObject(
+    return this.client.send(new DeleteObjectCommand(
       (this.constructor as typeof BaseConfigService).s3config,
-    ).promise();
+    ));
   }
 
   /**
@@ -91,10 +96,10 @@ export default class BaseConfigService extends DependencyAwareClass {
    * @param config
    */
   async put<T>(config: T): Promise<T> {
-    await this.client.putObject({
+    await this.client.send(new PutObjectCommand({
       ...(this.constructor as typeof BaseConfigService).s3config,
       Body: JSON.stringify(config),
-    }).promise();
+    }));
 
     return config;
   }
@@ -103,9 +108,9 @@ export default class BaseConfigService extends DependencyAwareClass {
    * Gets the service configuration.
    */
   async get(): Promise<unknown> {
-    const response = await this.client.getObject(
+    const response = await this.client.send(new GetObjectCommand(
       (this.constructor as typeof BaseConfigService).s3config,
-    ).promise();
+    ));
     const body = String(response.Body);
 
     if (!body) {
