@@ -137,4 +137,39 @@ export default class DependencyInjection<TConfig extends LambdaWrapperConfig = a
       || this.context.invokedFunctionArn.includes('offline')
       || !!process.env.USE_SERVERLESS_OFFLINE;
   }
+
+  /**
+   * Get the `service-stage-` prefix added by Serverless to deployed Lambda
+   * function names. This is handy when you want to invoke other functions,
+   * without having to hardcode the service name and stage.
+   *
+   * The returned prefix includes a trailing dash. To get the deployed name of
+   * another Lambda function, concatenate its serverless function name (its key
+   * in `serverless.yml`) onto the prefix:
+   *
+   * ```js
+   * const serverlessFunctionName = 'MyFunction';
+   * const deployedName = `${di.getLambdaPrefix()}${serverlessFunctionName}`;
+   * ```
+   *
+   * This function relies on looking at the currently running Lambda function's
+   * resource name. It will not work correctly if the Lambda function has been
+   * given a custom resource name.
+   */
+  getLambdaPrefix(): string {
+    const stage = process.env.STAGE;
+    if (!stage) {
+      /* eslint-disable no-template-curly-in-string */
+      throw new Error(
+        'STAGE is not set\n\n'
+        + 'Please add to your Lambda environment:\n\n'
+        + '    STAGE: ${sls:stage}\n',
+      );
+    }
+    if (!this.context.functionName) {
+      throw new Error('Lambda function name is unavailable in context');
+    }
+    const [service] = this.context.functionName.split(`-${stage}-`);
+    return `${service}-${stage}-`;
+  }
 }
