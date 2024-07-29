@@ -147,6 +147,8 @@ To take advantage of SQS emulation, you will need to do the following in your pr
 
 3. If the triggered lambda incurs an exception, this will be propagated upstream, effectively killing the execution of the calling lambda.
 
+4. Queue producer and consumer functions must not have custom deployed Lambda names.
+
 ### Local SQS mode
 
 Use this mode by setting `LAMBDA_WRAPPER_OFFLINE_SQS_MODE=local`. Messages will still be sent to an SQS queue, but using a locally simulated version instead of AWS. This allows you to test your service using a tool like Localstack.
