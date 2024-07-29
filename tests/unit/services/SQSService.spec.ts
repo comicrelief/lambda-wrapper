@@ -231,7 +231,10 @@ describe('unit.services.SQSService', () => {
 
         expect(service.sqs.send).not.toHaveBeenCalled();
         expect(service.lambda.send).toHaveBeenCalledTimes(1);
-        expect(service.lambda.send).toHaveBeenCalledWith(expect.any(InvokeCommand));
+
+        const command: InvokeCommand = service.lambda.send.mock.calls[0][0];
+        expect(command).toBeInstanceOf(InvokeCommand);
+        expect(command.input.FunctionName).toEqual('ConsumerFunctionName');
       });
 
       it('sends a local SQS request in "local" mode', async () => {
