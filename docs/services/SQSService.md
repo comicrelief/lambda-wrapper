@@ -109,7 +109,7 @@ To take advantage of SQS emulation, you will need to do the following in your pr
 
 - Include the `queueConsumers` key in your `SQSService` config.
 
-  This maps the queue name to the fully qualified `FunctionName` that we want to trigger when messages are sent to that queue.
+  This maps the queue name to the name of the Serverless function that we want to trigger when messages are sent to that queue.
 
   Extending the example from above, your config might look like this:
 
