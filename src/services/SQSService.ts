@@ -478,8 +478,8 @@ export default class SQSService<
       throw new Error('Can only publishOffline while running serverless offline.');
     }
 
-    const consumerFunction = this.queueConsumers[queue];
-    if (!consumerFunction) {
+    const shortOrLongFunctionName = this.queueConsumers[queue];
+    if (!shortOrLongFunctionName) {
       throw new Error(
         `Queue consumer for queue ${queue} was not found. Please add it to `
         + 'the sqs.queueConsumers key in your Lambda Wrapper config.',
@@ -487,9 +487,9 @@ export default class SQSService<
     }
 
     const prefix = this.di.getLambdaPrefix();
-    const FunctionName = consumerFunction.startsWith(prefix)
-      ? consumerFunction
-      : `${prefix}${consumerFunction}`;
+    const FunctionName = shortOrLongFunctionName.startsWith(prefix)
+      ? shortOrLongFunctionName
+      : `${prefix}${shortOrLongFunctionName}`;
 
     const InvocationType = 'RequestResponse';
 
