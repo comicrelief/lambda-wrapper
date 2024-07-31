@@ -113,4 +113,39 @@ describe('unit.core.DependencyInjection', () => {
       expect(di.getConfiguration()).toBe(mockConfig);
     });
   });
+
+  describe('getLambdaPrefix', () => {
+    describe('when STAGE and functionName are set', () => {
+      beforeAll(() => {
+        process.env.STAGE = 'stage';
+        mockContext.functionName = 'service-stage-FunctionName';
+      });
+
+      it('should return `service-stage-` prefix', () => {
+        expect(di.getLambdaPrefix()).toEqual('service-stage-');
+      });
+    });
+
+    describe('when STAGE is not set', () => {
+      beforeAll(() => {
+        delete process.env.STAGE;
+        mockContext.functionName = 'service-stage-FunctionName';
+      });
+
+      it('should throw', () => {
+        expect(() => di.getLambdaPrefix()).toThrow('STAGE is not set');
+      });
+    });
+
+    describe('when functionName is not set', () => {
+      beforeAll(() => {
+        process.env.STAGE = 'stage';
+        mockContext.functionName = '';
+      });
+
+      it('should throw', () => {
+        expect(() => di.getLambdaPrefix()).toThrow('function name is unavailable');
+      });
+    });
+  });
 });

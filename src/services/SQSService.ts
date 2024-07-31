@@ -483,14 +483,18 @@ export default class SQSService<
       throw new Error('Can only publishOffline while running serverless offline.');
     }
 
-    const FunctionName = this.queueConsumers[queue];
-
-    if (!FunctionName) {
+    const shortOrLongFunctionName = this.queueConsumers[queue];
+    if (!shortOrLongFunctionName) {
       throw new Error(
         `Queue consumer for queue ${queue} was not found. Please add it to `
         + 'the sqs.queueConsumers key in your Lambda Wrapper config.',
       );
     }
+
+    const prefix = this.di.getLambdaPrefix();
+    const fullFunctionName = shortOrLongFunctionName.startsWith(prefix)
+      ? shortOrLongFunctionName
+      : `${prefix}${shortOrLongFunctionName}`;
 
     const body = messageParameters.MessageBody || '';
     const region = process.env.AWS_REGION || 'eu-west-1';
@@ -525,7 +529,7 @@ export default class SQSService<
     }
 
     await this.lambda.send(new InvokeCommand({
-      FunctionName,
+      FunctionName: fullFunctionName,
       InvocationType: 'RequestResponse',
       Payload: JSON.stringify(event),
     }));

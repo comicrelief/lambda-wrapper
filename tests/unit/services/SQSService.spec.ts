@@ -16,8 +16,10 @@ import {
   SQS_PUBLISH_FAILURE_MODES,
   TimerService,
 } from '@/src';
+import { mockContext } from '@/tests/mocks/aws';
 
 const TEST_QUEUE = 'TEST_QUEUE';
+const TEST_QUEUE_2 = 'TEST_QUEUE_2';
 
 const config = {
   dependencies: {
@@ -28,9 +30,11 @@ const config = {
   sqs: {
     queues: {
       [TEST_QUEUE]: 'QueueName',
+      [TEST_QUEUE_2]: 'QueueName',
     },
     queueConsumers: {
-      [TEST_QUEUE]: 'ConsumerFunctionName',
+      [TEST_QUEUE]: 'ShortFunctionName',
+      [TEST_QUEUE_2]: 'service-stage-FullFunctionName',
     },
   },
 };
@@ -58,9 +62,14 @@ const getService = (
   }: any = {},
   isOffline = false,
 ): MockSQSService => {
-  const di = new DependencyInjection(config, {}, {
-    invokedFunctionArn: isOffline ? 'offline' : 'arn:aws:lambda:eu-west-1:0123456789:test',
-  } as Context);
+  const context = {
+    ...mockContext,
+    invokedFunctionArn: isOffline
+      ? 'offline'
+      : `arn:aws:lambda:eu-west-1:0123456789:${mockContext.functionName}`,
+  };
+
+  const di = new DependencyInjection(config, {}, context);
 
   const logger = di.get(LoggerService);
   jest.spyOn(logger, 'error').mockImplementation();
@@ -116,6 +125,8 @@ describe('unit.services.SQSService', () => {
     envOfflineSqsHost = process.env.LAMBDA_WRAPPER_OFFLINE_SQS_HOST;
     envOfflineSqsPort = process.env.LAMBDA_WRAPPER_OFFLINE_SQS_PORT;
     envRegion = process.env.REGION;
+
+    process.env.STAGE = 'stage';
   });
 
   afterAll(() => {
@@ -228,10 +239,20 @@ describe('unit.services.SQSService', () => {
         const service = getService({}, true);
 
         await service.publish(TEST_QUEUE, { test: 1 });
+        await service.publish(TEST_QUEUE_2, { test: 2 });
 
         expect(service.sqs.send).not.toHaveBeenCalled();
-        expect(service.lambda.send).toHaveBeenCalledTimes(1);
-        expect(service.lambda.send).toHaveBeenCalledWith(expect.any(InvokeCommand));
+        expect(service.lambda.send).toHaveBeenCalledTimes(2);
+
+        // when a short consumer name is given, we should add the prefix
+        const command1: InvokeCommand = service.lambda.send.mock.calls[0][0];
+        expect(command1).toBeInstanceOf(InvokeCommand);
+        expect(command1.input.FunctionName).toEqual('service-stage-ShortFunctionName');
+
+        // when a full consumer name is given, we should _not_ add the prefix
+        const command2: InvokeCommand = service.lambda.send.mock.calls[1][0];
+        expect(command2).toBeInstanceOf(InvokeCommand);
+        expect(command2.input.FunctionName).toEqual('service-stage-FullFunctionName');
       });
 
       it('sends a local SQS request in "local" mode', async () => {

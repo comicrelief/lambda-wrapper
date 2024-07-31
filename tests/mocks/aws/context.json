@@ -1,3 +1,4 @@
 {
+  "functionName": "service-stage-FunctionName",
   "invokedFunctionArn": "offline"
 }
