@@ -109,7 +109,7 @@ To take advantage of SQS emulation, you will need to do the following in your pr
 
 - Include the `queueConsumers` key in your `SQSService` config.
 
-  This maps the queue name to the fully qualified `FunctionName` that we want to trigger when messages are sent to that queue.
+  This maps the queue name to the name of the Serverless function that we want to trigger when messages are sent to that queue.
 
   Extending the example from above, your config might look like this:
 
@@ -117,14 +117,10 @@ To take advantage of SQS emulation, you will need to do the following in your pr
   const lambdaWrapper = lw.configure({
     sqs: {
       queues: {
-        // Add an entry for each queue with its AWS name.
-        // Usually we define queue names in our serverless.yml and provide them
-        // to the application via environment variables. If you haven't defined
-        // types for your env vars, you'll need to coerce them to `string`.
         submissions: process.env.SQS_QUEUE_SUBMISSIONS as string,
       },
       queueConsumers: {
-        // See section below about offline SQS emulation.
+        // add an entry mapping each queue to its consumer function name
         submissions: 'SubmissionConsumer',
       },
     }
@@ -150,6 +146,8 @@ To take advantage of SQS emulation, you will need to do the following in your pr
 2. If you await `sqs.publish` you will effectively wait until all SQS-triggered lambdas (and possibly their own SQS-triggered lambdas) have all completed. This is necessary to avoid any pending execution (i.e. the lambda terminating before its async processes are completed).
 
 3. If the triggered lambda incurs an exception, this will be propagated upstream, effectively killing the execution of the calling lambda.
+
+4. Queue producer and consumer functions must not have custom deployed Lambda names.
 
 ### Local SQS mode
 
