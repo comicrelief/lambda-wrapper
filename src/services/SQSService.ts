@@ -1,3 +1,5 @@
+import { createHash } from 'crypto';
+
 import {
   InvokeCommand,
   LambdaClient,
@@ -13,6 +15,7 @@ import {
 } from '@aws-sdk/client-sqs';
 import { NodeHttpHandler } from '@smithy/node-http-handler';
 import alai from 'alai';
+import { SQSEvent } from 'aws-lambda';
 import { v4 as uuid } from 'uuid';
 
 import DependencyAwareClass from '../core/DependencyAwareClass';
@@ -226,6 +229,8 @@ export default class SQSService<
 
   private $lambda?: LambdaClient;
 
+  private accountId?: string;
+
   constructor(di: DependencyInjection<TConfig>) {
     super(di);
 
@@ -241,7 +246,7 @@ export default class SQSService<
       REGION,
     } = process.env;
 
-    const accountId = (di.context.invokedFunctionArn && alai.parse(di.context))
+    this.accountId = (di.context.invokedFunctionArn && alai.parse(di.context))
       || AWS_ACCOUNT_ID;
 
     if (di.isOffline && !Object.values(SQS_OFFLINE_MODES).includes(offlineMode)) {
@@ -254,7 +259,7 @@ export default class SQSService<
       Object.entries(this.queues).map((
         ([key, queueName]) => [key, useLocalQueues
           ? `http://${offlineHost}:${offlinePort}/queue/${queueName}`
-          : `https://sqs.${REGION}.amazonaws.com/${accountId}/${queueName}`]
+          : `https://sqs.${REGION}.amazonaws.com/${this.accountId}/${queueName}`]
       )),
     ) as Record<QueueName<TConfig>, string>;
   }
@@ -487,24 +492,46 @@ export default class SQSService<
     }
 
     const prefix = this.di.getLambdaPrefix();
-    const FunctionName = shortOrLongFunctionName.startsWith(prefix)
+    const fullFunctionName = shortOrLongFunctionName.startsWith(prefix)
       ? shortOrLongFunctionName
       : `${prefix}${shortOrLongFunctionName}`;
 
-    const InvocationType = 'RequestResponse';
+    const body = messageParameters.MessageBody || '';
+    const region = process.env.AWS_REGION || 'eu-west-1';
+    const timestamp = Date.now().toString();
 
-    const Payload = JSON.stringify({
+    const event: SQSEvent = {
       Records: [
         {
-          body: messageParameters.MessageBody,
+          messageId: uuid(),
+          receiptHandle: 'test',
+          body,
+          attributes: {
+            ApproximateReceiveCount: '1',
+            SentTimestamp: timestamp,
+            SenderId: process.env.AWS_ACCESS_KEY_ID || '',
+            ApproximateFirstReceiveTimestamp: timestamp,
+          },
+          messageAttributes: {},
+          md5OfBody: createHash('md5').update(body).digest('hex'),
+          eventSource: 'aws:sqs',
+          eventSourceARN: `arn:aws:sqs:${region}:${this.accountId}:${this.queues[queue]}`,
+          awsRegion: region,
         },
       ],
-    });
+    };
+
+    if (messageParameters.MessageGroupId) {
+      const attributes = event.Records[0].attributes;
+      attributes.SequenceNumber = '0';
+      attributes.MessageGroupId = messageParameters.MessageGroupId;
+      attributes.MessageDeduplicationId = messageParameters.MessageDeduplicationId;
+    }
 
     await this.lambda.send(new InvokeCommand({
-      FunctionName,
-      InvocationType,
-      Payload,
+      FunctionName: fullFunctionName,
+      InvocationType: 'RequestResponse',
+      Payload: JSON.stringify(event),
     }));
   }
 
