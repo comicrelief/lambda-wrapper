@@ -14,7 +14,7 @@ import {
   SendMessageCommandInput,
 } from '@aws-sdk/client-sqs';
 import { NodeHttpHandler } from '@smithy/node-http-handler';
-import alai from 'alai';
+import { default as getAccountIDFromARN } from 'alai';
 import { SQSEvent } from 'aws-lambda';
 import { v4 as uuid } from 'uuid';
 
@@ -246,7 +246,7 @@ export default class SQSService<
       REGION,
     } = process.env;
 
-    this.accountId = (di.context.invokedFunctionArn && alai.parse(di.context))
+    this.accountId = (di.context.invokedFunctionArn && getAccountIDFromARN.parse(di.context))
       || AWS_ACCOUNT_ID;
 
     if (di.isOffline && !Object.values(SQS_OFFLINE_MODES).includes(offlineMode)) {
