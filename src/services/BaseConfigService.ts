@@ -1,3 +1,5 @@
+import { Readable } from 'node:stream';
+
 import {
   DeleteObjectCommand,
   GetObjectCommand,
@@ -111,7 +113,8 @@ export default class BaseConfigService extends DependencyAwareClass {
     const response = await this.client.send(new GetObjectCommand(
       (this.constructor as typeof BaseConfigService).s3config,
     ));
-    const body = String(response.Body);
+    const chunks = await (response.Body as Readable).toArray();
+    const body = Buffer.concat(chunks).toString();
 
     if (!body) {
       // Empty strings are not valid configurations
