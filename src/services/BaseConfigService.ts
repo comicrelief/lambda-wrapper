@@ -113,8 +113,7 @@ export default class BaseConfigService extends DependencyAwareClass {
     const response = await this.client.send(new GetObjectCommand(
       (this.constructor as typeof BaseConfigService).s3config,
     ));
-    const chunks = await (response.Body as Readable).toArray();
-    const body = Buffer.concat(chunks).toString();
+    const body = await response.Body?.transformToString();
 
     if (!body) {
       // Empty strings are not valid configurations
