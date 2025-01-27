@@ -1,5 +1,3 @@
-import { Readable } from 'node:stream';
-
 import {
   DeleteObjectCommand,
   GetObjectCommand,
@@ -44,8 +42,11 @@ const getService = (
       let result;
       if (command instanceof GetObjectCommand) {
         result = getObject;
-        if (typeof result.Body === 'string') {
-          result.Body = Readable.from(Buffer.from(result.Body));
+        const { Body: body } = result;
+        if (typeof body === 'string') {
+          result.Body = {
+            transformToString: () => Promise.resolve(body),
+          };
         }
       } else if (command instanceof PutObjectCommand) {
         result = putObject;
