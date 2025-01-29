@@ -9,7 +9,7 @@ import DependencyAwareClass from '../core/DependencyAwareClass';
 import LambdaTermination from '../utils/LambdaTermination';
 
 /**
- * `error.code` for S3 404 errors.
+ * `error.Code` for S3 404 errors.
  */
 export const S3_NO_SUCH_KEY_ERROR_CODE = 'NoSuchKey';
 
@@ -111,7 +111,7 @@ export default class BaseConfigService extends DependencyAwareClass {
     const response = await this.client.send(new GetObjectCommand(
       (this.constructor as typeof BaseConfigService).s3config,
     ));
-    const body = String(response.Body);
+    const body = await response.Body?.transformToString();
 
     if (!body) {
       // Empty strings are not valid configurations
@@ -135,7 +135,7 @@ export default class BaseConfigService extends DependencyAwareClass {
     try {
       return await this.get();
     } catch (error: any) {
-      if (error.code !== S3_NO_SUCH_KEY_ERROR_CODE) {
+      if (error.Code !== S3_NO_SUCH_KEY_ERROR_CODE) {
         // Throw directly any other error
         throw error;
       }
@@ -157,7 +157,7 @@ export default class BaseConfigService extends DependencyAwareClass {
     try {
       base = await this.get();
     } catch (error: any) {
-      if (error.code !== S3_NO_SUCH_KEY_ERROR_CODE) {
+      if (error.Code !== S3_NO_SUCH_KEY_ERROR_CODE) {
         // Throw directly any other error
         throw error;
       }

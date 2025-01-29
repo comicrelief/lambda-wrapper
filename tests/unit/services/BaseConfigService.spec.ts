@@ -17,7 +17,7 @@ import {
   DependencyInjection,
 } from '@/src';
 
-type ErrorWithCode = Error & { code?: any };
+type ErrorWithCode = Error & { Code?: any };
 
 /**
  * Generate a BaseConfigService with mock S3 client.
@@ -42,6 +42,12 @@ const getService = (
       let result;
       if (command instanceof GetObjectCommand) {
         result = getObject;
+        const { Body: body } = result;
+        if (typeof body === 'string') {
+          result.Body = {
+            transformToString: () => Promise.resolve(body),
+          };
+        }
       } else if (command instanceof PutObjectCommand) {
         result = putObject;
       } else if (command instanceof DeleteObjectCommand) {
@@ -150,7 +156,7 @@ describe('unit.services.BaseConfigService', () => {
 
     it('propagates the 404', async () => {
       const error: ErrorWithCode = new Error('404');
-      error.code = S3_NO_SUCH_KEY_ERROR_CODE;
+      error.Code = S3_NO_SUCH_KEY_ERROR_CODE;
 
       const service = getService({ getObject: error });
 
@@ -161,7 +167,7 @@ describe('unit.services.BaseConfigService', () => {
   describe('getOrCreate', () => {
     it('uploads the defaultConfig with a 404 error', async () => {
       const error: ErrorWithCode = new Error('404');
-      error.code = S3_NO_SUCH_KEY_ERROR_CODE;
+      error.Code = S3_NO_SUCH_KEY_ERROR_CODE;
 
       const service = getService({ getObject: error });
       const config = await service.getOrCreate();
@@ -171,7 +177,7 @@ describe('unit.services.BaseConfigService', () => {
 
     it('throws any non-404 error', async () => {
       const error: ErrorWithCode = new Error('Bad error');
-      error.code = 'another';
+      error.Code = 'another';
 
       const service = getService({ getObject: error });
 
@@ -193,7 +199,7 @@ describe('unit.services.BaseConfigService', () => {
 
     it('uses the base config if no existing config is found', async () => {
       const error: ErrorWithCode = new Error('404');
-      error.code = S3_NO_SUCH_KEY_ERROR_CODE;
+      error.Code = S3_NO_SUCH_KEY_ERROR_CODE;
       const service = getService({ getObject: error });
 
       const existing = service.constructor.defaultConfig;
@@ -206,7 +212,7 @@ describe('unit.services.BaseConfigService', () => {
 
     it('throws any non-404 error', async () => {
       const error: ErrorWithCode = new Error('Bad error');
-      error.code = 'another';
+      error.Code = 'another';
 
       const service = getService({ getObject: error });
 
