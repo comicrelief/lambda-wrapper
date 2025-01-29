@@ -79,6 +79,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
       - name: Restore cache
         uses: actions/cache@v4
         with:
