@@ -178,7 +178,7 @@ export default class LambdaWrapper<TConfig extends LambdaWrapperConfig = LambdaW
    * @param error
    * @param [throwError=false]
    */
-  static handleError(di: DependencyInjection, error: Error, throwError = false) {
+  static handleError(di: DependencyInjection, error: any, throwError = false) {
     const logger = di.get(LoggerService);
 
     const {
@@ -186,7 +186,7 @@ export default class LambdaWrapper<TConfig extends LambdaWrapperConfig = LambdaW
       raiseOnEpsagon,
       body = {},
       details = 'unknown error',
-    } = error as any;
+    } = error ?? {}; // undefined errors have been known to happen
 
     logger.metric('lambda.statusCode', code || 500);
 
