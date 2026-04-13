@@ -47,7 +47,7 @@
   "dependencies": {
     "@aws-sdk/client-lambda": "^3.540.0",
     "@aws-sdk/client-s3": "^3.540.0",
-    "@aws-sdk/client-sqs": "^3.540.0",
+    "@aws-sdk/client-sqs": "^3.564.0",
     "@lumigo/tracer": "^1.91.0",
     "@sentry/node": "^6.19.7",
     "@smithy/node-http-handler": "^2.5.0",
