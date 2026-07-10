@@ -1,4 +1,4 @@
-import * as lumigo from '@lumigo/tracer';
+// import * as lumigo from '@lumigo/tracer';
 
 import { Context } from '../index';
 import ResponseModel from '../models/ResponseModel';
@@ -109,15 +109,15 @@ export default class LambdaWrapper<TConfig extends LambdaWrapperConfig = LambdaW
       }
     };
 
-    // If Lumigo is enabled, wrap the handler in the Lumigo wrapper
-    if (LambdaWrapper.isLumigoEnabled && !LambdaWrapper.isLumigoWrappingUs) {
-      const tracer = lumigo.initTracer({ token: process.env.LUMIGO_TRACER_TOKEN });
+    // // If Lumigo is enabled, wrap the handler in the Lumigo wrapper
+    // if (LambdaWrapper.isLumigoEnabled && !LambdaWrapper.isLumigoWrappingUs) {
+    //   const tracer = lumigo.initTracer({ token: process.env.LUMIGO_TRACER_TOKEN });
 
-      // Lumigo's wrapper works with both callbacks or promises handlers, and
-      // the returned function behaves the same way as the original. For our
-      // promise-based handler we can safely coerce the type.
-      wrapper = tracer.trace(wrapper) as (event: any, context: Context) => Promise<any>;
-    }
+    //   // Lumigo's wrapper works with both callbacks or promises handlers, and
+    //   // the returned function behaves the same way as the original. For our
+    //   // promise-based handler we can safely coerce the type.
+    //   wrapper = tracer.trace(wrapper) as (event: any, context: Context) => Promise<any>;
+    // }
 
     return wrapper;
   }
@@ -128,8 +128,8 @@ export default class LambdaWrapper<TConfig extends LambdaWrapperConfig = LambdaW
    * The `LUMIGO_TRACER_TOKEN` env var is present in both manually traced and
    * auto-traced functions.
    */
-  static get isLumigoEnabled(): boolean {
-    return !!process.env.LUMIGO_TRACER_TOKEN;
+  static get isOpenTelemetryEnabled(): boolean {
+    return !!process.env.OPENTELEMETRY_COLLECTOR_CONFIG_URI;
   }
 
   /**
@@ -141,10 +141,10 @@ export default class LambdaWrapper<TConfig extends LambdaWrapperConfig = LambdaW
    * wrapper, or handler redirection. Each method can be detected via its
    * environment variables. Auto-trace uses the runtime wrapper.
    */
-  static get isLumigoWrappingUs(): boolean {
-    return this.isLumigoEnabled && (
-      process.env.AWS_LAMBDA_EXEC_WRAPPER === '/opt/lumigo_wrapper'
-      || !!process.env.LUMIGO_ORIGINAL_HANDLER
+  static get isOpenTelemetryWrappingUs(): boolean {
+    return this.isOpenTelemetryEnabled && (
+      process.env.AWS_LAMBDA_EXEC_WRAPPER === '/opt/otel-handler'
+      || !!process.env.OTEL_ORIGINAL_HANDLER
     );
   }
 
