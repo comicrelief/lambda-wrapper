@@ -171,9 +171,9 @@ export default class LoggerService extends DependencyAwareClass {
       Sentry.captureException(error);
     }
 
-    if (LambdaWrapper.isLumigoEnabled && error instanceof Error) {
-      lumigo.error(message || error.message, { err: error });
-    }
+    // if (LambdaWrapper.isLumigoEnabled && error instanceof Error) {
+    //   lumigo.error(message || error.message, { err: error });
+    // }
 
     this.logger.log('error', message, { error: LoggerService.processMessage(error) });
     this.label('error', true);
@@ -216,9 +216,9 @@ export default class LoggerService extends DependencyAwareClass {
    * @param silent If `false`, the label will also be logged. (default: false)
    */
   label(descriptor: string, silent = false) {
-    if (LambdaWrapper.isLumigoEnabled) {
-      lumigo.addExecutionTag(descriptor, true);
-    }
+    // if (LambdaWrapper.isLumigoEnabled) {
+    //   lumigo.addExecutionTag(descriptor, true);
+    // }
 
     if (!silent) {
       this.logger.log('info', `label - ${descriptor}`);
@@ -233,9 +233,9 @@ export default class LoggerService extends DependencyAwareClass {
    * @param silent If `false`, the metric will also be logged. (default: false)
    */
   metric(descriptor: string, stat: number | string, silent = false) {
-    if (LambdaWrapper.isLumigoEnabled) {
-      lumigo.addExecutionTag(descriptor, stat);
-    }
+    // if (LambdaWrapper.isLumigoEnabled) {
+    //   lumigo.addExecutionTag(descriptor, stat);
+    // }
 
     if (silent === false) {
       this.logger.log('info', `metric - ${descriptor} - ${stat}`);
