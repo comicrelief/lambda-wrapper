@@ -1,11 +1,11 @@
-import * as lumigo from '@lumigo/tracer';
+// import * as lumigo from '@lumigo/tracer';
 import * as Sentry from '@sentry/node';
 import { AxiosError } from 'axios';
 import Winston from 'winston';
 
 import DependencyAwareClass from '../core/DependencyAwareClass';
 import DependencyInjection from '../core/DependencyInjection';
-import LambdaWrapper from '../core/LambdaWrapper';
+// import LambdaWrapper from '../core/LambdaWrapper';
 
 const sentryIsAvailable = typeof process.env.RAVEN_DSN !== 'undefined' && typeof process.env.RAVEN_DSN === 'string' && process.env.RAVEN_DSN !== 'undefined';
 
