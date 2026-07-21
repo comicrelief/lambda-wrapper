@@ -441,5 +441,22 @@ describe('unit.core.LambdaWrapper', () => {
         });
       });
     });
+
+    it('should handle an undefined error', () => {
+      const di = getDi();
+      const logger = di.get(LoggerService);
+      jest.spyOn(logger, 'error');
+
+      const error = undefined;
+      const response = LambdaWrapper.handleError(di, error);
+
+      expect(logger.error).toHaveBeenCalled();
+
+      expect(response).toEqual({
+        statusCode: 500,
+        body: '{"data":{},"message":"unknown error"}',
+        headers: RESPONSE_HEADERS,
+      });
+    });
   });
 });
