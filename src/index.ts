@@ -64,6 +64,10 @@ export {
   default as TimerService,
 } from './services/TimerService';
 
+export { default as TelemetryProvider } from './telemetry/base';
+export { default as LumigoTelemetry } from './telemetry/Lumigo';
+export { default as SentryTelemetry } from './telemetry/Sentry';
+
 export {
   ServiceStatus,
   Status,
