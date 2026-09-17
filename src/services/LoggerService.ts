@@ -97,12 +97,16 @@ export default class LoggerService extends DependencyAwareClass {
   /**
    * Get Sentry client.
    *
+   * Returns `null` if Sentry is disabled, either because it's not configured
+   * or the service is running in an offline context.
+   *
    * @deprecated This method will be removed in a future major release. If you
    * need access to the Sentry client, install and import `@sentry/node`.
    */
   // eslint-disable-next-line class-methods-use-this
   getSentry() {
-    return SentryTelemetry.sentry;
+    return SentryTelemetry.isEnabled && !this.di.isOffline
+      ? SentryTelemetry.sentry : null;
   }
 
   /**
