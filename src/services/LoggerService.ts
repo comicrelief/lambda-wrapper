@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/node';
 import { AxiosError } from 'axios';
 import Winston from 'winston';
 
@@ -105,8 +106,7 @@ export default class LoggerService extends DependencyAwareClass {
    */
   // eslint-disable-next-line class-methods-use-this
   getSentry() {
-    return SentryTelemetry.isEnabled && !this.di.isOffline
-      ? SentryTelemetry.sentry : null;
+    return SentryTelemetry.isEnabled && !this.di.isOffline ? Sentry : null;
   }
 
   /**

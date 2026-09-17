@@ -17,10 +17,6 @@ export default class SentryTelemetry extends TelemetryProvider {
     );
   }
 
-  static get sentry(): typeof Sentry {
-    return Sentry;
-  }
-
   constructor(logger: LoggerService) {
     super(logger);
 
