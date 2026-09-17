@@ -39,11 +39,13 @@ export default class LoggerService extends DependencyAwareClass {
 
     this.winston = null;
 
-    TELEMETRY_PROVIDERS.forEach((Provider) => {
-      if (Provider.isEnabled) {
-        this.telemetryProviders.push(new Provider(this));
-      }
-    });
+    if (!di.isOffline) {
+      TELEMETRY_PROVIDERS.forEach((Provider) => {
+        if (Provider.isEnabled) {
+          this.telemetryProviders.push(new Provider(this));
+        }
+      });
+    }
   }
 
   /**
