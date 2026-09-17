@@ -4,6 +4,8 @@ import {
   Context,
   DependencyInjection,
   LoggerService,
+  LumigoTelemetry,
+  SentryTelemetry,
 } from '@/src';
 import mockEvent from '@/tests/mocks/aws/event.json';
 
@@ -27,7 +29,7 @@ describe('unit.services.LoggerService', () => {
     },
   };
 
-  afterEach(() => jest.clearAllMocks());
+  afterEach(() => jest.restoreAllMocks());
 
   describe('logger', () => {
     it('should return a logger', () => {
@@ -82,6 +84,57 @@ describe('unit.services.LoggerService', () => {
           expect('extra' in loggerCall.response).toEqual(false);
         }
       });
+    });
+
+    it('should send the error to Sentry, if enabled', () => {
+      const errorSpy = jest.spyOn(SentryTelemetry.prototype, 'error').mockImplementation(jest.fn());
+      jest.spyOn(SentryTelemetry.prototype, 'tag').mockImplementation(jest.fn());
+      jest.spyOn(SentryTelemetry.prototype, 'label').mockImplementation(jest.fn());
+      jest.spyOn(SentryTelemetry, 'isEnabled', 'get').mockReturnValue(true);
+
+      const logger = getLogger();
+      const error = new Error('bad stuff');
+      logger.error(error);
+
+      expect(errorSpy).toHaveBeenCalledWith(error, '');
+    });
+
+    it('should send the error to Lumigo, if enabled', () => {
+      const errorSpy = jest.spyOn(LumigoTelemetry.prototype, 'error').mockImplementation(jest.fn());
+      jest.spyOn(LumigoTelemetry.prototype, 'tag').mockImplementation(jest.fn());
+      jest.spyOn(LumigoTelemetry.prototype, 'label').mockImplementation(jest.fn());
+      jest.spyOn(LumigoTelemetry, 'isEnabled', 'get').mockReturnValue(true);
+
+      const logger = getLogger();
+      const error = new Error('bad stuff');
+      logger.error(error);
+
+      expect(errorSpy).toHaveBeenCalledWith(error, '');
+    });
+  });
+
+  describe('label', () => {
+    it('should send the label to Lumigo, if enabled', () => {
+      const labelSpy = jest.spyOn(LumigoTelemetry.prototype, 'label').mockImplementation(jest.fn());
+      jest.spyOn(LumigoTelemetry.prototype, 'tag').mockImplementation(jest.fn());
+      jest.spyOn(LumigoTelemetry, 'isEnabled', 'get').mockReturnValue(true);
+
+      const logger = getLogger();
+      logger.label('needs-investigating');
+
+      expect(labelSpy).toHaveBeenCalledWith('needs-investigating');
+    });
+  });
+
+  describe('metric', () => {
+    it('should send the tag to Lumigo, if enabled', () => {
+      const tagSpy = jest.spyOn(LumigoTelemetry.prototype, 'tag').mockImplementation(jest.fn());
+      jest.spyOn(LumigoTelemetry, 'isEnabled', 'get').mockReturnValue(true);
+
+      const logger = getLogger();
+      logger.metric('source', 'unit-test');
+
+      expect(tagSpy).toHaveBeenCalledWith('source', 'unit-test');
     });
   });
 

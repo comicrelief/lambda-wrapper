@@ -7,6 +7,7 @@ import {
   LambdaWrapper,
   LambdaWrapperConfig,
   LoggerService,
+  LumigoTelemetry,
   RequestService,
 } from '@/src';
 import { mockContext, mockEvent } from '@/tests/mocks/aws';
@@ -307,91 +308,14 @@ describe('unit.core.LambdaWrapper', () => {
   });
 
   describe('isLumigoEnabled', () => {
-    describe('when a Lumigo token is present', () => {
-      beforeAll(() => {
-        process.env.LUMIGO_TRACER_TOKEN = 'test';
-      });
-
-      afterAll(() => {
-        delete process.env.LUMIGO_TRACER_TOKEN;
-      });
-
-      it('should return true', () => {
-        expect(LambdaWrapper.isLumigoEnabled).toBe(true);
-      });
-    });
-
-    describe('when there is no Lumigo token', () => {
-      beforeAll(() => {
-        delete process.env.LUMIGO_TRACER_TOKEN;
-      });
-
-      it('should return false', () => {
-        expect(LambdaWrapper.isLumigoEnabled).toBe(false);
-      });
+    it('is deprecated; use LumigoTelemetry.isEnabled', () => {
+      expect(LambdaWrapper.isLumigoEnabled).toEqual(LumigoTelemetry.isEnabled);
     });
   });
 
   describe('isLumigoWrappingUs', () => {
-    describe('when using the runtime wrapper (e.g. auto-trace)', () => {
-      beforeAll(() => {
-        process.env.AWS_LAMBDA_EXEC_WRAPPER = '/opt/lumigo_wrapper';
-        delete process.env.LUMIGO_ORIGINAL_HANDLER;
-        process.env.LUMIGO_TRACER_TOKEN = 'test';
-      });
-
-      afterAll(() => {
-        delete process.env.AWS_LAMBDA_EXEC_WRAPPER;
-        delete process.env.LUMIGO_TRACER_TOKEN;
-      });
-
-      it('should return true', () => {
-        expect(LambdaWrapper.isLumigoWrappingUs).toBe(true);
-      });
-    });
-
-    describe('when using handler redirection', () => {
-      beforeAll(() => {
-        delete process.env.AWS_LAMBDA_EXEC_WRAPPER;
-        process.env.LUMIGO_ORIGINAL_HANDLER = 'handler.js';
-        process.env.LUMIGO_TRACER_TOKEN = 'test';
-      });
-
-      afterAll(() => {
-        delete process.env.LUMIGO_ORIGINAL_HANDLER;
-        delete process.env.LUMIGO_TRACER_TOKEN;
-      });
-
-      it('should return true', () => {
-        expect(LambdaWrapper.isLumigoWrappingUs).toBe(true);
-      });
-    });
-
-    describe('when there is only a Lumigo token', () => {
-      beforeAll(() => {
-        delete process.env.AWS_LAMBDA_EXEC_WRAPPER;
-        delete process.env.LUMIGO_ORIGINAL_HANDLER;
-        process.env.LUMIGO_TRACER_TOKEN = 'test';
-      });
-
-      afterAll(() => {
-        delete process.env.LUMIGO_TRACER_TOKEN;
-      });
-
-      it('should return false', () => {
-        expect(LambdaWrapper.isLumigoWrappingUs).toBe(false);
-      });
-    });
-
-    describe('when there is no Lumigo token', () => {
-      beforeAll(() => {
-        delete process.env.AWS_LAMBDA_EXEC_WRAPPER;
-        delete process.env.LUMIGO_TRACER_TOKEN;
-      });
-
-      it('should return false', () => {
-        expect(LambdaWrapper.isLumigoWrappingUs).toBe(false);
-      });
+    it('is deprecated; use LumigoTelemetry.isLumigoWrappingUs', () => {
+      expect(LambdaWrapper.isLumigoWrappingUs).toEqual(LumigoTelemetry.isLumigoWrappingUs);
     });
   });
 
