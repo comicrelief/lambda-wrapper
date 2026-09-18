@@ -111,7 +111,7 @@ export default class LambdaWrapper<TConfig extends LambdaWrapperConfig = LambdaW
     };
 
     // If Lumigo is enabled, wrap the handler in the Lumigo wrapper
-    if (LambdaWrapper.isLumigoEnabled && !LambdaWrapper.isLumigoWrappingUs) {
+    if (LumigoTelemetry.isEnabled && !LumigoTelemetry.isLumigoWrappingUs) {
       const tracer = lumigo.initTracer({ token: process.env.LUMIGO_TRACER_TOKEN });
 
       // Lumigo's wrapper works with both callbacks or promises handlers, and
