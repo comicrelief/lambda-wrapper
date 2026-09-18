@@ -1,61 +1,50 @@
-import * as lumigo from '@lumigo/tracer';
 import * as Sentry from '@sentry/node';
 import { AxiosError } from 'axios';
 import Winston from 'winston';
 
 import DependencyAwareClass from '../core/DependencyAwareClass';
 import DependencyInjection from '../core/DependencyInjection';
-import LambdaWrapper from '../core/LambdaWrapper';
+import LumigoTelemetry from '../telemetry/Lumigo';
+import SentryTelemetry from '../telemetry/Sentry';
+import TelemetryProvider from '../telemetry/base';
 
-const sentryIsAvailable = typeof process.env.RAVEN_DSN !== 'undefined' && typeof process.env.RAVEN_DSN === 'string' && process.env.RAVEN_DSN !== 'undefined';
-
-// initialise the Sentry client if available
-if (sentryIsAvailable) {
-  Sentry.init({
-    dsn: process.env.RAVEN_DSN,
-    shutdownTimeout: 5,
-    environment: process.env.STAGE,
-  });
-}
+/**
+ * List of all supported telemetry providers.
+ *
+ * Providers that are enabled (according to their `isEnabled` property) will be
+ * instantiated by the logger.
+ */
+const TELEMETRY_PROVIDERS = [
+  SentryTelemetry,
+  LumigoTelemetry,
+];
 
 /**
  * Provides logging and integrations with our monitoring tools.
  *
  * For logging we use [Winston](https://github.com/winstonjs/winston).
- * Errors will also be sent to [Sentry](https://sentry.io/) and
- * [Lumigo](https://lumigo.io/) if those are configured.
+ * Errors, labels, and metrics will also be sent to telemetry providers, if
+ * configured. We currently support:
+ *
+ * - [Sentry](https://sentry.io/)
+ * - [Lumigo](https://lumigo.io/)
  */
 export default class LoggerService extends DependencyAwareClass {
-  private sentry: typeof Sentry | null;
+  private telemetryProviders: TelemetryProvider[] = [];
 
   private winston: Winston.Logger | null;
 
   constructor(di: DependencyInjection) {
     super(di);
 
-    this.sentry = null;
     this.winston = null;
 
-    const { event, context } = this.di;
-
-    if (sentryIsAvailable && !di.isOffline) {
-      Sentry.configureScope((scope) => {
-        scope.setTags({
-          Event: event,
-          Context: context as any,
-        });
-        scope.setExtras({
-          lambda: context.functionName,
-          memory_size: context.memoryLimitInMB,
-          log_group: context.logGroupName,
-          log_stream: context.logStreamName,
-          stage: process.env.STAGE,
-          path: event.path,
-          httpMethod: event.httpMethod,
-        });
+    if (!di.isOffline) {
+      TELEMETRY_PROVIDERS.forEach((Provider) => {
+        if (Provider.isEnabled) {
+          this.telemetryProviders.push(new Provider(this));
+        }
       });
-
-      this.sentry = Sentry;
     }
   }
 
@@ -110,9 +99,16 @@ export default class LoggerService extends DependencyAwareClass {
 
   /**
    * Get Sentry client.
+   *
+   * Returns `null` if Sentry is disabled, either because it's not configured
+   * or the service is running in an offline context.
+   *
+   * @deprecated This method will be removed in a future major release. If you
+   * need access to the Sentry client, install and import `@sentry/node`.
    */
+  // eslint-disable-next-line class-methods-use-this
   getSentry() {
-    return this.sentry;
+    return SentryTelemetry.isEnabled && !this.di.isOffline ? Sentry : null;
   }
 
   /**
@@ -161,18 +157,14 @@ export default class LoggerService extends DependencyAwareClass {
   }
 
   /**
-   * Log Error Message
+   * Log an error and report to telemetry platforms.
    *
    * @param error object
    * @param message string
    */
   error(error: any, message = '') {
-    if (sentryIsAvailable && error instanceof Error) {
-      Sentry.captureException(error);
-    }
-
-    if (LambdaWrapper.isLumigoEnabled && error instanceof Error) {
-      lumigo.error(message || error.message, { err: error });
+    if (error instanceof Error) {
+      this.telemetryProviders.forEach((provider) => provider.error(error, message));
     }
 
     this.logger.log('error', message, { error: LoggerService.processMessage(error) });
@@ -210,15 +202,13 @@ export default class LoggerService extends DependencyAwareClass {
   }
 
   /**
-   * Add a label to the function's Lumigo trace.
+   * Add a label to the function's logs and telemetry.
    *
    * @param descriptor
    * @param silent If `false`, the label will also be logged. (default: false)
    */
   label(descriptor: string, silent = false) {
-    if (LambdaWrapper.isLumigoEnabled) {
-      lumigo.addExecutionTag(descriptor, true);
-    }
+    this.telemetryProviders.forEach((provider) => provider.label(descriptor));
 
     if (!silent) {
       this.logger.log('info', `label - ${descriptor}`);
@@ -226,16 +216,14 @@ export default class LoggerService extends DependencyAwareClass {
   }
 
   /**
-   * Add a metric to the function's Lumigo trace.
+   * Add a metric to the function's logs and telemetry.
    *
    * @param descriptor
    * @param stat
    * @param silent If `false`, the metric will also be logged. (default: false)
    */
   metric(descriptor: string, stat: number | string, silent = false) {
-    if (LambdaWrapper.isLumigoEnabled) {
-      lumigo.addExecutionTag(descriptor, stat);
-    }
+    this.telemetryProviders.forEach((provider) => provider.tag(descriptor, stat));
 
     if (silent === false) {
       this.logger.log('info', `metric - ${descriptor} - ${stat}`);

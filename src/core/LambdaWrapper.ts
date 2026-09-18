@@ -4,6 +4,7 @@ import { Context } from '../index';
 import ResponseModel from '../models/ResponseModel';
 import LoggerService from '../services/LoggerService';
 import RequestService from '../services/RequestService';
+import LumigoTelemetry from '../telemetry/Lumigo';
 import DependencyAwareClass from './DependencyAwareClass';
 import DependencyInjection from './DependencyInjection';
 import { LambdaWrapperConfig, mergeConfig } from './config';
@@ -110,7 +111,7 @@ export default class LambdaWrapper<TConfig extends LambdaWrapperConfig = LambdaW
     };
 
     // If Lumigo is enabled, wrap the handler in the Lumigo wrapper
-    if (LambdaWrapper.isLumigoEnabled && !LambdaWrapper.isLumigoWrappingUs) {
+    if (LumigoTelemetry.isEnabled && !LumigoTelemetry.isLumigoWrappingUs) {
       const tracer = lumigo.initTracer({ token: process.env.LUMIGO_TRACER_TOKEN });
 
       // Lumigo's wrapper works with both callbacks or promises handlers, and
@@ -123,29 +124,17 @@ export default class LambdaWrapper<TConfig extends LambdaWrapperConfig = LambdaW
   }
 
   /**
-   * `true` if we will send traces to Lumigo.
-   *
-   * The `LUMIGO_TRACER_TOKEN` env var is present in both manually traced and
-   * auto-traced functions.
+   * @deprecated Use `LumigoTelemetry.isEnabled` instead.
    */
   static get isLumigoEnabled(): boolean {
-    return !!process.env.LUMIGO_TRACER_TOKEN;
+    return LumigoTelemetry.isEnabled;
   }
 
   /**
-   * `true` if the Lambda function is already being traced by a higher-level
-   * Lumigo wrapper, in which case we don't need to manually wrap our handlers.
-   *
-   * There are two ways that this can be done, based on the documentation
-   * [here](https://docs.lumigo.io/docs/lambda-layers): using a Lambda runtime
-   * wrapper, or handler redirection. Each method can be detected via its
-   * environment variables. Auto-trace uses the runtime wrapper.
+   * @deprecated Use `LumigoTelemetry.isLumigoWrappingUs` instead.
    */
   static get isLumigoWrappingUs(): boolean {
-    return this.isLumigoEnabled && (
-      process.env.AWS_LAMBDA_EXEC_WRAPPER === '/opt/lumigo_wrapper'
-      || !!process.env.LUMIGO_ORIGINAL_HANDLER
-    );
+    return LumigoTelemetry.isLumigoWrappingUs;
   }
 
   /**
