@@ -96,9 +96,9 @@ describe('unit.services.LoggerService', () => {
 
       const logger = getLogger();
       const error = new Error('bad stuff');
-      logger.error(error);
+      logger.error(error, 'message');
 
-      expect(errorSpy).toHaveBeenCalledWith(error, '');
+      expect(errorSpy).toHaveBeenCalledWith(error, 'message');
     });
 
     it('should send the error to Lumigo, if enabled', () => {
@@ -111,9 +111,9 @@ describe('unit.services.LoggerService', () => {
 
       const logger = getLogger();
       const error = new Error('bad stuff');
-      logger.error(error);
+      logger.error(error, 'message');
 
-      expect(errorSpy).toHaveBeenCalledWith(error, '');
+      expect(errorSpy).toHaveBeenCalledWith(error, 'message');
     });
   });
 
