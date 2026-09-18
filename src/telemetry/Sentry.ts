@@ -9,6 +9,9 @@ import TelemetryProvider from './base';
  * [Sentry](https://sentry.io/) telemetry provider.
  */
 export default class SentryTelemetry extends TelemetryProvider {
+  /**
+   * `true` if we can send traces to Sentry.
+   */
   static get isEnabled(): boolean {
     return (
       typeof process.env.RAVEN_DSN !== 'undefined'
