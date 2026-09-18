@@ -10,7 +10,7 @@ import TelemetryProvider from './base';
  */
 export default class LumigoTelemetry extends TelemetryProvider {
   /**
-   * `true` if we will send traces to Lumigo.
+   * `true` if we can send traces to Lumigo.
    *
    * The `LUMIGO_TRACER_TOKEN` env var is present in both manually traced and
    * auto-traced functions.
