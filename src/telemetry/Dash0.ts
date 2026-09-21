@@ -1,3 +1,5 @@
+import type { TraceAPI } from '@opentelemetry/api';
+
 import LoggerService from '../services/LoggerService';
 import TelemetryProvider from './base';
 
@@ -27,7 +29,7 @@ export default class Dash0Telemetry extends TelemetryProvider {
     );
   }
 
-  readonly trace: typeof import('@opentelemetry/api').trace;
+  readonly trace: TraceAPI;
 
   constructor(logger: LoggerService) {
     super(logger);
