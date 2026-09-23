@@ -223,6 +223,12 @@ Lumigo integration works out-of-the-box with Lumigo's [auto-trace feature](https
 
 And if you don't use Lumigo, don't worry, their tracer will not be instantiated in your functions and no calls will be made to their servers unless `LUMIGO_TRACER_TOKEN` is set.
 
+### Dash0
+
+We also support sending telemetry to Dash0. To enable this, you can use Dash0's auto-instrumentation feature, or manually configure the [Dash0 Lambda Extension](https://github.com/dash0hq/dash0-lambda-extension) as directed in their docs.
+
+If using Dash0, you must also add `@opentelemetry/api` to your project dependencies.
+
 ## Notes
 
 Lambda Wrapper's dependency injection relies on class names being preserved. If your build process includes minifying or uglifying your code, you'll need to disable these transformations.

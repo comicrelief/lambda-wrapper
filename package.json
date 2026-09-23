@@ -21,9 +21,18 @@
     "test:types": "tsc -p tsconfig-type-test.json",
     "coverage": "yarn test --coverage"
   },
+  "peerDependencies": {
+    "@opentelemetry/api": "^1.9.1"
+  },
+  "peerDependenciesMeta": {
+    "@opentelemetry/api": {
+      "optional": true
+    }
+  },
   "devDependencies": {
     "@comicrelief/eslint-config": "^2.0.3",
     "@istanbuljs/nyc-config-typescript": "^1.0.2",
+    "@opentelemetry/api": "^1.9.1",
     "@types/async": "^3.2.24",
     "@types/jest": "^29.5.12",
     "@types/node": "22",
