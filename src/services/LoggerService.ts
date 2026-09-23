@@ -4,6 +4,7 @@ import Winston from 'winston';
 
 import DependencyAwareClass from '../core/DependencyAwareClass';
 import DependencyInjection from '../core/DependencyInjection';
+import Dash0Telemetry from '../telemetry/Dash0';
 import LumigoTelemetry from '../telemetry/Lumigo';
 import SentryTelemetry from '../telemetry/Sentry';
 import TelemetryProvider from '../telemetry/base';
@@ -17,6 +18,7 @@ import TelemetryProvider from '../telemetry/base';
 const TELEMETRY_PROVIDERS = [
   SentryTelemetry,
   LumigoTelemetry,
+  Dash0Telemetry,
 ];
 
 /**

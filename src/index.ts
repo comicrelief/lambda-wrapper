@@ -65,6 +65,7 @@ export {
 } from './services/TimerService';
 
 export { default as TelemetryProvider } from './telemetry/base';
+export { default as Dash0Telemetry } from './telemetry/Dash0';
 export { default as LumigoTelemetry } from './telemetry/Lumigo';
 export { default as SentryTelemetry } from './telemetry/Sentry';
 
