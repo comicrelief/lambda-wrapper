@@ -159,8 +159,8 @@ export default class LoggerService extends DependencyAwareClass {
   /**
    * Log an error and report to telemetry platforms.
    *
-   * @param error object
-   * @param message string
+   * @param error Error object
+   * @param message Optional message to log. Defaults to `error.message`.
    */
   error(error: any, message?: string) {
     if (error instanceof Error) {
