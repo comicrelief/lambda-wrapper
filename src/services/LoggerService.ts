@@ -162,12 +162,12 @@ export default class LoggerService extends DependencyAwareClass {
    * @param error object
    * @param message string
    */
-  error(error: any, message = '') {
+  error(error: any, message?: string) {
     if (error instanceof Error) {
       this.telemetryProviders.forEach((provider) => provider.error(error, message));
     }
 
-    this.logger.log('error', message, { error: LoggerService.processMessage(error) });
+    this.logger.log('error', message ?? error.message, { error: LoggerService.processMessage(error) });
     this.label('error', true);
     this.metric('error', 'error', true);
   }
