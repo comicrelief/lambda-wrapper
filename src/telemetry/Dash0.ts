@@ -39,13 +39,8 @@ export default class Dash0Telemetry extends TelemetryProvider {
     this.trace = opentelemetry.trace;
   }
 
-  error(error: Error, message?: string): void {
-    this.trace.getActiveSpan()?.recordException({
-      ...error,
-      name: error.name,
-      message: message || error.message,
-      stack: error.stack,
-    });
+  error(error: Error): void {
+    this.trace.getActiveSpan()?.recordException(error);
   }
 
   label(label: string): void {
