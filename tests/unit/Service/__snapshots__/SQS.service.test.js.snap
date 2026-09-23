@@ -1,7 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`Service/SQS publish failure modes throws an error with the invalid value:  1`] = `"Invalid value for 'failureMode': "`;
-
-exports[`Service/SQS publish failure modes throws an error with the invalid value: another-value 1`] = `"Invalid value for 'failureMode': another-value"`;
-
-exports[`Service/SQS publish failure modes throws an error with the invalid value: null 1`] = `"Invalid value for 'failureMode': null"`;

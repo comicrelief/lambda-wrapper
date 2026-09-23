@@ -1,0 +1,35 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`unit.services.BaseConfigService ensureHealthy 400 throws a LambdaTermination 1`] = `"Application is not healthy."`;
+
+exports[`unit.services.BaseConfigService ensureHealthy 401 throws a LambdaTermination 1`] = `"Application is not healthy."`;
+
+exports[`unit.services.BaseConfigService ensureHealthy 403 throws a LambdaTermination 1`] = `"Application is not healthy."`;
+
+exports[`unit.services.BaseConfigService ensureHealthy 404 throws a LambdaTermination 1`] = `"Application is not healthy."`;
+
+exports[`unit.services.BaseConfigService ensureHealthy 409 throws a LambdaTermination 1`] = `"Application is not healthy."`;
+
+exports[`unit.services.BaseConfigService ensureHealthy 499 throws a LambdaTermination 1`] = `"Application is not healthy."`;
+
+exports[`unit.services.BaseConfigService ensureHealthy 500 throws a LambdaTermination 1`] = `"Application is not healthy."`;
+
+exports[`unit.services.BaseConfigService ensureHealthy 501 throws a LambdaTermination 1`] = `"Application is not healthy."`;
+
+exports[`unit.services.BaseConfigService ensureHealthy 502 throws a LambdaTermination 1`] = `"Application is not healthy."`;
+
+exports[`unit.services.BaseConfigService ensureHealthy 503 throws a LambdaTermination 1`] = `"Application is not healthy."`;
+
+exports[`unit.services.BaseConfigService ensureHealthy 504 throws a LambdaTermination 1`] = `"Application is not healthy."`;
+
+exports[`unit.services.BaseConfigService ensureHealthy Dante Alighieri throws a LambdaTermination 1`] = `"Application is not healthy."`;
+
+exports[`unit.services.BaseConfigService get propagates the 404 1`] = `"404"`;
+
+exports[`unit.services.BaseConfigService get refuses empty configurations 1`] = `"Configuration file is empty"`;
+
+exports[`unit.services.BaseConfigService get refuses invalid configurations 1`] = `"Invalid configuration file"`;
+
+exports[`unit.services.BaseConfigService getOrCreate throws any non-404 error 1`] = `"Bad error"`;
+
+exports[`unit.services.BaseConfigService patch throws any non-404 error 1`] = `"Bad error"`;

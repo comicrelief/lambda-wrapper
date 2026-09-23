@@ -1,2 +1,6 @@
 extends:
   - '@comicrelief/eslint-config/mixins/jest'
+
+rules:
+  max-classes-per-file: off
+  '@typescript-eslint/no-non-null-assertion': off
