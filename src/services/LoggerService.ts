@@ -161,15 +161,15 @@ export default class LoggerService extends DependencyAwareClass {
   /**
    * Log an error and report to telemetry platforms.
    *
-   * @param error object
-   * @param message string
+   * @param error Error object
+   * @param message Optional message to log. Defaults to `error.message`.
    */
-  error(error: any, message = '') {
+  error(error: any, message?: string) {
     if (error instanceof Error) {
       this.telemetryProviders.forEach((provider) => provider.error(error, message));
     }
 
-    this.logger.log('error', message, { error: LoggerService.processMessage(error) });
+    this.logger.log('error', message ?? error.message, { error: LoggerService.processMessage(error) });
     this.label('error', true);
     this.metric('error', 'error', true);
   }
