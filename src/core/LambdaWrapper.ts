@@ -75,6 +75,7 @@ export default class LambdaWrapper<TConfig extends LambdaWrapperConfig = LambdaW
 
       // if the event is a warmup, don't bother running the function
       if (event.source === 'serverless-plugin-warmup') {
+        logger.metric('warmup', 'true', true);
         return 'Lambda is warm!';
       }
 

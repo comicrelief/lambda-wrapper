@@ -305,6 +305,29 @@ describe('unit.core.LambdaWrapper', () => {
         });
       });
     });
+
+    describe('warmup event', () => {
+      // see https://github.com/juanjoDiaz/serverless-plugin-warmup#on-the-function-side
+      const warmupEvent = { source: 'serverless-plugin-warmup' };
+
+      it('should not call the handler', async () => {
+        const handler = jest.fn();
+        const wrapped = lambdaWrapper.wrap(handler);
+
+        await wrapped(warmupEvent, mockContext);
+
+        expect(handler).not.toHaveBeenCalled();
+      });
+
+      it('should tag the trace with `warmup: true`', async () => {
+        const handler = jest.fn();
+        const wrapped = lambdaWrapper.wrap(handler);
+
+        await wrapped(warmupEvent, mockContext);
+
+        expect(LoggerService.prototype.metric).toHaveBeenCalledWith('warmup', 'true', true);
+      });
+    });
   });
 
   describe('isLumigoEnabled', () => {
